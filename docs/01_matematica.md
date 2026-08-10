@@ -190,7 +190,7 @@ Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemá
 ## ⚠️ Erros comuns nesta fase
 
 - **Ler sem implementar.** Matemática não-implementada não vira intuição.
-- **Pular álgebra linear** porque "parece básico". Toda operação em DL é álgebra linear; se você não enxerga isso, vai sofrer no módulo 7.
+- **Pular álgebra linear** porque "parece básico". Toda operação em DL é álgebra linear; se você não enxerga isso, vai sofrer no módulo [7](07_transformers.md).
 - **Estudar otimização antes de cálculo.** Ordem importa.
 - **Achar que `numpy` é trivial.** Não é. Broadcasting, vetorização e *shapes* são onde a maioria dos bugs nasce.
 
@@ -200,19 +200,19 @@ Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemá
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Produto matricial | DL (forward pass) — Mod. 5, Transformers — Mod. 7 |
-| Regra da cadeia | Backpropagation — Mod. 5 |
-| MLE / Cross-entropy | Loss functions — Mod. 5, 9 |
-| SVD | Embeddings, LoRA — Mod. 6, 10 |
+| Produto matricial | DL (forward pass) — Mod. [5](05_deep_learning.md), Transformers — Mod. [7](07_transformers.md) |
+| Regra da cadeia | Backpropagation — Mod. [5](05_deep_learning.md) |
+| MLE / Cross-entropy | Loss functions — Mod. [5](05_deep_learning.md), [9](09_treinamento_e_alinhamento.md) |
+| SVD | Embeddings, LoRA — Mod. [6](06_nlp_classico.md), [10](10_eficiencia_e_inferencia_local.md) |
 | Adam | Treinamento de qualquer rede moderna |
-| Distribuições | Sampling em LLMs (temperature, top-k) — Mod. 11 |
+| Distribuições | Sampling em LLMs (temperature, top-k) — Mod. [11](11_prompt_engineering.md) |
 | Gradient descent | Tudo |
 
 ---
 
 ## Checklist de saída
 
-Você está pronto para o módulo 02 quando consegue:
+Você está pronto para o módulo [02](02_programacao_ferramentas.md) quando consegue:
 
 - [ ] Explicar o que é o gradiente de uma função multivariada e por que apontamos *contra* ele em GD.
 - [ ] Derivar à mão a backprop de uma rede com 1 camada oculta.

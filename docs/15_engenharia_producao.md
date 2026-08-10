@@ -8,7 +8,7 @@ sidebar_position: 15
 
 > **Objetivo**: levar sistemas de LLM da prototipagem para produção real — observability, custo, latência, cache, deploy, monitoring, drift, A/B testing, CI/CD.
 >
-> **Pré-requisitos**: Módulos 10–14.
+> **Pré-requisitos**: Módulos [10](10_eficiencia_e_inferencia_local.md)–[14](14_avaliacao_e_seguranca.md).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -93,7 +93,7 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 ### Otimizações
 - **Modelos menores** quando bastam.
 - **Streaming** para esconder TPOT.
-- **Speculative decoding** (mod. 10).
+- **Speculative decoding** (mod. [10](10_eficiencia_e_inferencia_local.md)).
 - **Prompt caching**.
 - **Edge inference** quando possível.
 - **Reduzir prompt** sem perder qualidade.
@@ -290,7 +290,7 @@ Atenção a:
 ## 🧪 Projetos práticos
 
 ### Projeto 15.1 — Observability completo
-- Pegue um pipeline RAG/agente do mod. 12 ou 13.
+- Pegue um pipeline RAG/agente do mod. [12](12_rag.md) ou 13.
 - Adicione Langfuse self-hosted (Docker compose).
 - Capture traces detalhados + custo por chamada.
 - Construa dashboard com p50/p95 de TTFT, custo/dia, taxa de erro.
@@ -345,7 +345,7 @@ Atenção a:
 
 ## Conexão com módulos seguintes
 
-Este módulo é o "meta" sobre os anteriores. Os galhos (mod. 16–19) podem reaproveitar tudo aqui.
+Este módulo é o "meta" sobre os anteriores. Os galhos (mod. [16](16_visao_computacional.md)–[19](19_topicos_avancados.md)) podem reaproveitar tudo aqui.
 
 ---
 

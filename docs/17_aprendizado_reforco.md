@@ -6,9 +6,9 @@ sidebar_position: 17
 
 # Módulo 17 — Aprendizado por Reforço
 
-> **Objetivo**: dominar RL clássico (MDPs, Q-learning, policy gradient) e moderno (DQN, PPO, AlphaZero, RL para LLMs). Conexão com RLHF/GRPO do módulo 09.
+> **Objetivo**: dominar RL clássico (MDPs, Q-learning, policy gradient) e moderno (DQN, PPO, AlphaZero, RL para LLMs). Conexão com RLHF/GRPO do módulo [09](09_treinamento_e_alinhamento.md).
 >
-> **Pré-requisitos**: Módulos 01 (matemática, especialmente prob/stat e otimização), 05 (DL).
+> **Pré-requisitos**: Módulos [01](01_matematica.md) (matemática, especialmente prob/stat e otimização), 05 (DL).
 >
 > **Tempo de referência**: 5–8 semanas.
 
@@ -164,7 +164,7 @@ Eficiência de amostra (sample efficiency) é frequentemente 10–100× melhor.
 
 ## 17.8 RLHF, RLAIF e RL em LLMs
 
-Recapitular do mod. 09 com base teórica agora consolidada.
+Recapitular do mod. [09](09_treinamento_e_alinhamento.md) com base teórica agora consolidada.
 
 ### Pipeline RLHF
 1. SFT base.
@@ -181,7 +181,7 @@ Recompensa **direta** em corretude (math, code) — sem reward model.
 
 ### Referências
 - 📄 **InstructGPT** — Ouyang et al. (2022). https://arxiv.org/abs/2203.02155
-- 📄 **DPO**, **GRPO**, **KTO**, **ORPO** — revisar mod. 09.
+- 📄 **DPO**, **GRPO**, **KTO**, **ORPO** — revisar mod. [09](09_treinamento_e_alinhamento.md).
 
 ---
 
@@ -277,11 +277,11 @@ Cada algoritmo em **um único arquivo curto, sem abstrações ocultas**. Excelen
 
 | Conceito daqui | Aparece em |
 |---|---|
-| PPO, GRPO | RLHF, reasoning RL (mod. 09) |
+| PPO, GRPO | RLHF, reasoning RL (mod. [09](09_treinamento_e_alinhamento.md)) |
 | Reward shaping | Fine-tuning para tasks específicas |
-| MCTS + RL | Agentes com planejamento (mod. 13) |
-| Offline RL / DPO | Alinhamento (mod. 09) |
-| Decision Transformer | Tópicos avançados (mod. 19) |
+| MCTS + RL | Agentes com planejamento (mod. [13](13_agentes_tools_protocolos.md)) |
+| Offline RL / DPO | Alinhamento (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Decision Transformer | Tópicos avançados (mod. [19](19_topicos_avancados.md)) |
 
 ---
 

@@ -8,7 +8,7 @@ sidebar_position: 4
 
 > **Objetivo**: cobrir o que **não** é DL profundo nem ML clássico stricto sensu — paradigmas que emergiram entre os dois, e que são essenciais para entender LLMs (especialmente self-supervised learning) e problemas reais.
 >
-> **Pré-requisitos**: Módulo 03.
+> **Pré-requisitos**: Módulo [03](03_ml_classico.md).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -79,7 +79,7 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 - **Meta-learning** ("aprender a aprender"): MAML, Prototypical Networks.
 
 ### Por que importa para LLMs
-Few-shot prompting (mod. 11) é um caso emergente de few-shot learning sem gradient updates — comportamento "in-context" que aparece com escala.
+Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de few-shot learning sem gradient updates — comportamento "in-context" que aparece com escala.
 
 ### Papers
 - 📄 **Model-Agnostic Meta-Learning (MAML)** — Finn et al. (2017). https://arxiv.org/abs/1703.03400
@@ -168,7 +168,7 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 ### Tópicos
 - **Probabilistic Programming**: PyMC, Stan, NumPyro, Pyro.
 - **Variational Inference**.
-- **Normalizing Flows** (preparação para módulo 19).
+- **Normalizing Flows** (preparação para módulo [19](19_topicos_avancados.md)).
 - **Bayesian Deep Learning**: dropout como Bayesian approximation, deep ensembles como uncertainty.
 
 ### Por que importa
@@ -225,12 +225,12 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Self-supervised learning | Pretraining de LLMs (mod. 09) |
-| Transfer learning | Fine-tuning de LLMs (mod. 09) |
-| Contrastive learning | CLIP, embeddings (mod. 12, 18) |
-| Few-shot | In-context learning (mod. 11) |
-| Probabilistic models | Sampling em LLMs (mod. 11) |
-| Uncertainty | Hallucination, calibração (mod. 14) |
+| Self-supervised learning | Pretraining de LLMs (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Transfer learning | Fine-tuning de LLMs (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Contrastive learning | CLIP, embeddings (mod. [12](12_rag.md), [18](18_multimodal.md)) |
+| Few-shot | In-context learning (mod. [11](11_prompt_engineering.md)) |
+| Probabilistic models | Sampling em LLMs (mod. [11](11_prompt_engineering.md)) |
+| Uncertainty | Hallucination, calibração (mod. [14](14_avaliacao_e_seguranca.md)) |
 
 ---
 

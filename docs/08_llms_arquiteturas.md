@@ -8,7 +8,7 @@ sidebar_position: 8
 
 > **Objetivo**: conhecer as famílias de LLMs, suas escolhas arquiteturais, scaling laws, e os modelos abertos de 2024–2025 que definem o estado da arte open-source.
 >
-> **Pré-requisitos**: Módulo 07.
+> **Pré-requisitos**: Módulo [07](07_transformers.md).
 >
 > **Tempo de referência**: 3–4 semanas.
 
@@ -81,7 +81,7 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 ### Componentes
 - **Dataset massivo** (trilhões de tokens): Common Crawl, Wikipedia, livros, código, papers, fóruns.
 - **Curadoria e limpeza**: deduplicação, filtros de qualidade, balanceamento de domínios.
-- **Tokenização** (mod. 06).
+- **Tokenização** (mod. [06](06_nlp_classico.md)).
 - **Objetivo**: next-token prediction (decoder) ou MLM (encoder).
 - **Treinamento distribuído**: data parallel, tensor parallel, pipeline parallel, FSDP.
 
@@ -180,7 +180,7 @@ Modelos geram "chain of thought" longo *antes* da resposta final. Treinamento vi
 
 ### Projeto 8.1 — Comparativo de modelos abertos
 - Escolha 4 modelos: LLaMA 3 8B, Mistral 7B, Gemma 2 9B, Qwen 2.5 7B.
-- Rode localmente (via Ollama ou llama.cpp — preview do mod. 10).
+- Rode localmente (via Ollama ou llama.cpp — preview do mod. [10](10_eficiencia_e_inferencia_local.md)).
 - Avalie em 20 prompts próprios (geração, raciocínio, código, PT-BR).
 - Documente: latência, qualidade subjetiva, comportamento em PT-BR.
 
@@ -190,7 +190,7 @@ Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 - Faça resumo de 1–2 páginas em Markdown.
 
 ### Projeto 8.3 — Implementar uma "mini-LLaMA"
-- Pegue o nanoGPT do mod. 07.
+- Pegue o nanoGPT do mod. [07](07_transformers.md).
 - Modifique para usar: RMSNorm, SwiGLU, RoPE, GQA.
 - Treine no Tiny Shakespeare ou subconjunto do FineWeb.
 - Compare com a versão original.
@@ -222,11 +222,11 @@ Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Pre-training | Treinamento (mod. 09) |
-| Embedding models | RAG (mod. 12) |
+| Pre-training | Treinamento (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Embedding models | RAG (mod. [12](12_rag.md)) |
 | Tokenização específica do modelo | Tudo o que envolve usar o modelo |
-| Scaling laws | Decisões de fine-tuning (mod. 09) |
-| Reasoning models | Agentes (mod. 13), avaliação (mod. 14) |
+| Scaling laws | Decisões de fine-tuning (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Reasoning models | Agentes (mod. [13](13_agentes_tools_protocolos.md)), avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
 
 ---
 

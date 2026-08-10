@@ -8,7 +8,7 @@ sidebar_position: 3
 
 > **Objetivo**: dominar os algoritmos pré-deep-learning. Não é nostalgia: muitos problemas reais ainda são melhor resolvidos com ML clássico, e os conceitos (overfitting, regularização, validação) são universais.
 >
-> **Pré-requisitos**: Módulos 01 e 02.
+> **Pré-requisitos**: Módulos [01](01_matematica.md) e [02](02_programacao_ferramentas.md).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -28,7 +28,7 @@ sidebar_position: 3
 - **Supervisionado**: classificação, regressão.
 - **Não-supervisionado**: clustering, redução de dimensionalidade, detecção de anomalias.
 - **Semi-supervisionado**: rótulos parciais.
-- **Auto-supervisionado** (cross-link com módulo 04): rótulos derivados dos próprios dados.
+- **Auto-supervisionado** (cross-link com módulo [04](04_ml_moderno.md)): rótulos derivados dos próprios dados.
 
 ### Conceitos transversais
 - **Bias-variance tradeoff**.
@@ -85,14 +85,14 @@ sidebar_position: 3
 - **Gaussian Mixture Models (GMM)**: clustering probabilístico via EM.
 
 ### Redução de dimensionalidade
-- **PCA** (já visto no módulo 01).
+- **PCA** (já visto no módulo [01](01_matematica.md)).
 - **t-SNE**: visualização, não para downstream tasks.
 - **UMAP**: alternativa moderna ao t-SNE, mais rápida e preserva mais estrutura.
 
 ### Detecção de anomalias
 - **Isolation Forest**.
 - **One-Class SVM**.
-- **Autoencoders** (cross-link com DL — módulo 05).
+- **Autoencoders** (cross-link com DL — módulo [05](05_deep_learning.md)).
 
 ### Referências
 - 📄 **t-SNE** — van der Maaten & Hinton (2008). https://www.jmlr.org/papers/v9/vandermaaten08a.html
@@ -143,7 +143,7 @@ sidebar_position: 3
 - Pipeline com `sklearn.Pipeline` e `ColumnTransformer`.
 - Compare ≥4 modelos: regressão logística, Random Forest, XGBoost, LightGBM.
 - Use cross-validation aninhada para tuning.
-- Análise de erro com SHAP (explica módulo 14 também).
+- Análise de erro com SHAP (explica módulo [14](14_avaliacao_e_seguranca.md) também).
 
 ### Projeto 3.3 — Detecção de anomalias
 **O que prova**: que você sabe abordar problemas não-supervisionados.
@@ -175,10 +175,10 @@ sidebar_position: 3
 | Bias-variance | DL (regularização), generalização em LLMs |
 | Cross-entropy loss | Treinamento de qualquer modelo neural |
 | Overfitting | Regularização em DL, RLHF |
-| One-hot encoding | Tokenização (módulo 06) |
-| Embeddings (target encoding) | Word embeddings (módulo 06) |
-| Métricas | Avaliação de LLMs (módulo 14) |
-| Pipelines | MLOps (módulo 15) |
+| One-hot encoding | Tokenização (módulo [06](06_nlp_classico.md)) |
+| Embeddings (target encoding) | Word embeddings (módulo [06](06_nlp_classico.md)) |
+| Métricas | Avaliação de LLMs (módulo [14](14_avaliacao_e_seguranca.md)) |
+| Pipelines | MLOps (módulo [15](15_engenharia_producao.md)) |
 
 ---
 

@@ -8,7 +8,7 @@ sidebar_position: 20
 
 > **Objetivo**: provar a si mesmo que a trilha foi consolidada via **5 projetos finais grandes** que integram múltiplos módulos. Cada um vale por um portfólio.
 >
-> **Pré-requisitos**: trilha completa (módulos 01–19, ou pelo menos os referenciados em cada projeto).
+> **Pré-requisitos**: trilha completa (módulos [01](01_matematica.md)–[19](19_topicos_avancados.md), ou pelo menos os referenciados em cada projeto).
 >
 > **Tempo de referência**: 2–4 meses no total (escolha 2–3 projetos para fazer com profundidade, em vez de 5 superficialmente).
 
@@ -205,7 +205,7 @@ Você não é só estudante; você é operador. Conhece o que dá errado quando 
 20.1 + 20.3 + 20.5.
 
 ### Se seu objetivo é **pesquisa/treinamento**:
-20.2 + 20.4 + 19.x (mod. 19) com profundidade.
+20.2 + 20.4 + 19.x (mod. [19](19_topicos_avancados.md)) com profundidade.
 
 ### Se seu objetivo é **fundador/produto**:
 20.1 + 20.5 são suficientes; o resto vem por demanda.

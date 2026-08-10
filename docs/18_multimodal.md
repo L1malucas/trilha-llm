@@ -8,7 +8,7 @@ sidebar_position: 18
 
 > **Objetivo**: dominar modelos que combinam texto + imagem + áudio (+ vídeo). VLMs (LLaVA, Qwen-VL, InternVL), modelos de fala (Whisper, voice models), modelos visão-linguagem-ação, omni-modal.
 >
-> **Pré-requisitos**: Módulos 07, 08, 16.
+> **Pré-requisitos**: Módulos [07](07_transformers.md), [08](08_llms_arquiteturas.md), [16](16_visao_computacional.md).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -322,11 +322,11 @@ ColPali e variantes pulam OCR: embeddam **imagem da página** diretamente. Excel
 
 | Conceito daqui | Aparece em |
 |---|---|
-| VLMs | Agentes computer-use (mod. 13) |
-| Multimodal embeddings | RAG (mod. 12) |
-| Whisper / TTS | Aplicações de produção (mod. 15) |
-| Diffusion models | Tópicos avançados (mod. 19) |
-| Avaliação multimodal | Avaliação (mod. 14) |
+| VLMs | Agentes computer-use (mod. [13](13_agentes_tools_protocolos.md)) |
+| Multimodal embeddings | RAG (mod. [12](12_rag.md)) |
+| Whisper / TTS | Aplicações de produção (mod. [15](15_engenharia_producao.md)) |
+| Diffusion models | Tópicos avançados (mod. [19](19_topicos_avancados.md)) |
+| Avaliação multimodal | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
 
 ---
 

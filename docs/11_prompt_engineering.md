@@ -8,7 +8,7 @@ sidebar_position: 11
 
 > **Objetivo**: dominar a arte e ciência de instruir LLMs. Não é "truque mágico"; é interface técnica entre intenção humana e modelo. Inclui CoT, ToT, ReAct, structured output, prompt injection.
 >
-> **Pré-requisitos**: Módulos 07–10.
+> **Pré-requisitos**: Módulos [07](07_transformers.md)–[10](10_eficiencia_e_inferencia_local.md).
 >
 > **Tempo de referência**: 2–3 semanas.
 
@@ -115,7 +115,7 @@ Observation: ...
 Thought: agora sei Y, próximo passo...
 ```
 
-Foundation conceitual de **agentes** (mod. 13).
+Foundation conceitual de **agentes** (mod. [13](13_agentes_tools_protocolos.md)).
 
 ---
 
@@ -193,7 +193,7 @@ LLMs grandes "aprendem" da janela de contexto sem gradient updates. Ainda é fen
 - **Separação clara** (delimitadores XML, marcadores).
 - **Modelos com adversarial training** (Constitutional AI, Sparrow).
 - **Filtros pré- e pós-modelo**.
-- **Princípio do menor privilégio** em tools (mod. 13).
+- **Princípio do menor privilégio** em tools (mod. [13](13_agentes_tools_protocolos.md)).
 - **Não confiar em input** vindo de fontes externas, mesmo em RAG.
 - **Output validation** com schemas.
 
@@ -215,7 +215,7 @@ LLMs grandes "aprendem" da janela de contexto sem gradient updates. Ainda é fen
 
 ### Ferramentas
 - 🛠 **Promptfoo** — testing CLI/CI para prompts. https://www.promptfoo.dev/
-- 🛠 **LangSmith / Langfuse** — observability + eval. (Mais em mod. 15.)
+- 🛠 **LangSmith / Langfuse** — observability + eval. (Mais em mod. [15](15_engenharia_producao.md).)
 - 🛠 **OpenAI Evals**. https://github.com/openai/evals
 - 🛠 **DSPy** (Stanford) — abordagem programática para prompts otimizáveis. https://github.com/stanfordnlp/dspy
 
@@ -290,11 +290,11 @@ Não exista prompt "ótimo universal". Avalie por modelo.
 
 | Conceito daqui | Aparece em |
 |---|---|
-| ReAct | Agentes (mod. 13) |
-| Structured output | Tools/MCP (mod. 13) |
-| LLM-as-judge | Avaliação (mod. 14) |
-| Prompt injection | Segurança (mod. 14), Produção (mod. 15) |
-| DSPy / promptfoo | Engenharia de produção (mod. 15) |
+| ReAct | Agentes (mod. [13](13_agentes_tools_protocolos.md)) |
+| Structured output | Tools/MCP (mod. [13](13_agentes_tools_protocolos.md)) |
+| LLM-as-judge | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
+| Prompt injection | Segurança (mod. [14](14_avaliacao_e_seguranca.md)), Produção (mod. [15](15_engenharia_producao.md)) |
+| DSPy / promptfoo | Engenharia de produção (mod. [15](15_engenharia_producao.md)) |
 
 ---
 

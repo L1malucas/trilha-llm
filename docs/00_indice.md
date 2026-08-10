@@ -18,10 +18,10 @@ sidebar_label: "Início"
 
 Esta trilha tem formato **T/Y**:
 
-- **Base larga** (módulos 1–7): matemática, programação, ML clássico/moderno, DL, NLP clássico. Sem essa base, tudo o que vier depois é uso de caixa-preta.
-- **Tronco profundo em LLMs** (módulos 8–15): Transformers, arquiteturas, treinamento, alinhamento, eficiência, prompting, RAG, agentes, avaliação, produção.
-- **Galhos de especialização** (módulos 16–19): Visão Computacional, RL, Multimodal, Tópicos Avançados.
-- **Síntese** (módulo 20): projetos integradores.
+- **Base larga** (módulos [1](01_matematica.md)–[7](07_transformers.md)): matemática, programação, ML clássico/moderno, DL, NLP clássico. Sem essa base, tudo o que vier depois é uso de caixa-preta.
+- **Tronco profundo em LLMs** (módulos [8](08_llms_arquiteturas.md)–[15](15_engenharia_producao.md)): Transformers, arquiteturas, treinamento, alinhamento, eficiência, prompting, RAG, agentes, avaliação, produção.
+- **Galhos de especialização** (módulos [16](16_visao_computacional.md)–[19](19_topicos_avancados.md)): Visão Computacional, RL, Multimodal, Tópicos Avançados.
+- **Síntese** (módulo [20](20_projetos_integradores.md)): projetos integradores.
 
 **Regra de ouro**: cada conceito teórico deve "virar código" pelo menos uma vez. Implementar do zero (mesmo que mal) é o que separa quem entende de quem reconhece.
 
@@ -66,7 +66,7 @@ Esta trilha tem formato **T/Y**:
 ## Como usar
 
 1. **Leia o `Objetivos` e `Pré-requisitos`** de cada módulo antes de começar. Se o pré-requisito não está consolidado, volte.
-2. **Não pule a matemática.** Os módulos 1–2 não são opcionais.
+2. **Não pule a matemática.** Os módulos [1](01_matematica.md)–[2](02_programacao_ferramentas.md) não são opcionais.
 3. **Cada módulo tem três partes**:
    - **Obrigatório**: o mínimo para dominar o tópico.
    - **Opcional/Aprofundamento**: para quem quer ir além.
@@ -145,4 +145,4 @@ Esta trilha tem formato **T/Y**:
 
 ## Próximo passo
 
-Comece pelo `01_matematica.md`. Não pule, mesmo que ache que sabe.
+Comece pelo [`01_matematica.md`](01_matematica.md). Não pule, mesmo que ache que sabe.

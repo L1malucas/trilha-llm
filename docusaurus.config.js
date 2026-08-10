@@ -15,7 +15,7 @@ const REPO_NAME = 'trilha-llm';
 const config = {
   title: 'Trilha LLM',
   tagline: 'Currículo de estudo em LLMs, IA e Engenharia de Sistemas Inteligentes',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -69,8 +69,7 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/social-card.png',
       colorMode: {
         respectPrefersColorScheme: true,
       },
@@ -78,7 +77,7 @@ const config = {
         title: 'Trilha LLM',
         logo: {
           alt: 'Trilha LLM Logo',
-          src: 'img/logo.svg',
+          src: 'img/logo.png',
         },
         items: [
           {

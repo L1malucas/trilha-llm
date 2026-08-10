@@ -8,7 +8,7 @@ sidebar_position: 7
 
 > **Objetivo**: dominar a arquitetura Transformer a ponto de **implementar do zero**, ler papers fluentemente e raciocinar sobre escolhas arquiteturais (encoder-only, decoder-only, número de cabeças, posicionamento, etc.).
 >
-> **Pré-requisitos**: Módulos 01–06.
+> **Pré-requisitos**: Módulos [01](01_matematica.md)–[06](06_nlp_classico.md).
 >
 > **Tempo de referência**: 4–6 semanas (dense; este módulo é o "ponto de virada").
 
@@ -96,7 +96,7 @@ Position encoding define a capacidade do modelo de **extrapolar contexto** (tama
 ### Variantes notáveis
 - **Mixture of Experts (MoE)**: Mixtral, GPT-4 (especulado), Switch Transformer.
 - **Sparse attention**: Longformer, BigBird (para contextos longos).
-- **State Space Models** (Mamba, RWKV) — alternativas a attention. Mod. 19.
+- **State Space Models** (Mamba, RWKV) — alternativas a attention. Mod. [19](19_topicos_avancados.md).
 
 ### Referências
 - 📄 **BERT** — Devlin et al. (2018). https://arxiv.org/abs/1810.04805
@@ -180,7 +180,7 @@ Attention é **O(n²)** em memória e tempo (n = comprimento da sequência). Inv
 
 - **Attention maps** — quais tokens "olham" para quais.
 - **Limitações da interpretação** — *attention is not explanation* (Jain & Wallace, 2019).
-- **Mechanistic interpretability** (preview do mod. 14): circuit analysis, induction heads.
+- **Mechanistic interpretability** (preview do mod. [14](14_avaliacao_e_seguranca.md)): circuit analysis, induction heads.
 
 ### Referências
 - 📄 **A Mathematical Framework for Transformer Circuits** — Anthropic (Elhage et al., 2021). https://transformer-circuits.pub/2021/framework/index.html
@@ -238,12 +238,12 @@ Attention é **O(n²)** em memória e tempo (n = comprimento da sequência). Inv
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Self-attention, Q/K/V | Toda LLM moderna (mod. 08+) |
-| Causal mask | GPT-likes (mod. 08, 09) |
-| RoPE | LLaMA, Mistral (mod. 08) |
+| Self-attention, Q/K/V | Toda LLM moderna (mod. [08](08_llms_arquiteturas.md)+) |
+| Causal mask | GPT-likes (mod. [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.md)) |
+| RoPE | LLaMA, Mistral (mod. [08](08_llms_arquiteturas.md)) |
 | Pre-norm + RMSNorm | LLMs modernos |
-| GQA, MQA | Eficiência de inferência (mod. 10) |
-| Flash Attention | Treinamento e inferência (mod. 09, 10) |
+| GQA, MQA | Eficiência de inferência (mod. [10](10_eficiencia_e_inferencia_local.md)) |
+| Flash Attention | Treinamento e inferência (mod. [09](09_treinamento_e_alinhamento.md), [10](10_eficiencia_e_inferencia_local.md)) |
 | Encoder-decoder | T5, BART, NLLB |
 
 ---

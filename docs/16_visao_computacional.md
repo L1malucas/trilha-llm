@@ -6,9 +6,9 @@ sidebar_position: 16
 
 # Módulo 16 — Visão Computacional
 
-> **Objetivo**: dominar visão computacional moderna — das CNNs clássicas aos Vision Transformers, foundation models visuais (DINOv2, CLIP, SAM), e os modelos visão-linguagem que conectam com o módulo 18.
+> **Objetivo**: dominar visão computacional moderna — das CNNs clássicas aos Vision Transformers, foundation models visuais (DINOv2, CLIP, SAM), e os modelos visão-linguagem que conectam com o módulo [18](18_multimodal.md).
 >
-> **Pré-requisitos**: Módulo 05 (Deep Learning), Módulo 07 (Transformers).
+> **Pré-requisitos**: Módulo [05](05_deep_learning.md) (Deep Learning), Módulo [07](07_transformers.md) (Transformers).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -41,7 +41,7 @@ Pipelines reais combinam DL com pré-/pós-processamento clássico (cropping, au
 
 ## 16.2 CNNs revisitadas (com profundidade)
 
-Revisar mod. 05, agora aprofundado.
+Revisar mod. [05](05_deep_learning.md), agora aprofundado.
 
 ### Arquiteturas
 - **LeNet-5** (didática).
@@ -92,7 +92,7 @@ Aplica Transformer puro a patches de imagem.
 
 ## 16.4 Self-Supervised Learning em VC
 
-Recapitulando do mod. 04, agora com modelos de ponta.
+Recapitulando do mod. [04](04_ml_moderno.md), agora com modelos de ponta.
 
 ### Contrastive
 - **SimCLR**, **MoCo v3**.
@@ -150,7 +150,7 @@ Recapitulando do mod. 04, agora com modelos de ponta.
 
 ---
 
-## 16.6 Modelos visão-linguagem (preview do mod. 18)
+## 16.6 Modelos visão-linguagem (preview do mod. [18](18_multimodal.md))
 
 - **CLIP** — alinhamento visão-texto via contrastive learning. 📄 https://arxiv.org/abs/2103.00020
 - **SigLIP** — versão melhorada do CLIP com sigmoid loss. 📄 https://arxiv.org/abs/2303.15343
@@ -162,14 +162,14 @@ Recapitulando do mod. 04, agora com modelos de ponta.
 - Zero-shot classification.
 - Image-text retrieval.
 - Embeddings universais para imagens.
-- Inicialização de VLMs (mod. 18).
+- Inicialização de VLMs (mod. [18](18_multimodal.md)).
 
 ---
 
-## 16.7 Modelos generativos visuais (preview do mod. 19)
+## 16.7 Modelos generativos visuais (preview do mod. [19](19_topicos_avancados.md))
 
 - **GANs** (StyleGAN family).
-- **Diffusion Models**: DDPM, Stable Diffusion, SDXL, FLUX.1. Detalhe profundo em mod. 19.
+- **Diffusion Models**: DDPM, Stable Diffusion, SDXL, FLUX.1. Detalhe profundo em mod. [19](19_topicos_avancados.md).
 - **Autoregressive image** (Parti, MaskGIT).
 - **Video generation**: Sora-style, Mochi, CogVideoX, LTX-Video.
 
@@ -263,10 +263,10 @@ Recapitulando do mod. 04, agora com modelos de ponta.
 
 | Conceito daqui | Aparece em |
 |---|---|
-| ViT | Multimodal (mod. 18) |
-| CLIP, SigLIP | Multimodal (mod. 18) |
-| Diffusion preview | Tópicos avançados (mod. 19) |
-| DINOv2 embeddings | Agentes com visão (mod. 13 estendido) |
+| ViT | Multimodal (mod. [18](18_multimodal.md)) |
+| CLIP, SigLIP | Multimodal (mod. [18](18_multimodal.md)) |
+| Diffusion preview | Tópicos avançados (mod. [19](19_topicos_avancados.md)) |
+| DINOv2 embeddings | Agentes com visão (mod. [13](13_agentes_tools_protocolos.md) estendido) |
 
 ---
 

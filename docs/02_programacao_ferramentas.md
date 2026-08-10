@@ -8,7 +8,7 @@ sidebar_position: 2
 
 > **Objetivo**: ter um ambiente de trabalho profissional em Python e TypeScript, dominar as bibliotecas numéricas, e entender o hardware sob o qual ML roda.
 >
-> **Pré-requisitos**: Módulo 01 (matemática), conhecimento prévio de programação.
+> **Pré-requisitos**: Módulo [01](01_matematica.md) (matemática), conhecimento prévio de programação.
 >
 > **Tempo de referência**: 2–4 semanas.
 

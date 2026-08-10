@@ -8,7 +8,7 @@ sidebar_position: 12
 
 > **Objetivo**: dominar a arquitetura RAG do paper original às variantes modernas (hybrid, graph, agentic). Embeddings, chunking, vector DBs, retrievers, rerankers, avaliação.
 >
-> **Pré-requisitos**: Módulos 06, 07, 08, 11.
+> **Pré-requisitos**: Módulos [06](06_nlp_classico.md), [07](07_transformers.md), [08](08_llms_arquiteturas.md), [11](11_prompt_engineering.md).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -47,7 +47,7 @@ Query → Embed → Vector Search → Top-K docs
 
 ## 12.2 Embeddings
 
-### Conceito (revisão do mod. 06+08)
+### Conceito (revisão do mod. [06](06_nlp_classico.md)+08)
 Embeddings = vetores densos que codificam significado. Documentos próximos em significado têm embeddings próximos por similaridade (cosseno, dot product).
 
 ### Modelos de embedding (atual: 2024–2025)
@@ -233,7 +233,7 @@ Em vez de pipeline fixo, agente decide:
 - Que ferramenta usar.
 - Quando rebuscar com refinamento.
 
-Cross-link com módulo 13 (Agentes).
+Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 
 ### Referências
 - 📄 **Self-RAG: Learning to Retrieve, Generate, and Critique** — Asai et al. (2023). https://arxiv.org/abs/2310.11511
@@ -252,7 +252,7 @@ Cross-link com módulo 13 (Agentes).
 - 🛠 **RAGAS** — toolkit de eval, com LLM-as-judge. https://github.com/explodinggradients/ragas
 - 🛠 **TruLens**. https://github.com/truera/trulens
 - 🛠 **DeepEval**. https://github.com/confident-ai/deepeval
-- 🛠 **LangSmith**, **Langfuse** (mod. 15).
+- 🛠 **LangSmith**, **Langfuse** (mod. [15](15_engenharia_producao.md)).
 
 ### Datasets canônicos
 - **Natural Questions**, **TriviaQA**, **HotpotQA**, **MS MARCO**.
@@ -336,10 +336,10 @@ Cross-link com módulo 13 (Agentes).
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Embeddings + retrieval | Agentes (mod. 13) — RAG como tool |
-| Reranker | Avaliação (mod. 14) |
-| Citações e grounding | Segurança (mod. 14) |
-| Vector DB ops | Produção (mod. 15) |
+| Embeddings + retrieval | Agentes (mod. [13](13_agentes_tools_protocolos.md)) — RAG como tool |
+| Reranker | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
+| Citações e grounding | Segurança (mod. [14](14_avaliacao_e_seguranca.md)) |
+| Vector DB ops | Produção (mod. [15](15_engenharia_producao.md)) |
 
 ---
 

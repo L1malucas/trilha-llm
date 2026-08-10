@@ -8,7 +8,7 @@ sidebar_position: 10
 
 > **Objetivo**: rodar e otimizar LLMs em hardware modesto (laptop, GPU consumer, CPU, edge). Quantização, distilação, KV-cache, servidores de inferência, edge inference.
 >
-> **Pré-requisitos**: Módulos 07–09.
+> **Pré-requisitos**: Módulos [07](07_transformers.md)–[09](09_treinamento_e_alinhamento.md).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -272,10 +272,10 @@ Inferência de Mixtral 8×7B usa apenas ~13B "ativos" por token, mesmo tendo 47B
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Servidor local | RAG (mod. 12), Agentes (mod. 13), Produção (mod. 15) |
-| Quantização | Deploy mobile (mod. 18), edge |
-| Sampling | Prompt engineering (mod. 11), avaliação (mod. 14) |
-| Constrained generation | Tools/structured output (mod. 13) |
+| Servidor local | RAG (mod. [12](12_rag.md)), Agentes (mod. [13](13_agentes_tools_protocolos.md)), Produção (mod. [15](15_engenharia_producao.md)) |
+| Quantização | Deploy mobile (mod. [18](18_multimodal.md)), edge |
+| Sampling | Prompt engineering (mod. [11](11_prompt_engineering.md)), avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
+| Constrained generation | Tools/structured output (mod. [13](13_agentes_tools_protocolos.md)) |
 
 ---
 
