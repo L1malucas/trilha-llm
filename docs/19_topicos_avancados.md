@@ -12,6 +12,17 @@ sidebar_position: 19
 >
 > **Tempo de referência**: 6–10 semanas (não-linear; escolha sub-tópicos).
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar por que SSMs (Mamba) escalam linearmente onde attention escala quadraticamente, e o que se perde nessa troca.
+- Explicar o processo de difusão (forward de ruído, reverse de denoising) com intuição, não só o nome.
+- Discutir com fluência pelo menos 3 destes tópicos o suficiente para ler o paper original sem depender de blog explicativo.
+- Manter ceticismo calibrado: distinguir o que já é usado em produção do que ainda é pesquisa especulativa.
+
+Este módulo é não-linear — escolha sub-tópicos por interesse, não precisa ler tudo em sequência.
+
 ---
 
 ## Por que isso importa
@@ -42,6 +53,8 @@ Em vez de FFN denso, ter N FFNs (experts). Um **router** escolhe top-k experts p
 - Modelos como Mixtral 8×7B usam ~13B params ativos por token, mas precisam dos 47B em VRAM.
 - Otimizações: expert offloading (CPU/disk), expert caching.
 
+> A intuição central de MoE (roteador escolhendo especialistas, mais parâmetros totais sem custo proporcional por token) já foi construída no mod. [08](08_llms_arquiteturas.md#84-detalhes-arquiteturais-modernos-20242025). Aqui, o desafio novo é **load balancing**: sem incentivo explícito, o router tende a colapsar, favorecendo sempre os mesmos poucos experts (que ficam bem treinados) e ignorando os demais (que ficam subtreinados, criando um ciclo vicioso) — a auxiliary loss penaliza justamente essa distribuição desigual, empurrando o router a usar todos os experts de forma mais balanceada ao longo do treino.
+
 ---
 
 ## 19.2 State Space Models (SSMs) e Mamba
@@ -55,6 +68,12 @@ Transformers têm complexidade O(n²) em attention. RNNs são O(n) mas têm grad
 - `Paper` **Mamba: Linear-Time Sequence Modeling with Selective State Spaces** — Gu & Dao (2023). https://arxiv.org/abs/2312.00752
 - `Paper` **Mamba-2: Transformers are SSMs** — Dao & Gu (2024). https://arxiv.org/abs/2405.21060
 - `Paper` **Jamba** — modelo híbrido Transformer + Mamba (AI21). https://arxiv.org/abs/2403.19887
+
+> **Intuição**: SSMs herdam a estrutura matemática de sistemas de controle clássicos — mantêm um "estado" comprimido de tamanho fixo que resume tudo relevante da sequência vista até agora, atualizado a cada passo por uma transformação (aprendida). Isso é estruturalmente parecido com o hidden state de uma RNN (mod. [05](05_deep_learning.md#55-redes-recorrentes-rnn-lstm-gru)) — e herda o benefício de custo linear (processar um passo a mais custa um incremento fixo, não uma comparação com todos os passos anteriores como em attention). A inovação do Mamba é tornar essa atualização de estado **seletiva**: em vez de uma transformação fixa igual pra todo input (como SSMs anteriores, S4), os parâmetros da atualização dependem do próprio input atual — o modelo pode "decidir" dinamicamente o que vale a pena reter no estado e o que descartar, mitigando o gargalo clássico de RNN (informação distante sendo progressivamente diluída) sem pagar o custo quadrático de attention completa.
+>
+> **Aplicação real**: o trade-off real é que SSMs processam sequencialmente durante *geração* (como RNN), mas o cálculo de treino pode ser paralelizado de forma eficiente (diferente de RNN clássica) — é essa combinação que torna Mamba competitivo com Transformers em benchmarks de linguagem, especialmente em contextos muito longos, onde o custo quadrático de attention se torna proibitivo (mod. [07](07_transformers.mdx#77-eficiência-de-attention)). Modelos híbridos (Jamba) apostam que combinar camadas de attention (melhores em recuperar informação específica e distante) com camadas Mamba (mais baratas, boas em resumir contexto) pode ser melhor que qualquer um dos dois puro.
+>
+> **Checkpoint**: sem olhar o texto, explique por que Mamba escala linearmente onde attention escala quadraticamente. Depois, explique o que "seletividade" adiciona sobre SSMs anteriores como S4.
 
 ### Por que importa
 - **Linear scaling** em comprimento.
@@ -83,6 +102,12 @@ A revolução pós-GAN. Aprendem a "des-ruidar" passo a passo.
 - `Paper` **DiT: Diffusion Transformers** — Peebles & Xie (2022). https://arxiv.org/abs/2212.09748
 - `Paper` **Flow Matching for Generative Modeling** — Lipman et al. (2022). https://arxiv.org/abs/2210.02747
 - `Paper` **Rectified Flow** — Liu et al. (2022). https://arxiv.org/abs/2209.03003 (base do FLUX e SD3).
+
+> **Intuição**: o treino de um modelo de difusão tem duas metades. **Forward** (fixo, sem aprendizado): pegue uma imagem real e adicione ruído gaussiano gradualmente, passo a passo, até virar ruído puro — um processo simples e conhecido matematicamente. **Reverse** (o que se aprende): treine uma rede para prever, dado uma imagem ruidosa num passo qualquer, "o que foi adicionado" — ou seja, a rede aprende a **reverter** um passo de ruído por vez. Uma vez treinada, gerar uma imagem nova é começar de ruído puro (aleatório) e aplicar repetidamente o denoiser aprendido, passo a passo, até emergir uma imagem coerente — é literalmente esculpir uma imagem a partir de estática, removendo ruído iterativamente na direção que o modelo aprendeu ser "mais provável de gerar imagens reais".
+>
+> Classifier-free guidance é o mecanismo que permite controlar a geração por texto: durante o treino, o modelo aprende tanto a versão condicionada (com prompt) quanto a não-condicionada (sem prompt) da mesma tarefa; na geração, extrapolar na direção "condicionado menos não-condicionado" amplifica a influência do prompt, produzindo imagens mais fiéis à descrição (à custa de menos diversidade).
+>
+> **Checkpoint**: sem olhar o texto, explique o processo forward e reverse de um modelo de difusão com suas próprias palavras — o que exatamente a rede neural aprende a fazer?
 
 ### Modelos atuais (open)
 - **Stable Diffusion 3 / 3.5** (Stability AI).
@@ -122,6 +147,8 @@ Aprender modelo do mundo (\(P(s' | s, a)\)) com rede neural; usar para planejame
 - `Paper` **GameNGen** — DOOM rodando em modelo de difusão. https://arxiv.org/abs/2408.14837
 - `Paper` **Genie** (DeepMind, 2024) — gerar ambientes jogáveis a partir de imagens. https://arxiv.org/abs/2402.15391
 
+> Mesmo conceito de model-based RL do mod. [17](17_aprendizado_reforco.md#175-model-based-rl-e-planning), levado ao extremo: em vez de um modelo simples do ambiente, treinar um simulador neural completo — GameNGen é o exemplo mais vívido, um modelo de difusão que aprendeu a simular DOOM jogável quadro a quadro, sem nenhum motor de jogo real por trás.
+
 ---
 
 ## 19.5 Long context e infinite context
@@ -145,6 +172,8 @@ Aprender modelo do mundo (\(P(s' | s, a)\)) com rede neural; usar para planejame
 - `Paper` **Lost in the Middle: How Language Models Use Long Contexts** — Liu et al. (2023). https://arxiv.org/abs/2307.03172
 - Long context não resolve tudo: modelos atendem mais ao início e fim do contexto.
 
+> O trade-off "lost in the middle" e a comparação long context vs RAG já foram discutidos com intuição no mod. [12](12_rag.mdx#127-geração-com-contexto). As técnicas aqui (YaRN, LongRoPE) são extensões diretas do RoPE do mod. [07](07_transformers.mdx#73-posicionamento) — ajustam matematicamente como a rotação de posição se comporta além do comprimento visto no treino, permitindo extrapolar sem retreinar do zero.
+
 ---
 
 ## 19.6 Reasoning models a fundo
@@ -167,6 +196,8 @@ Mod. [09](09_treinamento_e_alinhamento.mdx) introduziu; aqui aprofundamos.
 ### Implicações
 - Modelos pequenos + reasoning RL podem bater modelos grandes em tarefas verificáveis.
 - Reasoning emergent é parcialmente entendido.
+
+> Process Reward Models vs Outcome-only RL é uma escolha de *onde* colocar o sinal de recompensa: PRM recompensa cada passo intermediário do raciocínio (exige anotação mais granular, mas dá sinal mais denso); outcome-only (GRPO/R1-style, mod. [09](09_treinamento_e_alinhamento.mdx#96-reasoning-rl-estilo-r1)) recompensa só a resposta final, deixando o modelo "descobrir" que padrões de raciocínio levam a acertos — mais simples de implementar, mas exige mais exploração para o sinal esparso se propagar até os passos intermediários.
 
 ---
 
@@ -204,6 +235,8 @@ Interpretability é ferramenta para:
 - `Paper` **Locating and Editing Factual Associations in GPT (ROME)** — Meng et al. (2022). https://arxiv.org/abs/2202.05262
 - `Paper` **Mass-Editing Memory in a Transformer (MEMIT)**. https://arxiv.org/abs/2210.07229
 
+> Activation steering estende diretamente a ideia de "features como direções no espaço de ativação" (mod. [14](14_avaliacao_e_seguranca.md#1411-mechanistic-interpretability)) de diagnóstico passivo para intervenção ativa: se uma direção corresponde a um conceito, somar (ou subtrair) essa direção às ativações durante a geração pode amplificar (ou suprimir) esse conceito no comportamento do modelo, sem retreinar nada — uma forma de "editar" comportamento diretamente na representação interna.
+
 ---
 
 ## 19.9 Federated learning e privacy-preserving ML
@@ -238,6 +271,8 @@ Aprender sequencialmente sem esquecer (catastrophic forgetting).
 - `Paper` **TIES-Merging**. https://arxiv.org/abs/2306.01708
 - `Paper` **Model Soups** — Wortsman et al. (2022). https://arxiv.org/abs/2203.05482
 - `Ferramenta` **mergekit** — kit prático. https://github.com/arcee-ai/mergekit
+
+> Catastrophic forgetting já foi discutido com intuição no mod. [09](09_treinamento_e_alinhamento.mdx#97-continued-pretraining-cpt) (mistura de dados como mitigação). EWC ataca o mesmo problema de forma diferente: identifica quais pesos foram mais importantes para tarefas anteriores (via aproximação da curvatura da loss) e penaliza mudanças grandes nesses pesos específicos durante o treino da tarefa nova — uma forma de regularização direcionada, em vez de misturar dados.
 
 ---
 
@@ -295,10 +330,14 @@ Talvez a aplicação mais impactante de ML moderno fora de tech.
 - Treine em Tiny Shakespeare.
 - Compare com nanoGPT do mesmo tamanho.
 
+> **Variante guiada**: meça o tempo de inferência de ambos conforme a sequência gerada cresce (100, 500, 1000 tokens) — deve evidenciar concretamente a diferença de escala linear (Mamba) vs quadrática (attention) discutida na seção 19.2.
+
 ### Projeto 19.3 — DDPM no MNIST/CIFAR-10
 - Implemente DDPM completo: forward (add ruído), reverse (treinar denoiser), sampling.
 - Visualize trajetória de geração.
 - Adicione classifier-free guidance condicional.
+
+> **Variante guiada**: visualize algumas imagens do processo forward (adicionando ruído progressivamente) antes de treinar o reverse — confirme visualmente que o processo forward é simples e correto antes de depurar o denoiser aprendido.
 
 ### Projeto 19.4 — Fine-tune de Stable Diffusion / FLUX com LoRA
 - Use **diffusers** (Hugging Face).
