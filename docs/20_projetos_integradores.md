@@ -12,6 +12,17 @@ sidebar_position: 20
 >
 > **Tempo de referência**: 2–4 meses no total (escolha 2–3 projetos para fazer com profundidade, em vez de 5 superficialmente).
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Projetar, construir e operar um sistema de IA completo, não só um componente isolado.
+- Tomar decisões de arquitetura defensáveis (documentadas, com trade-offs explícitos), não copiadas de tutorial.
+- Avaliar um sistema com rigor (métricas, eval set, red-team) em vez de "parece bom".
+- Escrever um post-mortem honesto — o que funcionou, o que não, o que você faria diferente.
+
+Diferente dos módulos anteriores, aqui não há novo conceito a aprender — é onde tudo que você já sabe precisa funcionar junto, sob as restrições reais de um sistema completo.
+
 ---
 
 ## Por que isso importa
@@ -56,6 +67,8 @@ Sistema RAG sério em português brasileiro sobre corpus do seu interesse: legis
 ### O que isso prova
 Você consegue conduzir um produto LLM ponta-a-ponta, com avaliação rigorosa, em condições próximas de produção, em PT-BR.
 
+> **Como abordar**: construa na ordem em que os requisitos aparecem — retrieval simples primeiro (embedding único, sem hybrid nem reranker), confirme que ele já responde razoavelmente às 100 perguntas de eval, e só então adicione hybrid retrieval, reranker e observability, medindo o ganho incremental de cada peça. Adicionar tudo de uma vez torna impossível saber qual componente está ajudando ou atrapalhando quando algo sai errado.
+
 ---
 
 ## Projeto 20.2 — Mini-LLM treinada do zero
@@ -91,6 +104,8 @@ Você entende **toda a stack** de criação de uma LLM. Você não é "usuário"
 - Corpus médio (~10B tokens) já produz modelo razoável em domínio limitado.
 - Não espere competir com Mistral 7B; espere **entender por que Mistral 7B é o que é**.
 
+> **Como abordar**: valide o pipeline inteiro (tokenizer → pretrain → SFT → DPO → quantização → inferência) num corpus minúsculo e num modelo minúsculo primeiro (ex.: 1M parâmetros, poucos milhões de tokens, treino de minutos) — só depois de confirmar que o pipeline completo funciona ponta a ponta, escale para o tamanho real. Descobrir um bug de pipeline depois de dias de treino em escala real é o erro mais caro possível neste projeto.
+
 ---
 
 ## Projeto 20.3 — Agente autônomo multi-modal
@@ -125,6 +140,8 @@ Construir agente que executa tarefas multi-passo no mundo real, integrando texto
 
 ### O que isso prova
 Você sabe projetar agente sério, não só seguir tutorial.
+
+> **Como abordar**: implemente e teste cada tool isoladamente antes de dar acesso a elas pro agente (mesmo conselho do Projeto 13.1) — com 6+ ferramentas, um agente que "não está funcionando" pode ter o problema em qualquer uma delas; eliminar essa incerteza antes de integrar economiza dias de debug depois.
 
 ---
 
@@ -163,6 +180,8 @@ Pegar um problema **específico e bem delimitado** e dominar via fine-tuning vs 
 ### O que isso prova
 Você sabe escolher a abordagem certa para o problema, com base em evidência.
 
+> **Como abordar**: construa o eval set (≥200 exemplos com gabarito) **antes** de implementar qualquer uma das 5 abordagens — com o eval pronto de antemão, cada abordagem é medida com a mesma régua, sem viés de "ajustar o gabarito pra parecer que aquela abordagem foi melhor" depois de já ter visto os resultados.
+
 ---
 
 ## Projeto 20.5 — Sistema completo em produção
@@ -196,6 +215,8 @@ Lançar um sistema de IA real, com usuários reais (mesmo que poucos amigos/cole
 
 ### O que isso prova
 Você não é só estudante; você é operador. Conhece o que dá errado quando a teoria encontra usuário.
+
+> **Como abordar**: lance a versão mais simples possível que já seja útil, o quanto antes — cada dia adicional em produção com usuários reais é mais valioso pra esse projeto do que mais uma semana polindo antes de lançar. O "pelo menos 1 incidente" e "pelo menos 1 iteração baseada em feedback" só acontecem depois que existe uso real; adiar o lançamento adia esses aprendizados.
 
 ---
 
