@@ -1,3 +1,9 @@
+---
+id: 15_engenharia_producao
+title: "Módulo 15 — Engenharia de Produção (LLMOps)"
+sidebar_position: 15
+---
+
 # Módulo 15 — Engenharia de Produção (LLMOps)
 
 > **Objetivo**: levar sistemas de LLM da prototipagem para produção real — observability, custo, latência, cache, deploy, monitoring, drift, A/B testing, CI/CD.

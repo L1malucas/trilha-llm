@@ -1,3 +1,9 @@
+---
+id: 02_programacao_ferramentas
+title: "Módulo 02 — Programação e Ferramentas"
+sidebar_position: 2
+---
+
 # Módulo 02 — Programação e Ferramentas
 
 > **Objetivo**: ter um ambiente de trabalho profissional em Python e TypeScript, dominar as bibliotecas numéricas, e entender o hardware sob o qual ML roda.

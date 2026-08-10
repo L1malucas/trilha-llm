@@ -1,3 +1,9 @@
+---
+id: 07_transformers
+title: "Módulo 07 — Transformers"
+sidebar_position: 7
+---
+
 # Módulo 07 — Transformers
 
 > **Objetivo**: dominar a arquitetura Transformer a ponto de **implementar do zero**, ler papers fluentemente e raciocinar sobre escolhas arquiteturais (encoder-only, decoder-only, número de cabeças, posicionamento, etc.).

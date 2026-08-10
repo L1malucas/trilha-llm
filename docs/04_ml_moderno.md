@@ -1,3 +1,9 @@
+---
+id: 04_ml_moderno
+title: "Módulo 04 — Machine Learning Moderno"
+sidebar_position: 4
+---
+
 # Módulo 04 — Machine Learning Moderno
 
 > **Objetivo**: cobrir o que **não** é DL profundo nem ML clássico stricto sensu — paradigmas que emergiram entre os dois, e que são essenciais para entender LLMs (especialmente self-supervised learning) e problemas reais.

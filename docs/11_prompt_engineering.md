@@ -1,3 +1,9 @@
+---
+id: 11_prompt_engineering
+title: "Módulo 11 — Prompt Engineering"
+sidebar_position: 11
+---
+
 # Módulo 11 — Prompt Engineering
 
 > **Objetivo**: dominar a arte e ciência de instruir LLMs. Não é "truque mágico"; é interface técnica entre intenção humana e modelo. Inclui CoT, ToT, ReAct, structured output, prompt injection.

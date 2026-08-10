@@ -1,3 +1,9 @@
+---
+id: 03_ml_classico
+title: "Módulo 03 — Machine Learning Clássico"
+sidebar_position: 3
+---
+
 # Módulo 03 — Machine Learning Clássico
 
 > **Objetivo**: dominar os algoritmos pré-deep-learning. Não é nostalgia: muitos problemas reais ainda são melhor resolvidos com ML clássico, e os conceitos (overfitting, regularização, validação) são universais.

@@ -1,3 +1,9 @@
+---
+id: 13_agentes_tools_protocolos
+title: "Módulo 13 — Agentes, Tools e Protocolos (MCP, A2A)"
+sidebar_position: 13
+---
+
 # Módulo 13 — Agentes, Tools e Protocolos (MCP, A2A)
 
 > **Objetivo**: dominar o paradigma de agentes — LLMs que decidem, planejam, usam ferramentas, mantêm estado, colaboram. Function calling, ReAct, MCP, frameworks (LangGraph, CrewAI, Mastra), padrões multi-agente.

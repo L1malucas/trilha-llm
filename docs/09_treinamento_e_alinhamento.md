@@ -1,3 +1,9 @@
+---
+id: 09_treinamento_e_alinhamento
+title: "Módulo 09 — Treinamento e Alinhamento de LLMs"
+sidebar_position: 9
+---
+
 # Módulo 09 — Treinamento e Alinhamento de LLMs
 
 > **Objetivo**: entender o ciclo completo de criação de uma LLM moderna — do pré-treinamento bruto ao modelo "instruct/chat" alinhado, incluindo SFT, DPO, RLHF e variações.

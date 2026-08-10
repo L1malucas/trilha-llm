@@ -1,3 +1,11 @@
+---
+id: 00_indice
+title: "Trilha de Estudo — LLM, IA e Engenharia de Sistemas Inteligentes"
+sidebar_position: 0
+slug: /
+sidebar_label: "Início"
+---
+
 # Trilha de Estudo — LLM, IA e Engenharia de Sistemas Inteligentes
 
 > Currículo acadêmico + engenharia real, sem viés de fornecedor, com referências canônicas.

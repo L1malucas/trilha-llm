@@ -1,3 +1,9 @@
+---
+id: 18_multimodal
+title: "Módulo 18 — Modelos Multimodais"
+sidebar_position: 18
+---
+
 # Módulo 18 — Modelos Multimodais
 
 > **Objetivo**: dominar modelos que combinam texto + imagem + áudio (+ vídeo). VLMs (LLaVA, Qwen-VL, InternVL), modelos de fala (Whisper, voice models), modelos visão-linguagem-ação, omni-modal.

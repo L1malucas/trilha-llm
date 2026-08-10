@@ -1,3 +1,9 @@
+---
+id: 19_topicos_avancados
+title: "Módulo 19 — Tópicos Avançados"
+sidebar_position: 19
+---
+
 # Módulo 19 — Tópicos Avançados
 
 > **Objetivo**: cobrir frentes de pesquisa ativas em 2024–2025 — Mixture of Experts, State Space Models (Mamba), modelos de difusão, world models, neuro-symbolic, interpretability profundo, e fronteiras emergentes.

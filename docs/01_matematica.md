@@ -1,3 +1,9 @@
+---
+id: 01_matematica
+title: "Módulo 01 — Matemática (Fundamentos do Zero)"
+sidebar_position: 1
+---
+
 # Módulo 01 — Matemática (Fundamentos do Zero)
 
 > **Objetivo**: construir a intuição e a mecânica matemática que aparecerão em **todos** os módulos seguintes. Matemática aqui não é exibicionismo: é a linguagem que descreve como redes neurais aprendem.

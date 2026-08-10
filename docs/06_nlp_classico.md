@@ -1,3 +1,9 @@
+---
+id: 06_nlp_classico
+title: "Módulo 06 — NLP Clássico (pré-Transformer)"
+sidebar_position: 6
+---
+
 # Módulo 06 — NLP Clássico (pré-Transformer)
 
 > **Objetivo**: entender como linguagem foi tratada *antes* dos Transformers — e por que isso ainda importa. Sem essa base, "embeddings", "tokenização" e "contexto" são só palavras.

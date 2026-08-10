@@ -1,3 +1,9 @@
+---
+id: 17_aprendizado_reforco
+title: "Módulo 17 — Aprendizado por Reforço"
+sidebar_position: 17
+---
+
 # Módulo 17 — Aprendizado por Reforço
 
 > **Objetivo**: dominar RL clássico (MDPs, Q-learning, policy gradient) e moderno (DQN, PPO, AlphaZero, RL para LLMs). Conexão com RLHF/GRPO do módulo 09.

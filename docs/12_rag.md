@@ -1,3 +1,9 @@
+---
+id: 12_rag
+title: "Módulo 12 — RAG (Retrieval-Augmented Generation)"
+sidebar_position: 12
+---
+
 # Módulo 12 — RAG (Retrieval-Augmented Generation)
 
 > **Objetivo**: dominar a arquitetura RAG do paper original às variantes modernas (hybrid, graph, agentic). Embeddings, chunking, vector DBs, retrievers, rerankers, avaliação.

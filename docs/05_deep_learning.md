@@ -1,3 +1,9 @@
+---
+id: 05_deep_learning
+title: "Módulo 05 — Deep Learning (Fundamentos e Arquiteturas)"
+sidebar_position: 5
+---
+
 # Módulo 05 — Deep Learning (Fundamentos e Arquiteturas)
 
 > **Objetivo**: dominar redes neurais a ponto de implementar do zero, treinar com confiança, e entender CNNs, RNNs/LSTMs e suas limitações — preparando o terreno conceitual para Transformers (mod. 07).

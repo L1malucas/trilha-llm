@@ -1,3 +1,9 @@
+---
+id: 08_llms_arquiteturas
+title: "Módulo 08 — Arquiteturas de LLMs"
+sidebar_position: 8
+---
+
 # Módulo 08 — Arquiteturas de LLMs
 
 > **Objetivo**: conhecer as famílias de LLMs, suas escolhas arquiteturais, scaling laws, e os modelos abertos de 2024–2025 que definem o estado da arte open-source.

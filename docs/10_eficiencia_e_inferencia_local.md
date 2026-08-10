@@ -1,3 +1,9 @@
+---
+id: 10_eficiencia_e_inferencia_local
+title: "Módulo 10 — Eficiência e Inferência Local"
+sidebar_position: 10
+---
+
 # Módulo 10 — Eficiência e Inferência Local
 
 > **Objetivo**: rodar e otimizar LLMs em hardware modesto (laptop, GPU consumer, CPU, edge). Quantização, distilação, KV-cache, servidores de inferência, edge inference.

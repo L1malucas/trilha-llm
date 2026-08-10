@@ -1,3 +1,9 @@
+---
+id: 16_visao_computacional
+title: "Módulo 16 — Visão Computacional"
+sidebar_position: 16
+---
+
 # Módulo 16 — Visão Computacional
 
 > **Objetivo**: dominar visão computacional moderna — das CNNs clássicas aos Vision Transformers, foundation models visuais (DINOv2, CLIP, SAM), e os modelos visão-linguagem que conectam com o módulo 18.

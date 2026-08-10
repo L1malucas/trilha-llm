@@ -1,3 +1,9 @@
+---
+id: 20_projetos_integradores
+title: "Módulo 20 — Projetos Integradores"
+sidebar_position: 20
+---
+
 # Módulo 20 — Projetos Integradores
 
 > **Objetivo**: provar a si mesmo que a trilha foi consolidada via **5 projetos finais grandes** que integram múltiplos módulos. Cada um vale por um portfólio.

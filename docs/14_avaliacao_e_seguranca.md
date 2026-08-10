@@ -1,3 +1,9 @@
+---
+id: 14_avaliacao_e_seguranca
+title: "Módulo 14 — Avaliação e Segurança de LLMs"
+sidebar_position: 14
+---
+
 # Módulo 14 — Avaliação e Segurança de LLMs
 
 > **Objetivo**: avaliar LLMs cientificamente — benchmarks, LLM-as-judge, alucinação, viés, calibração — e proteger sistemas contra ataques (prompt injection, jailbreaks, data leakage). Inclui interpretabilidade mecanística como ferramenta de safety.
