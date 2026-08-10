@@ -12,6 +12,16 @@ sidebar_position: 12
 >
 > **Tempo de referência**: 3–5 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar cada estágio do pipeline canônico de RAG e o que cada um resolve.
+- Justificar uma estratégia de chunking para um tipo de documento específico.
+- Explicar por que busca vetorial aproximada (ANN/HNSW) é necessária em vez de busca exata.
+- Explicar por que hybrid retrieval (denso + esparso) costuma superar qualquer um isolado.
+- Escolher entre RAG, long context e fine-tuning para um cenário dado, com justificativa de custo/qualidade.
+
 ---
 
 ## Por que isso importa
@@ -36,6 +46,8 @@ flowchart LR
     Q["Query"] --> E["Embed"] --> V["Vector Search"] --> K["Top-K docs"]
     K --> P["Prompt(query + docs)"] --> L["LLM"] --> R["Resposta"]
 ```
+
+> **Intuição**: RAG separa "o que o modelo sabe" (parâmetros, congelados após treino) de "o que o modelo pode consultar" (documentos, atualizáveis a qualquer momento sem retreinar nada). Cada etapa do pipeline resolve um problema específico: embed transforma texto em algo comparável por similaridade (mod. [06](06_nlp_classico.md#64-word-embeddings--a-revolução-pré-transformer)); vector search encontra candidatos relevantes rapidamente entre milhões de documentos; o LLM então gera a resposta *condicionado* nesses documentos, em vez de confiar só no que aprendeu no pré-treino. O ganho é real, mas cada etapa é também um ponto de falha — um retrieval ruim garante uma resposta ruim, não importa quão bom seja o LLM na ponta final.
 
 ### Variações modernas
 - **Pre-retrieval**: query rewriting, HyDE, sub-query decomposition.
@@ -91,6 +103,8 @@ Embeddings que permitem truncar dimensão sem retreino — economia de armazenam
 - **Chunks grandes**: mais contexto, menos precisão (e pode estourar contexto do LLM).
 - **Overlap** ajuda na fronteira mas duplica armazenamento.
 
+> **Intuição**: um chunk pequeno demais separa uma frase do contexto que a explica (ex.: "o resultado foi positivo" sem saber o resultado de *quê*) — o embedding fica preciso, mas incompleto. Um chunk grande demais mistura tópicos diferentes num único vetor, "diluindo" a similaridade — uma pergunta específica pode não encontrar o chunk certo porque o vetor médio do chunk representa mal qualquer tópico individual dentro dele. Parent-Child Chunking ataca isso diretamente: embeda o pedaço pequeno e preciso (melhor para *encontrar*), mas retorna o pedaço-pai maior pro LLM (melhor para *responder com contexto suficiente*) — otimizando as duas etapas separadamente em vez de um único tamanho de chunk fazendo os dois trabalhos.
+
 ### Truques modernos
 - **Late Chunking** (Jina) — chunkar **depois** de embeddar o documento todo. https://jina.ai/news/late-chunking-in-long-context-embedding-models/
 - **Contextual Retrieval** (Anthropic) — anexar contexto extraído de cada chunk antes de embeddá-lo. https://www.anthropic.com/news/contextual-retrieval
@@ -115,6 +129,10 @@ Embeddings que permitem truncar dimensão sem retreino — economia de armazenam
 - **HNSW** (Hierarchical Navigable Small World) — padrão moderno. `Paper` https://arxiv.org/abs/1603.09320
 - **IVF + PQ** (Inverted File + Product Quantization) — usado em FAISS para escalar bilhões.
 - **DiskANN** — disco em vez de RAM, para datasets gigantes. `Paper` (Microsoft Research)
+
+> **Intuição — por que "aproximada"**: encontrar o vizinho mais próximo *exato* entre milhões de vetores exige comparar a query com cada vetor, um por um — inviável em tempo real. HNSW constrói um grafo em camadas (parecido com uma rede de "atalhos" tipo metrô expresso vs linha local): a busca começa numa camada esparsa, dando saltos grandes na direção aproximada certa, e desce para camadas mais densas conforme se aproxima do alvo, refinando a busca. O resultado não é garantidamente o vizinho mais próximo exato, mas é uma aproximação muito boa, encontrada em tempo logarítmico em vez de linear — o trade-off (perder um pouco de precisão exata por uma ordem de magnitude de velocidade) é a razão de HNSW ser o padrão de fato em praticamente todo vector DB moderno.
+>
+> **Checkpoint**: sem olhar o texto, explique por que busca vetorial exata não escala para milhões de documentos, e o que HNSW troca para resolver isso.
 
 ### Critérios de escolha
 | Necessidade | Sugestão |
@@ -150,6 +168,8 @@ Combinar dense + sparse via:
 - **Pesos linearmente combinados**.
 - **Learned fusion**.
 
+> **Intuição — por que hybrid vence**: busca densa (embeddings) captura *significado* — encontra documentos relevantes mesmo sem palavras exatas em comum ("carro" encontra "automóvel"). Busca esparsa (BM25) captura *correspondência exata* — essencial para nomes próprios, códigos de erro, siglas técnicas, números, onde o significado "aproximado" não ajuda e a palavra exata importa. Nenhum dos dois é estritamente melhor; eles erram em casos diferentes. RRF combina os rankings dos dois métodos sem precisar normalizar scores em escalas diferentes (que é o problema de combinar scores diretamente) — só usa a *posição* de cada documento em cada ranking, o que o torna simples e robusto.
+
 ### Multi-vector / Late interaction
 - **ColBERT** — embedda cada token, combina por max-sim. `Paper` https://arxiv.org/abs/2004.12832
 - **ColBERTv2** — eficiente. https://arxiv.org/abs/2112.01488
@@ -159,6 +179,8 @@ Combinar dense + sparse via:
 - **Query rewriting** com LLM.
 - **Multi-query retrieval** — gerar variações da query e fundir.
 - **Step-back prompting** — abstrair antes de buscar.
+
+> **Intuição — HyDE**: uma pergunta curta ("qual a capital da França?") tem um embedding estruturalmente diferente de uma resposta/documento que a contém ("Paris é a capital da França, uma cidade..."). HyDE contorna essa assimetria pedindo ao LLM para gerar uma resposta *hipotética* (possivelmente errada em detalhes) e embeddando essa resposta hipotética em vez da pergunta crua — o embedding de um texto "no estilo de resposta" tende a ficar mais próximo dos documentos reais (também no estilo de resposta/afirmação) do que o embedding da pergunta interrogativa original.
 
 ### Multi-hop retrieval
 Para perguntas que exigem combinar múltiplos documentos.
@@ -186,6 +208,10 @@ Retrieval rápido (top-100) com baixa precisão → rerank lento (top-10) com al
 ### Custo
 Reranker tipicamente é 10–100× mais caro que retrieval inicial. Use só no top-K (K = 50–200).
 
+> **Intuição — por que duas etapas**: retrieval vetorial (bi-encoder, embeds query e documento *separadamente* e compara os vetores) é rápido porque os embeddings dos documentos podem ser pré-computados uma vez e indexados — comparar contra uma query nova é só uma busca vetorial. Um cross-encoder (reranker) processa query e documento *juntos*, através da mesma rede, permitindo que o modelo compare palavra a palavra entre os dois — muito mais preciso, mas impossível de pré-computar (cada par query-documento exige uma passada nova pela rede), então só é viável rodar sobre uma lista curta de candidatos já filtrados. É o mesmo padrão "rápido e aproximado primeiro, lento e preciso depois" que aparece em duas etapas em quase todo sistema de busca em escala.
+>
+> **Checkpoint**: sem olhar o texto, explique por que um cross-encoder não pode ser usado para buscar entre milhões de documentos diretamente, mas um bi-encoder (embeddings) pode.
+
 ---
 
 ## 12.7 Geração com contexto
@@ -207,6 +233,8 @@ Reranker tipicamente é 10–100× mais caro que retrieval inicial. Use só no t
 - **Long context**: mais simples, mais caro por chamada, performance degrada no meio do contexto ("lost in the middle"). `Paper` https://arxiv.org/abs/2307.03172
 - **RAG**: mais infraestrutura, mais barato, melhor para corpora dinâmicos.
 
+> **Intuição — "lost in the middle"**: mesmo modelos com janelas de contexto enormes não usam essa informação uniformemente — evidência empírica mostra que informação no início e no fim do contexto é recuperada com mais confiabilidade do que informação no meio, um viés posicional que persiste mesmo em modelos state-of-the-art. Isso significa que despejar 500 páginas de documentos no contexto e esperar que o modelo "ache a agulha no meio do palheiro" é uma aposta pior do que parece — RAG, ao filtrar primeiro pelos documentos realmente relevantes (retrieval) antes de gerar, reduz a chance da informação certa ficar "perdida no meio" de conteúdo irrelevante.
+
 ---
 
 ## 12.8 Graph RAG
@@ -222,6 +250,8 @@ Para perguntas que exigem **conexões** entre entidades.
 - **Microsoft GraphRAG**. https://github.com/microsoft/graphrag (`Paper` https://arxiv.org/abs/2404.16130)
 - **LightRAG**, **HippoRAG**.
 - **LlamaIndex Property Graph Index**.
+
+> RAG tradicional recupera chunks isolados — bom para "o que é X", ruim para "como X se relaciona com Y", já que a relação pode nunca aparecer explicitamente perto o bastante num único chunk para ser recuperada junto. Graph RAG extrai essa estrutura relacional explicitamente (numa etapa separada, com LLM) e permite recuperar o *caminho* entre duas entidades, não só documentos que mencionam cada uma isoladamente.
 
 ---
 
@@ -253,6 +283,8 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 - `Ferramenta` **TruLens**. https://github.com/truera/trulens
 - `Ferramenta` **DeepEval**. https://github.com/confident-ai/deepeval
 - `Ferramenta` **LangSmith**, **Langfuse** (mod. [15](15_engenharia_producao.mdx)).
+
+> **Intuição — por que separar as métricas**: um RAG pode falhar em duas camadas independentes — retrieval ruim (os documentos certos nem foram encontrados) ou generation ruim (os documentos certos foram encontrados, mas o LLM os ignorou ou os interpretou mal). Medir só a qualidade da resposta final mistura essas duas causas — se a resposta está errada, você não sabe se o problema é "buscou errado" ou "gerou errado" a partir do que buscou certo. Faithfulness especificamente mede se cada afirmação da resposta é *sustentada* pelos documentos recuperados (não a mesma coisa que "a resposta está correta" — um LLM pode dar uma resposta correta que não veio dos documentos, o que ainda é uma falha de RAG, mesmo com resposta certa).
 
 ### Datasets canônicos
 - **Natural Questions**, **TriviaQA**, **HotpotQA**, **MS MARCO**.
@@ -291,6 +323,8 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 - Implemente: ingest → embed → search → prompt → response.
 - Em Python E em TS (com transformers.js para embeddings, modelo via Ollama).
 
+> **Variante guiada**: teste o pipeline com uma pergunta cuja resposta você *sabe* que está literalmente em um documento específico — confirme que o retrieval encontra esse documento antes de testar perguntas mais ambíguas. Isso separa bugs de infraestrutura (embedding, indexação) de limitações reais de retrieval semântico.
+
 ### Projeto 12.2 — Comparativo de chunking
 - Mesmo corpus, mesmo modelo, mesmo retriever.
 - Variar: fixed-size (3 tamanhos), recursive, semantic, late chunking.
@@ -300,6 +334,8 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 - Combine BM25 (via `rank_bm25` ou Elasticsearch) com retrieval denso.
 - Use RRF para fundir.
 - Compare com cada método isolado.
+
+> **Variante guiada**: inclua no seu conjunto de teste pelo menos algumas perguntas com termos exatos importantes (siglas, códigos, nomes próprios) — é onde a diferença entre BM25 puro e dense puro deve aparecer mais claramente, validando a intuição da seção 12.5.
 
 ### Projeto 12.4 — Reranker
 - Adicione `bge-reranker-v2-m3` ao pipeline do projeto 12.3.
