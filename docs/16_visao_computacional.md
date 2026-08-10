@@ -12,6 +12,16 @@ sidebar_position: 16
 >
 > **Tempo de referência**: 4–6 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar como uma imagem vira uma sequência de "tokens" para um Vision Transformer.
+- Escolher entre CNN e ViT para um cenário dado (tamanho de dataset, restrições de edge).
+- Explicar por que DINOv2 é chamado de "BERT da visão" — o que o SSL nele reaproveita do mod. 04/06.
+- Explicar como CLIP alinha imagem e texto no mesmo espaço de embeddings.
+- Escolher a ferramenta certa (SAM, YOLO, OCR, VLM) para uma tarefa de visão específica.
+
 ---
 
 ## Por que isso importa
@@ -36,6 +46,8 @@ Mesmo em uma trilha centrada em LLMs, **VC é parte do tronco**: modelos multimo
 
 ### Por que estudar o clássico
 Pipelines reais combinam DL com pré-/pós-processamento clássico (cropping, augmentation, calibração de cor). Saber clássico dobra produtividade.
+
+> A intuição de convolução como "detector de padrão deslizante" já foi construída no mod. [05](05_deep_learning.md#54-convolutional-neural-networks-cnns) — os filtros clássicos (Sobel, Gaussian) são exatamente essa mesma operação, só que com kernels *desenhados à mão* por um humano em vez de *aprendidos* pelo treino. É um bom lembrete de que CNN não inventou a convolução — ela automatizou a descoberta de quais kernels são úteis para a tarefa.
 
 ---
 
@@ -76,6 +88,10 @@ Aplica Transformer puro a patches de imagem.
 
 `Paper` **An Image is Worth 16×16 Words (ViT)** — Dosovitskiy et al. (2020). https://arxiv.org/abs/2010.11929
 
+> **Intuição**: o título do paper é literal — ViT trata uma imagem como se fosse uma "frase" de patches. Cada patch de 16×16 pixels vira um "token" (achatado num vetor e projetado linearmente, como um embedding de palavra do mod. [06](06_nlp_classico.md#64-word-embeddings--a-revolução-pré-transformer)), soma-se um positional encoding (mod. [07](07_transformers.mdx#73-posicionamento) — a ordem dos patches importa tanto quanto a ordem de palavras numa frase), e o Transformer encoder processa essa sequência de patches exatamente como processaria uma sequência de tokens de texto, via self-attention. A vantagem sobre CNN: cada patch pode "atender" diretamente a qualquer outro patch da imagem desde a primeira camada (campo receptivo global imediato), enquanto uma CNN precisa empilhar várias camadas para que informação de cantos opostos da imagem se combine. A desvantagem: CNN tem um *inductive bias* embutido (proximidade espacial importa, parameter sharing) que ajuda muito com pouco dado; ViT precisa aprender esse bias do zero a partir de dados, por isso costuma precisar de datasets bem maiores para superar CNN.
+>
+> **Checkpoint**: sem olhar o texto, explique como uma imagem 224×224 vira uma sequência de tokens para o ViT. Depois, explique por que ViT costuma precisar de mais dados que CNN para atingir a mesma qualidade.
+
 ### Variantes importantes
 - **DeiT** — ViT com training tricks, sem precisar de JFT-300M. `Paper` https://arxiv.org/abs/2012.12877
 - **Swin Transformer** — hierarchical, sliding window. `Paper` https://arxiv.org/abs/2103.14030
@@ -107,6 +123,10 @@ Recapitulando do mod. [04](04_ml_moderno.md), agora com modelos de ponta.
 
 ### Por que DINOv2 importa
 É o **"BERT da visão"** atual: backbone pré-treinado que serve para classificação, segmentação, retrieval, depth estimation, sem fine-tuning ou com pouco. Use-o.
+
+> **Intuição**: o paralelo com BERT (mod. [08](08_llms_arquiteturas.md#81-famílias-arquiteturais)) é direto — assim como BERT é pré-treinado numa tarefa de pretexto (masked language modeling) sem rótulos humanos e depois reutilizado (transfer learning, mod. [04](04_ml_moderno.md#42-transfer-learning)) para dezenas de tarefas downstream, DINOv2 é pré-treinado via self-distillation (o modelo aprende comparando suas próprias previsões sob diferentes "views" aumentadas da mesma imagem, sem nenhum rótulo) e vira um backbone genérico — os embeddings que ele produz servem tanto para classificação quanto segmentação quanto busca de imagens similares, geralmente sem precisar de fine-tuning algum. Masked Image Modeling (MAE) é o análogo visual direto do masked language modeling: esconder parte da imagem (patches) e treinar o modelo a reconstruí-la.
+>
+> **Checkpoint**: sem olhar o texto, explique o paralelo entre DINOv2 e BERT — o que cada um "aprende" sem rótulos, e por que isso generaliza para tarefas diferentes depois?
 
 ---
 
@@ -157,6 +177,8 @@ Recapitulando do mod. [04](04_ml_moderno.md), agora com modelos de ponta.
 - **BLIP / BLIP-2** — bootstrapping captioning. `Paper` https://arxiv.org/abs/2301.12597
 - **Florence-2** — Microsoft, geral-purpose. `Paper` https://arxiv.org/abs/2311.06242
 - **OpenCLIP** (LAION) — reproduções abertas.
+
+> **Intuição — CLIP**: a ideia central é a mesma de contrastive learning do mod. [04](04_ml_moderno.md#41-self-supervised-learning-ssl) — pares positivos (uma imagem e sua legenda real) ficam próximos no espaço de embeddings, pares negativos (imagem com legenda de outra imagem aleatória) ficam distantes. A diferença é que agora os dois "lados" do par positivo vêm de *modalidades diferentes* (pixel e texto), forçando o modelo a aprender uma representação **compartilhada** onde a foto de um cachorro e a palavra "cachorro" acabam próximas no mesmo espaço vetorial, mesmo vindo de encoders separados. É esse espaço compartilhado que permite zero-shot classification (comparar o embedding de uma imagem nova contra embeddings de nomes de classe, sem nenhum treino específico) e é a base de como VLMs modernos (mod. [18](18_multimodal.mdx)) conectam visão e linguagem.
 
 ### Aplicações
 - Zero-shot classification.
@@ -216,6 +238,8 @@ Recapitulando do mod. [04](04_ml_moderno.md), agora com modelos de ponta.
 - Pipeline 3: fine-tuning de ViT pequeno.
 - Compare accuracy, tempo de treino, tamanho.
 
+> **Variante guiada**: rode os 3 pipelines com o mesmo split de treino/teste, e repita com dataset reduzido (ex.: 20% dos dados) — isso deve evidenciar concretamente a intuição da seção 16.3 (CNN se sai relativamente melhor com pouco dado, ViT precisa de mais).
+
 ### Projeto 16.2 — Fine-tune YOLO em domínio próprio
 - Coletar/anotar 200–500 imagens (ou usar dataset público).
 - Use Ultralytics YOLOv8/v11.
@@ -241,6 +265,8 @@ Recapitulando do mod. [04](04_ml_moderno.md), agora com modelos de ponta.
 - Use OpenCLIP.
 - Construa classificador zero-shot para categorias arbitrárias.
 - Compare com modelo supervisionado fine-tunado (precisa de labels) na mesma tarefa.
+
+> **Variante guiada**: teste o classificador zero-shot com nomes de classe formulados de formas diferentes (ex.: "cachorro" vs "uma foto de um cachorro") — CLIP é sensível ao formato do prompt textual, um paralelo direto com prompt engineering (mod. [11](11_prompt_engineering.md)) aplicado a classificação de imagem.
 
 ### Projeto 16.7 — Inferência em browser
 - transformers.js: classificação ou detecção rodando no browser.
