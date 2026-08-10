@@ -12,6 +12,16 @@ sidebar_position: 14
 >
 > **Tempo de referência**: 3–4 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar as principais fontes de viés em LLM-as-judge e pelo menos uma mitigação para cada.
+- Distinguir os tipos de alucinação e escolher a mitigação certa por tipo.
+- Calcular calibração (ECE) conceitualmente e explicar por que RLHF tende a piorá-la.
+- Explicar a diferença entre contaminação de benchmark e generalização real.
+- Explicar, num nível intuitivo, o que "circuito" e "feature" significam em interpretabilidade mecanística.
+
 ---
 
 ## Por que isso importa
@@ -75,11 +85,15 @@ Usar LLM forte para avaliar saída de outro LLM. Escala bem para outputs livres 
 - **Verbosity bias** (prefere respostas longas).
 - **Self-preference**.
 
+> **Intuição**: um LLM-juiz não é um oráculo objetivo — ele traz os mesmos vieses estatísticos aprendidos no seu próprio treino (mod. [09](09_treinamento_e_alinhamento.mdx#95-alinhamento-via-preferências)) para o julgamento. Verbosity bias, por exemplo, existe porque respostas humanas "melhores" no dataset de preferências usado no RLHF/DPO do juiz tendiam a ser mais completas — o juiz generaliza isso para "mais longo = melhor", mesmo quando conciso seria mais apropriado. Position bias (preferir a primeira opção numa comparação A/B) é um artefato ainda menos "semântico" — mais parecido com um viés posicional de atenção do que um julgamento de conteúdo. Isso não invalida LLM-as-judge (é rápido e escala onde avaliação humana não escala), mas exige as mitigações da lista abaixo tratadas como obrigatórias, não opcionais.
+
 ### Mitigações
 - Randomizar ordem.
 - Múltiplos juízes (ensemble).
 - Rubricas estruturadas.
 - Humanos no loop para calibrar.
+
+> **Checkpoint**: sem olhar o texto, explique por que um LLM-juiz tende a preferir respostas mais longas, mesmo quando isso não reflete qualidade real.
 
 ### Referências
 - `Paper` **Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena** — Zheng et al. (2023). https://arxiv.org/abs/2306.05685
@@ -111,6 +125,8 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - Datasets privados.
 - Contamination detection (Min-K%, perplexity-based).
 
+> **Intuição**: um LLM pré-treinado em "todo o texto da internet" tem chance real de ter visto o benchmark de teste, ou uma cópia dele, durante o pré-treinamento (mod. [08](08_llms_arquiteturas.md#83-pré-treinamento-o-que-faz-uma-llm-saber)) — nesse caso, "acertar o benchmark" mede memorização, não capacidade de generalização, que é o que o benchmark deveria medir. É por isso que benchmarks *dinâmicos* (que adicionam problemas novos continuamente, como LiveCodeBench) são mais confiáveis a longo prazo do que benchmarks estáticos publicados há anos — problemas novos não podem ter sido vistos no pré-treino de um modelo já treinado.
+
 ### Referências
 - `Paper` **Detecting Pretraining Data from LLMs (Min-K%)** — Shi et al. (2023). https://arxiv.org/abs/2310.16789
 - `Paper` **Investigating Data Contamination in Modern Benchmarks**. https://arxiv.org/abs/2311.09783
@@ -131,6 +147,8 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - Pressão de "responder algo" mesmo sem saber.
 - Reasoning model "confiante" em caminho errado.
 
+> **Intuição**: um LLM não tem um mecanismo interno de "sei" vs "não sei" comparável ao de um humano consultando a própria memória — ele gera o próximo token mais provável dado o contexto (mod. [07](07_transformers.mdx)), e "um fato plausível mas inventado" pode ter probabilidade tão alta quanto "um fato real", especialmente em áreas pouco representadas no treino. SFT agrava isso quando o dataset de instrução tem poucos exemplos de "eu não sei" — o modelo aprende implicitamente que sempre deve produzir uma resposta confiante, porque é isso que os exemplos de treino demonstram fazer. Cada tipo de alucinação pede uma mitigação diferente: closed-domain (RAG contradizendo docs) se resolve com grounding mais forte e citação obrigatória; open-domain (invenção sem base nenhuma) se beneficia mais de calibração/refusal treinado (seção 14.7) e chain of verification.
+
 ### Mitigação
 - **RAG** com grounding obrigatório.
 - **Constrained generation** (mod. [11](11_prompt_engineering.md)).
@@ -138,6 +156,8 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - **Chain of Verification**. `Paper` https://arxiv.org/abs/2309.11495
 - **Citação obrigatória** com validação.
 - **Modelos com refusal calibrado** (treinados a dizer "não sei").
+
+> **Checkpoint**: sem olhar o texto, explique por que "responder algo" pode ter sido implicitamente reforçado durante SFT. Depois, explique a diferença entre alucinação closed-domain e open-domain, e por que a mitigação difere.
 
 ### Métricas
 - **FactScore** — atomicidade + verificação. https://arxiv.org/abs/2305.14251
@@ -167,6 +187,8 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - **Disparate impact**, **demographic parity**, **equalized odds**.
 - Trade-off com accuracy.
 
+> Viés em LLMs tem a mesma raiz que viés em ML clássico (mod. [03](03_ml_classico.md)): o modelo aprende os padrões estatísticos do que viu no treino, incluindo estereótipos presentes nos dados — a diferença é de escala (o corpus de treino de um LLM é vastamente maior e mais difícil de auditar linha a linha que um dataset tabular).
+
 ### Referências
 - `Paper` **On the Dangers of Stochastic Parrots** — Bender et al. (2021). https://dl.acm.org/doi/10.1145/3442188.3445922
 - `Livro` **Fairness and Machine Learning: Limitations and Opportunities** — Barocas, Hardt, Narayanan. https://fairmlbook.org/
@@ -188,8 +210,14 @@ Modelo bem calibrado: quando diz "80% certeza", está certo 80% das vezes.
 - **Brier score**.
 - Reliability diagrams.
 
+> **Exemplo resolvido — ECE**: agrupe as previsões do modelo por faixa de confiança (ex.: previsões onde o modelo disse "~80% de confiança") e compare com a accuracy real *daquele grupo*. Se o modelo fez 100 previsões com confiança declarada de 80%, e só 60 delas estavam corretas, há um erro de calibração de `|0.80 - 0.60| = 0.20` para esse grupo. ECE é a média ponderada desse erro através de todas as faixas de confiança — um modelo perfeitamente calibrado tem ECE próximo de 0 (a confiança declarada sempre bate com a taxa de acerto real observada).
+
 ### LLMs e calibração
 LLMs grandes pré-RLHF tendem a ser bem calibrados. **RLHF tipicamente piora calibração** (modelo aprende a parecer mais confiante).
+
+> **Intuição — por que RLHF piora calibração**: durante RLHF/DPO (mod. [09](09_treinamento_e_alinhamento.mdx#95-alinhamento-via-preferências)), avaliadores humanos tendem a preferir respostas que *soam* confiantes e diretas sobre respostas que expressam incerteza genuína — mesmo quando a incerteza seria mais honesta. O modelo otimiza pra essa preferência, aprendendo a *soar* mais confiante independente da confiança real subjacente — a distribuição de probabilidade interna pode continuar razoavelmente informativa, mas o texto gerado (que é o que o usuário vê) passa a expressar confiança quase uniformemente alta.
+>
+> **Checkpoint**: sem olhar o texto, explique com suas palavras o que significa um modelo estar "mal calibrado" com um exemplo numérico simples.
 
 ### Referências
 - `Paper` **Calibration of Pre-trained Transformers** — Desai & Durrett (2020). https://arxiv.org/abs/2003.07892
@@ -211,6 +239,8 @@ LLMs grandes pré-RLHF tendem a ser bem calibrados. **RLHF tipicamente piora cal
 - **Output filtering** (Llama Guard, NeMo Guardrails).
 - **Constitutional AI / RLAIF**.
 - **Adversarial training**.
+
+> Many-shot jailbreaking é um bom exemplo de como um recurso benéfico (janelas de contexto maiores, que ajudam few-shot learning legítimo — mod. [11](11_prompt_engineering.md#112-técnicas-fundamentais)) também expande a superfície de ataque: preencher o contexto com muitos exemplos de "comportamento proibido sendo seguido" explora o mesmo mecanismo de in-context learning que torna few-shot útil, só que na direção oposta ao alinhamento pretendido.
 
 ### Ferramentas open
 - `Ferramenta` **Llama Guard 3**. https://huggingface.co/meta-llama/Llama-Guard-3-8B
@@ -255,6 +285,8 @@ Tentativa estruturada e adversarial de fazer o modelo falhar (gerar conteúdo no
 - **Self-hosted** quando dado é sensível.
 - **Auditing**: verificar memorização.
 
+> Memorização de treino é o oposto do que geralmente se quer de um modelo (generalização, não decoreba — mod. [03](03_ml_classico.md#31-fundamentos-conceituais)), mas em modelos muito grandes com dados repetidos no corpus, alguma memorização literal é praticamente inevitável — extraction attacks exploram exatamente essa memorização residual, com prompts desenhados para "completar" um trecho memorizado exatamente como apareceu no treino.
+
 ### Referências
 - `Paper` **Extracting Training Data from Large Language Models** — Carlini et al. (2020). https://arxiv.org/abs/2012.07805
 - `Paper` **Scalable Extraction of Training Data from (Production) Language Models** — Nasr et al. (2023). https://arxiv.org/abs/2311.17035
@@ -277,6 +309,12 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 - **Sparse Autoencoders (SAEs)** — extrair features interpretáveis.
 - **Activation patching**.
 - **Induction heads** (cópia em context).
+
+> **Intuição**: avaliação comportamental (seções 14.1–14.9) julga o modelo pelas *saídas* — é como avaliar um funcionário só pelo que ele entrega, sem nunca ver como ele pensa. Mechanistic interpretability tenta abrir a "caixa-preta" e entender a computação interna — quais direções no espaço de ativação (features) correspondem a conceitos específicos, e como grupos de neurônios/attention heads (circuits) implementam comportamentos específicos. Superposition é um dos achados mais importantes e contra-intuitivos da área: redes neurais representam *mais* conceitos do que têm neurônios, sobrepondo múltiplas features no mesmo neurônio de formas que só fazem sentido quando decompostas matematicamente (via Sparse Autoencoders) — um único neurônio raramente corresponde a "um conceito", ao contrário do que a intuição ingênua sugeriria.
+>
+> **Aplicação real**: induction heads (Olsson et al.) são um circuito identificado que implementa, mecanicamente, o padrão "se vi X seguido de Y antes, e vejo X de novo, preveja Y" — uma peça concreta e verificável do mecanismo que permite in-context learning (mod. [11](11_prompt_engineering.md#117-in-context-learning-icl-por-que-few-shot-funciona)), não apenas uma hipótese comportamental sobre o fenômeno.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre avaliar um modelo pelo comportamento (benchmarks) e avaliar pela mecânica interna (mech interp). Depois, explique com suas palavras o que "superposition" significa.
 
 ### Referências (estado da arte 2024–2025)
 - `Livro` **Anthropic Transformer Circuits Thread**. https://transformer-circuits.pub/
@@ -317,6 +355,8 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 - Use 3 LLMs como juízes; meça concordância com humano.
 - Documente position bias e self-preference.
 
+> **Variante guiada**: rode cada par duas vezes com a ordem A/B invertida — se o juiz muda de opinião só por causa da ordem, isso quantifica diretamente o position bias, em vez de você ter que inferi-lo indiretamente.
+
 ### Projeto 14.3 — Benchmark próprio em PT-BR
 - Tarefa de seu domínio (atendimento, suporte técnico, etc.).
 - 100 inputs anotados.
@@ -333,6 +373,8 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 - 30 perguntas de fato (com gabarito) onde o modelo "tendência a alucinar".
 - Compare: baseline, com RAG, com chain-of-verification.
 - Use FactScore-style avaliação atomicizada.
+
+> **Variante guiada**: separe suas 30 perguntas por tipo de alucinação esperada (closed-domain vs open-domain, seção 14.5) antes de rodar — isso permite verificar se a mitigação certa (RAG para closed-domain, verification para open-domain) realmente ajuda mais no tipo correspondente.
 
 ### Projeto 14.6 (avançado) — Mech interp introdutório
 - Use TransformerLens com GPT-2 small.
