@@ -211,7 +211,7 @@ Remover pesos pouco importantes. Pode ser:
 ### MoE em inferência
 Inferência de Mixtral 8×7B usa apenas ~13B "ativos" por token, mesmo tendo 47B totais. Vantagem para inferência; desvantagem em VRAM total necessária.
 
-> A intuição de MoE (por que mais parâmetros totais não significa proporcionalmente mais custo por token) já foi construída no mod. [08](08_llms_arquiteturas.md#84-detalhes-arquiteturais-modernos-2024–2025) — aqui a nuance extra é que, mesmo com poucos parâmetros *ativos* por token, o modelo inteiro (todos os experts) ainda precisa estar carregado na VRAM, já que o roteador pode escolher qualquer expert a cada token. MoE economiza *compute*, não necessariamente *memória*.
+> A intuição de MoE (por que mais parâmetros totais não significa proporcionalmente mais custo por token) já foi construída no mod. [08](08_llms_arquiteturas.md#84-detalhes-arquiteturais-modernos-20242025) — aqui a nuance extra é que, mesmo com poucos parâmetros *ativos* por token, o modelo inteiro (todos os experts) ainda precisa estar carregado na VRAM, já que o roteador pode escolher qualquer expert a cada token. MoE economiza *compute*, não necessariamente *memória*.
 
 ### Referências
 - `Paper` **The Lottery Ticket Hypothesis** — Frankle & Carbin (2018). https://arxiv.org/abs/1803.03635
