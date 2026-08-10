@@ -12,6 +12,16 @@ sidebar_position: 9
 >
 > **Tempo de referência**: 4–6 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar cada estágio do pipeline (pré-treino → SFT → alinhamento por preferência) e o que cada um adiciona que o anterior não tinha.
+- Explicar por que LoRA funciona com uma fração dos parâmetros do fine-tuning completo.
+- Explicar a diferença entre RLHF (via PPO) e DPO — e por que DPO ficou popular.
+- Diagnosticar catastrophic forgetting e explicar como mitigar durante continued pretraining.
+- Escolher a estratégia de paralelismo (DP/TP/PP/FSDP) certa para um cenário de treino dado.
+
 ---
 
 ## Por que isso importa
@@ -41,6 +51,8 @@ flowchart TD
     G --> G1["Modelo de raciocínio"]
 ```
 
+> Vale a pena voltar a este diagrama depois de ler as seções 9.2–9.6 — cada caixa vira uma seção detalhada, e ter o mapa completo em mente ajuda a situar onde cada técnica entra no ciclo de vida do modelo.
+
 ---
 
 ## 9.2 Pré-treinamento em escala
@@ -58,6 +70,10 @@ flowchart TD
 - **Pipeline Parallel (PP)** — divide camadas em estágios.
 - **Sequence Parallel** — para contextos muito longos.
 - **3D parallelism** — combinação de DP + TP + PP.
+
+> **Intuição**: cada tipo de paralelismo divide um recurso diferente. **Data Parallel** dá o modelo *inteiro* pra cada GPU e só divide os *dados* — cada GPU processa um pedaço do batch e depois todas sincronizam gradientes; simples, mas exige que o modelo inteiro caiba em uma GPU. **Tensor Parallel** divide as próprias *matrizes* de peso entre GPUs (metade das colunas de uma matriz numa GPU, metade em outra) — necessário quando uma única camada já não cabe numa GPU, mas exige comunicação intensa entre GPUs a cada operação. **Pipeline Parallel** divide as *camadas*: GPU 1 tem as primeiras 10 camadas, GPU 2 as próximas 10, e os dados fluem em pipeline — menos comunicação que TP, mas introduz "bolhas" de ociosidade enquanto uma GPU espera a anterior terminar. **FSDP** é uma forma mais inteligente de Data Parallel: em vez de cada GPU guardar uma cópia completa do modelo (caro em memória), os pesos ficam fragmentados entre GPUs e são reunidos só durante o cálculo de cada camada, depois descartados — trocando mais comunicação por muito menos memória de pico. Modelos realmente grandes combinam os três (3D parallelism) porque nenhum sozinho resolve tudo: TP para caber uma camada, PP para caber o modelo inteiro, DP para escalar em mais dados/GPUs.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre Tensor Parallel e Pipeline Parallel — o que cada um divide?
 
 ### Frameworks
 - **PyTorch FSDP**.
@@ -100,6 +116,10 @@ Pegar um modelo BASE e ensinar a seguir o formato **instruction → response**.
 - **Packing**: empacotar múltiplas amostras em uma sequência para usar GPU.
 - **Mixing**: balancear domínios (chat, código, math).
 
+> **Intuição — loss masking**: o modelo já sabe prever texto genérico bem (pré-treino). SFT quer ensinar especificamente "dado este prompt, gere esta resposta" — se a loss for calculada em cima do prompt também, o modelo gasta capacidade de aprendizado tentando prever o *prompt* (que é dado, não algo a ser gerado), diluindo o sinal de treino que realmente importa: aprender a gerar a resposta certa. Mascarar a loss do prompt (só o zera, ele continua no contexto) foca o gradiente inteiramente em "dado esse contexto, o que eu deveria ter gerado" — que é exatamente o comportamento que SFT quer instalar.
+>
+> **Checkpoint**: sem olhar o texto, explique por que calcular loss no prompt inteiro (em vez de só na resposta) prejudica o SFT.
+
 ### Referências
 - `Paper` **Alpaca: A Strong, Replicable Instruction-Following Model**. https://crfm.stanford.edu/2023/03/13/alpaca.html
 - `Paper` **Self-Instruct: Aligning Language Models with Self-Generated Instructions** — Wang et al. (2022). https://arxiv.org/abs/2212.10560
@@ -118,6 +138,12 @@ Fine-tuning completo de um modelo de 70B requer ~1 TB de GPU. PEFT adiciona/trei
 - **DoRA** — Weight-Decomposed LoRA (mais expressivo). `Paper` https://arxiv.org/abs/2402.09353
 - **Prefix Tuning**, **P-Tuning v2**, **Prompt Tuning** (treinam prefixos no input).
 - **(IA)³**, **AdaLoRA** — variantes.
+
+> **Intuição — LoRA**: relembrando o conceito de rank do mod. [01](01_matematica.md#11-álgebra-linear) — a hipótese de LoRA é que a *mudança* necessária nos pesos durante fine-tuning tem rank intrinsecamente baixo, mesmo que os pesos originais não tenham. Em vez de atualizar a matriz de pesos inteira `W` (milhões de parâmetros), LoRA aprende duas matrizes bem menores `A` e `B` cujo produto `A·B` aproxima a atualização necessária — se `W` é `4096×4096` (~16M parâmetros) e o rank escolhido é 8, `A` e `B` juntas têm `2 × 4096 × 8` ≈ 65K parâmetros, uma fração de 1% do original. Durante inferência, `W + A·B` se comporta como se `W` tivesse sido atualizada inteira, mas o treino só precisou ajustar `A` e `B`. QLoRA soma quantização em cima disso: o modelo base congelado fica em 4-bit (mod. [10](10_eficiencia_e_inferencia_local.md) aprofunda por que isso não destrói a qualidade), e só as pequenas matrizes LoRA (que são treinadas) ficam em precisão mais alta.
+>
+> **Aplicação real**: é por isso que fine-tuning de modelos de dezenas de bilhões de parâmetros virou acessível em uma única GPU de consumo — sem LoRA/QLoRA, isso exigiria um cluster.
+>
+> **Checkpoint**: sem olhar o texto, explique por que treinar duas matrizes pequenas `A` e `B` pode aproximar bem a atualização de uma matriz grande `W`. Depois, explique o que QLoRA adiciona sobre LoRA puro.
 
 ### Ferramentas
 - `Ferramenta` **Hugging Face PEFT**. https://huggingface.co/docs/peft
@@ -154,6 +180,12 @@ RLHF é caro e instável. DPO transforma o problema em uma loss supervisionada e
 - `Paper` **ORPO** — Monolithic Preference Optimization sem reference model. https://arxiv.org/abs/2403.07691
 - `Paper` **GRPO (Group Relative Policy Optimization)** — usado no DeepSeek-R1, sem value model. https://arxiv.org/abs/2402.03300
 
+> **Intuição — por que RLHF é caro**: RLHF precisa manter e treinar **três** modelos simultaneamente — a política (o modelo sendo alinhado), o reward model (que avalia cada resposta gerada) e uma cópia de referência congelada (para o KL-penalty, evitando que a política se afaste demais e "engane" o reward model explorando falhas dele — reward hacking). PPO em cima disso é notoriamente instável e sensível a hiperparâmetros. DPO é uma sacada elegante: matematicamente, é possível mostrar que o objetivo do RLHF tem uma solução ótima que pode ser expressa diretamente em função da política e dos dados de preferência, **sem precisar treinar um reward model separado nem rodar RL**. DPO vira uma loss supervisionada comum — muito mais simples de implementar e estabilizar, o que explica sua popularidade rápida a partir de 2023.
+>
+> **Aplicação real**: GRPO (usado no DeepSeek-R1) vai um passo além, eliminando também o *value model* do PPO tradicional — em vez de estimar quão boa é uma resposta isoladamente, compara um *grupo* de respostas geradas para o mesmo prompt entre si, usando a média do grupo como baseline. Menos componentes treináveis, mais simples de escalar.
+>
+> **Checkpoint**: sem olhar o texto, explique por que RLHF via PPO precisa de três modelos simultâneos, e o que DPO elimina dessa equação.
+
 ### Referências práticas
 - `Ferramenta` **TRL (Hugging Face)** — implementações de PPO, DPO, KTO, ORPO. https://huggingface.co/docs/trl
 - `Livro` **Hugging Face — Alignment Handbook**. https://github.com/huggingface/alignment-handbook
@@ -169,6 +201,8 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 ### Característica
 - O modelo "descobre" chain-of-thought longo sozinho.
 - Funciona com modelos médios e gera ganhos enormes em raciocínio.
+
+> A intuição de "gastar mais compute em inferência pensando antes de responder" já foi construída no mod. [08](08_llms_arquiteturas.md#85-modelos-de-raciocínio-reasoning) — aqui é onde esse comportamento é efetivamente treinado via RL (mod. [17](17_aprendizado_reforco.md) cobre os fundamentos de RL usados aqui), usando GRPO (seção 9.5) sobre tarefas com resposta verificável automaticamente (matemática, código com testes), o que dispensa reward model treinado em preferências humanas subjetivas.
 
 ### Papers
 - `Paper` **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning**. https://arxiv.org/abs/2501.12948
@@ -186,6 +220,8 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 - **Catastrophic forgetting**: rodar CPT extenso pode destruir o conhecimento geral.
 - Mitigar com **mistura de dados**: 80% domínio novo + 20% genérico.
 - Learning rate baixo, warmup curto.
+
+> **Intuição**: catastrophic forgetting acontece porque gradient descent (mod. [05](05_deep_learning.md#53-otimização-e-regularização-para-dl)) não tem memória do que otimizou antes — se você treina exclusivamente em texto jurídico por tempo suficiente, os pesos vão sendo empurrados na direção que minimiza a loss *daquele* domínio, sem nenhuma pressão explícita pra manter o desempenho em inglês genérico ou código. É literalmente o mesmo mecanismo de overfitting (mod. [03](03_ml_classico.md#31-fundamentos-conceituais)), só que "esquecendo" uma tarefa anterior em vez de generalizar mal numa tarefa nova. Misturar uma fração de dados genéricos durante o CPT é uma forma de regularização: mantém pressão de gradiente puxando o modelo a continuar bom no que já sabia, não só no domínio novo.
 
 ### Referências
 - `Paper` **Continued Pre-Training of Large Language Models: How to (re)warm your model?** https://arxiv.org/abs/2308.04014
@@ -211,6 +247,8 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 - Use Unsloth + QLoRA em GPU única (Colab ou local com 8–16 GB).
 - Compare antes/depois em prompts próprios.
 
+> **Variante guiada**: antes de rodar o dataset completo, treine 1 época num subconjunto pequeno (50-100 exemplos) e confirme que o modelo começa a seguir o formato instruction→response nesses mesmos exemplos — se não conseguir nem memorizar um conjunto pequeno, o problema é de configuração (loss masking, chat template), não de escala.
+
 ### Projeto 9.2 — DPO em cima do projeto 9.1
 - Crie ~500 pares de preferência (manual ou com modelo "juiz" mais forte).
 - Aplique DPO via TRL.
@@ -221,6 +259,8 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 - Faça continued pretraining em corpus PT-BR (Wikipedia em português, OSCAR-PT).
 - Avalie qualidade em PT-BR antes/depois.
 - Documente catastrophic forgetting (testando inglês/código).
+
+> **Variante guiada**: meça a performance em inglês/código *antes* de começar o CPT, não só depois — sem uma linha de base, "catastrophic forgetting" vira uma impressão subjetiva em vez de um número comparável.
 
 ### Projeto 9.4 — Reproduzir pipeline pequeno do Tulu
 - Siga o **Alignment Handbook** ou a receita do Tulu 3.

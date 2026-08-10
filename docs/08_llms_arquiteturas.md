@@ -12,6 +12,16 @@ sidebar_position: 8
 >
 > **Tempo de referência**: 3–4 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Escolher entre encoder-only, decoder-only e encoder-decoder para uma tarefa dada, com justificativa.
+- Explicar o resultado de Chinchilla (razão tokens/parâmetro) e por que ele mudou a forma de treinar LLMs.
+- Listar as mudanças arquiteturais modernas (RMSNorm, SwiGLU, RoPE, GQA) e conectá-las ao que já foi visto no mod. 07.
+- Explicar por que modelos de raciocínio (o1, DeepSeek-R1) usam mais compute em inferência, não só em treino.
+- Avaliar um modelo aberto por critérios de engenharia (licença, tamanho, idioma, benchmark), não por hype.
+
 ---
 
 ## Por que isso importa
@@ -58,6 +68,8 @@ Saber que "GPT é decoder-only" não é suficiente. Você precisa entender por q
 - `Paper` **Flan-T5** (instruction-tuned T5). https://arxiv.org/abs/2210.11416
 - `Paper` **NLLB-200** (No Language Left Behind, tradução em 200 idiomas). https://arxiv.org/abs/2207.04672
 
+> Se a intuição por trás de cada arquitetura (revisor vs contador de histórias vs tradutor) não estiver fresca, vale revisitar o mod. [07](07_transformers.mdx#74-arquiteturas-de-transformer) antes de seguir — aqui entramos nas famílias de modelos reais que implementam cada padrão, não na arquitetura em si.
+
 ---
 
 ## 8.2 Scaling Laws
@@ -69,6 +81,12 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 - `Paper` **Scaling Laws for Neural Language Models** — Kaplan et al. (2020). https://arxiv.org/abs/2001.08361 (Conclusão: aumentar N rapidamente; D mais lento.)
 - `Paper` **Training Compute-Optimal Large Language Models (Chinchilla)** — Hoffmann et al. (2022). https://arxiv.org/abs/2203.15556 (Corrige Kaplan: N e D devem escalar juntos. Resultado: tokens por parâmetro ≈ 20 é o ótimo de compute.)
 - `Paper` **Beyond Chinchilla-Optimal: Training Smaller Models Longer** (LLaMA 3 e outros pós-Chinchilla mostram que treinar **muito mais** que Chinchilla-ótimo melhora qualidade na inferência, mesmo desperdiçando compute de treino).
+
+> **Intuição**: para um orçamento fixo de compute, você pode gastar em mais *parâmetros* (modelo maior) ou mais *dados* (mais tokens de treino) — Kaplan sugeriu priorizar parâmetros; Chinchilla mostrou empiricamente que a maioria dos modelos anteriores estava **subtreinada em dados** relativo ao tamanho — o ótimo real fica perto de 20 tokens de treino por parâmetro do modelo. Um exemplo concreto: um modelo de 10B parâmetros, Chinchilla-ótimo, treinaria em ~200B tokens, não menos.
+>
+> **Por que "além de Chinchilla-ótimo" faz sentido na prática**: Chinchilla otimiza o custo de *treino*, mas ignora o custo de *inferência* — um modelo menor, treinado bem além do ponto Chinchilla-ótimo (mais tokens do que o "ideal" para aquele tamanho), pode alcançar qualidade comparável a um modelo maior Chinchilla-ótimo, só que depois é mais barato de rodar em produção milhões de vezes. É por isso que LLaMA 3 8B foi treinado em ~15 trilhões de tokens — muito além do que Chinchilla recomendaria para esse tamanho — porque o custo de inferência ao longo da vida do modelo supera de longe o custo extra de treino.
+>
+> **Checkpoint**: sem olhar o texto, explique em uma frase o que Chinchilla corrigiu em relação ao trabalho anterior de Kaplan. Depois, explique por que treinar "além do Chinchilla-ótimo" pode ser uma boa decisão de engenharia, mesmo sendo "sub-ótimo" em compute de treino.
 
 ### Implicação prática
 - **Modelos pequenos bem treinados** (ex: Phi-3 mini, Llama 3.2 3B) podem competir com modelos grandes.
@@ -93,6 +111,8 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 - **Dolma** (Allen AI). https://allenai.org/dolma
 - **Common Corpus** (especial atenção a licenças abertas).
 
+> O ciclo completo de pré-treinamento (curadoria → tokenização → treino distribuído → checkpoints) é aprofundado com pipeline detalhado no mod. [09](09_treinamento_e_alinhamento.mdx) — aqui o foco é nos ingredientes, lá é no processo.
+
 ### Referências
 - `Paper` **Scaling Language Models: Methods, Analysis & Insights from Training Gopher** — DeepMind (2021). https://arxiv.org/abs/2112.11446
 - `Paper` **OPT: Open Pre-trained Transformer** — Meta (2022, com logbook do treinamento, leitura excelente). https://arxiv.org/abs/2205.01068
@@ -112,6 +132,12 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 - **Multi-token prediction** (Meta, DeepSeek) — prever vários tokens à frente como auxiliar.
 - **Long context**: 128k → 1M+ tokens (LongRoPE, YaRN, NTK-aware scaling).
 
+> Cada um destes já foi explicado com intuição no mod. [07](07_transformers.mdx#75-anatomia-de-um-bloco-transformer) (RMSNorm, SwiGLU, RoPE) e [07.7](07_transformers.mdx#77-eficiência-de-attention) (GQA) — esta lista é o "onde cada peça é usada na prática": praticamente todo LLM decoder-only moderno (LLaMA, Mistral, Qwen) combina as quatro primeiras como padrão de fato em 2024-2025, não são mais escolhas exóticas.
+>
+> **Intuição — MoE**: em vez de uma única rede feed-forward densa processando cada token, MoE tem várias redes "especialistas" (experts) e um roteador aprendido que decide, por token, quais 1-2 especialistas ativar. O modelo tem muito mais parâmetros *totais* (todos os especialistas somados), mas cada token só passa por uma fração pequena deles — é assim que Mixtral 8×7B tem ~47B parâmetros totais mas custo de inferência por token comparável a um modelo denso de ~13B. É a resposta arquitetural direta pro trade-off "mais parâmetros = mais capacidade, mas mais custo por token".
+>
+> **Checkpoint**: sem olhar o texto, explique por que MoE permite mais parâmetros sem aumentar proporcionalmente o custo de inferência por token.
+
 ### Referências
 - `Paper` **Mixture of Experts (Outrageously Large NN)** — Shazeer et al. (2017). https://arxiv.org/abs/1701.06538
 - `Paper` **Switch Transformers** — Fedus et al. (2021). https://arxiv.org/abs/2101.03961
@@ -130,6 +156,12 @@ A onda de 2024–2025 — modelos otimizados para "pensar" antes de responder.
 
 ### Conceito
 Modelos geram "chain of thought" longo *antes* da resposta final. Treinamento via RL com recompensa em corretude. Aumenta drasticamente performance em matemática, código, lógica.
+
+> **Intuição**: até aqui, escalar um LLM significava gastar mais compute em *treino* (mais parâmetros, mais dados, seção 8.2). Modelos de raciocínio introduzem um segundo eixo: gastar mais compute em *inferência*, deixando o modelo "pensar em voz alta" (gerar uma cadeia de raciocínio longa) antes de comprometer-se com a resposta final — mais tokens gerados internamente, mais chance de corrigir um erro de raciocínio no caminho. O treinamento via RL (mod. [17](17_aprendizado_reforco.md)) recompensa cadeias de raciocínio que chegam à resposta correta, sem necessariamente um humano ter anotado "o passo certo" — o modelo explora diferentes cadeias e aprende quais padrões de raciocínio tendem a funcionar, de forma parecida com como um humano aprende resolvendo muitos problemas e vendo quais abordagens dão certo.
+>
+> **Aplicação real**: é por isso que modelos de raciocínio custam mais por resposta (mais tokens gerados, mesmo que invisíveis ao usuário final) mas performam muito melhor em tarefas que exigem múltiplos passos lógicos corretos em sequência (matemática, código, quebra-cabeças lógicos) — errar um passo no meio geralmente invalida a resposta final nessas tarefas, então "pensar mais antes de responder" compensa o custo extra.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre escalar compute de *treino* e escalar compute de *inferência* — qual delas os modelos de raciocínio exploram?
 
 ---
 
@@ -184,6 +216,8 @@ Modelos geram "chain of thought" longo *antes* da resposta final. Treinamento vi
 - Avalie em 20 prompts próprios (geração, raciocínio, código, PT-BR).
 - Documente: latência, qualidade subjetiva, comportamento em PT-BR.
 
+> **Variante guiada**: use exatamente os mesmos 20 prompts para os 4 modelos (não improvise por modelo) — só uma comparação controlada, com a mesma entrada, produz uma conclusão que você pode defender.
+
 ### Projeto 8.2 — Ler e fichar 3 papers de LLMs
 Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 - Para cada: arquitetura, dados, treino, avaliação.
@@ -195,6 +229,8 @@ Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 - Treine no Tiny Shakespeare ou subconjunto do FineWeb.
 - Compare com a versão original.
 - Repo de referência: https://github.com/karpathy/nanoGPT (GPT-2-like) e https://github.com/karpathy/llama2.c (LLaMA-like).
+
+> **Variante guiada**: troque um componente de cada vez (primeiro só RMSNorm, confirme que ainda treina; depois SwiGLU; depois RoPE; depois GQA) em vez de trocar tudo de uma vez — isso isola qual mudança, se alguma, introduz um bug, em vez de depurar as quatro simultaneamente.
 
 ### Projeto 8.4 — Análise de scaling laws
 - Treine 3 nano-LLMs com tamanhos diferentes (1M, 5M, 25M params) por compute equivalente.
