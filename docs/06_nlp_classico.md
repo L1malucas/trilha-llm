@@ -12,6 +12,16 @@ sidebar_position: 6
 >
 > **Tempo de referência**: 3–5 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar a hipótese distribucional e por que ela é a base de todo embedding, inclusive os de LLMs.
+- Explicar por que BPE/SentencePiece resolvem o problema de vocabulário aberto (OOV), com um exemplo.
+- Calcular perplexity a partir de probabilidades de um modelo de linguagem simples.
+- Explicar por que embeddings estáticos (Word2Vec) falham em palavras polissêmicas — e o que embeddings contextuais mudam.
+- Escolher a métrica de avaliação certa para uma tarefa de NLP (classificação, tradução, sumarização) e explicar sua limitação.
+
 ---
 
 ## Por que isso importa
@@ -39,6 +49,8 @@ A maioria pula NLP clássico e vai direto para LLMs. Resultado: trata embeddings
 
 ### Por que isso ainda importa
 Pipelines profissionais ainda fazem **muito** desse pré-processamento — para limpeza, para extração de metadados, para RAG. Não é "obsoleto", é "aposentado da posição central".
+
+> Um detalhe fácil de subestimar: NFC vs NFD são duas formas *diferentes* de representar em bytes o mesmo caractere acentuado ("é" pode ser um único code point ou "e" + acento combinante) — visualmente idênticos, mas strings diferentes, o que quebra comparação exata e busca se o pipeline não normaliza consistentemente. É um dos bugs mais silenciosos em pipelines PT-BR.
 
 ### Ferramentas
 - **NLTK** (clássica, didática). https://www.nltk.org/
@@ -68,6 +80,14 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - Conceitos como "predict next token" começam aqui.
 - A intuição de Markov ajuda a entender contexto limitado.
 
+> **Intuição**: a aproximação de Markov diz "pra prever a próxima palavra, você não precisa da frase inteira até aqui, só das últimas k palavras" — uma simplificação necessária porque contar ocorrências exatas de frases inteiras é inviável (a maioria das frases longas nunca se repete no corpus). Smoothing existe porque contagem pura (MLE) atribui probabilidade zero a qualquer n-grama nunca visto no treino — mesmo que seja uma combinação perfeitamente razoável de palavras. Kneser-Ney redistribui probabilidade dos n-gramas vistos para os não-vistos de forma mais inteligente que só somar 1 a cada contagem (Laplace).
+>
+> **Exemplo resolvido — perplexity**: perplexity é `2^(entropia cruzada)`, e intuitivamente mede "quantas opções o modelo está, em média, hesitando entre" a cada palavra. Se um modelo atribui probabilidade média de 0.5 à palavra correta a cada passo, sua perplexity é `2^(-log2(0.5)) = 2^1 = 2` — como se estivesse escolhendo entre 2 opções igualmente prováveis a cada palavra. Um modelo pior, com probabilidade média 0.1 na palavra correta, tem perplexity `2^(-log2(0.1)) ≈ 2^3.32 ≈ 10` — como escolher entre 10 opções. Perplexity menor = modelo mais confiante nas palavras certas = melhor modelo de linguagem.
+>
+> **Aplicação real**: essa mesma métrica (perplexity) é reportada até hoje para comparar LLMs modernos no mesmo corpus de teste — a mecânica de "quão surpreso o modelo fica com o próximo token real" não mudou, só a arquitetura que produz as probabilidades.
+>
+> **Checkpoint**: sem olhar o texto, explique por que MLE puro (contagem sem smoothing) falha para n-gramas nunca vistos. Depois, explique em uma frase o que perplexity mede intuitivamente.
+
 ### Referências
 - `Livro` **Speech and Language Processing**, cap. 3 (N-gram Language Models). https://web.stanford.edu/~jurafsky/slp3/
 - `Paper` **An Empirical Study of Smoothing Techniques for Language Modeling** — Chen & Goodman (1998). https://aclanthology.org/J99-4007/
@@ -85,6 +105,8 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - Não captura semântica ("rei" e "monarca" são tão distantes quanto "rei" e "abacaxi").
 - Vocabulário grande → vetores enormes e esparsos.
 - Sem ordem (em BoW puro).
+
+> **Intuição**: TF-IDF pondera cada palavra por duas forças opostas — frequência no documento (TF, quanto mais aparece ali, mais relevante para aquele documento) contra raridade no corpus inteiro (IDF, palavras que aparecem em todo documento, tipo "de"/"o"/"que", carregam pouca informação distintiva). O resultado é um vetor esparso (a maioria das posições é zero, já que a maioria das palavras do vocabulário não aparece em um documento específico) onde palavras raras-mas-relevantes pesam mais que palavras comuns. A limitação central — "rei" e "monarca" são tratados como tão diferentes quanto "rei" e "abacaxi" — é exatamente o que embeddings densos (seção 6.4) resolvem.
 
 ### Modelos de tópicos (cross-link mod. [04](04_ml_moderno.md))
 - **Latent Semantic Analysis (LSA)** via SVD em matriz termo-documento.
@@ -119,6 +141,14 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - **Estáticos**: "banco" tem o mesmo embedding em "banco do parque" e "banco financeiro".
 - Resolvido depois por embeddings contextuais (ELMo, BERT — mod. [08](08_llms_arquiteturas.md)).
 
+> **Intuição**: a hipótese distribucional é, na prática, uma tarefa de pretexto self-supervised (mod. [04](04_ml_moderno.md#41-self-supervised-learning-ssl)) antes desse termo existir formalmente — Word2Vec treina prevendo palavra a partir de contexto (CBOW) ou contexto a partir de palavra (skip-gram), sem nenhum rótulo humano, e o subproduto útil é o vetor intermediário aprendido, não a previsão em si. Palavras que aparecem em contextos parecidos (ex.: "cachorro" e "gato" costumam ter vizinhos parecidos: "meu ___ late/mia", "alimentar o ___") acabam com vetores próximos no espaço aprendido, sem que ninguém tenha dito explicitamente que são semanticamente relacionadas.
+>
+> **Exemplo resolvido — vector arithmetic**: `rei − homem + mulher ≈ rainha` funciona porque a direção "rei → homem" (o que distingue masculino de feminino, aproximadamente) acaba codificada de forma consistente no espaço vetorial — subtrair "homem" de "rei" isola aproximadamente essa direção de gênero, e somar "mulher" aplica essa mesma direção a partir de outro ponto. Isso não é perfeito nem garantido (é uma propriedade emergente do treinamento, não projetada), mas funciona surpreendentemente bem para relações bem representadas no corpus.
+>
+> **Aplicação real**: a limitação central de Word2Vec/GloVe — "banco" tem um único vetor fixo, não importa o contexto ("banco do parque" vs "banco financeiro") — é exatamente o problema que embeddings *contextuais* (BERT, GPT — onde o embedding de cada token muda dependendo dos tokens ao redor, via self-attention do mod. [07](07_transformers.mdx)) resolvem. Entender essa limitação é entender por que Transformers foram um salto, não só uma arquitetura mais complexa por complexidade.
+>
+> **Checkpoint**: sem olhar o texto, explique a hipótese distribucional com suas próprias palavras. Depois, explique por que "banco" ter um único embedding fixo é um problema real (dê um exemplo de frase onde isso causaria erro).
+
 ### Papers fundadores (todos obrigatórios para ler)
 - `Paper` **Efficient Estimation of Word Representations in Vector Space (Word2Vec)** — Mikolov et al. (2013). https://arxiv.org/abs/1301.3781
 - `Paper` **Distributed Representations of Words and Phrases (Word2Vec, negative sampling)** — Mikolov et al. (2013). https://arxiv.org/abs/1310.4546
@@ -144,6 +174,14 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - **Unigram Language Model**: treinamento probabilístico, usado em SentencePiece.
 - **SentencePiece**: implementação que trata texto como bytes/caracteres puros (sem pré-tokenização). Usado em LLaMA, T5.
 - **Tiktoken** (OpenAI BPE em Rust). https://github.com/openai/tiktoken
+
+> **Intuição — BPE**: comece com o texto quebrado em caracteres individuais. Encontre o par de símbolos adjacentes mais frequente no corpus inteiro (ex.: "e" seguido de "s" em muitas palavras) e mescle esse par num novo símbolo único. Repita milhares de vezes. O resultado é um vocabulário onde palavras muito comuns viram um único token ("the", "de") e palavras raras ou desconhecidas se decompõem em subpalavras menores, mas nunca ficam "sem token" — não existe OOV, no pior caso a palavra cai de volta em caracteres individuais, que sempre estão no vocabulário base.
+>
+> **Exemplo (ilustrativo)**: um corpus com muitas ocorrências de "lower", "lowest", "newer" tende a mesclar "e"+"r" → "er" cedo (aparece em vários lugares), depois talvez "low"+"er" → "lower" se essa combinação for frequente o bastante — mas uma palavra nova e rara como "flowerpot" (nunca vista) ainda seria tokenizável combinando pedaços já conhecidos ("flow", "er", "pot", por exemplo), em vez de virar um único token `<UNK>` desconhecido como aconteceria com um vocabulário fixo de palavras inteiras.
+>
+> **Aplicação real**: todo LLM moderno usa alguma variante de tokenização por subpalavra — é o que permite um vocabulário gerenciável (dezenas de milhares de tokens, não milhões de palavras possíveis) sem nunca "travar" num texto de entrada, seja código, uma URL, ou uma palavra inventada.
+>
+> **Checkpoint**: sem olhar o texto, explique por que tokenização por subpalavra elimina o problema de OOV (out-of-vocabulary) que existia com vocabulário de palavras inteiras.
 
 ### Referências
 - `Paper` **Neural Machine Translation of Rare Words with Subword Units (BPE)** — Sennrich, Haddow, Birch (2015). https://arxiv.org/abs/1508.07909
@@ -195,6 +233,10 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - **SQuAD** (question answering).
 - **CoNLL** (NER, parsing).
 
+> **Intuição**: BLEU e ROUGE são fundamentalmente métricas de *sobreposição de n-gramas* entre a saída gerada e uma referência — contam quantos pedaços de texto batem literalmente. Isso as torna cegas a paráfrases corretas ("o gato está no tapete" vs "há um gato sobre o tapete" — mesmo significado, baixa sobreposição de n-gramas) e vulneráveis a saídas que "colam" trechos da referência sem realmente resolver a tarefa. BERTScore ataca essa limitação comparando *embeddings* em vez de tokens literais — duas frases semanticamente parecidas pontuam alto mesmo com vocabulário diferente, mais alinhado com o julgamento humano de qualidade.
+>
+> **Checkpoint**: sem olhar o texto, explique por que duas traduções corretas mas com palavras diferentes podem receber BLEU baixo — e por que isso é uma limitação, não um recurso.
+
 ### Referências
 - `Paper` **GLUE** — Wang et al. (2018). https://arxiv.org/abs/1804.07461
 - `Paper` **BERTScore** — Zhang et al. (2019). https://arxiv.org/abs/1904.09675
@@ -214,11 +256,15 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - Avalie qualitativamente: analogias (rei − homem + mulher), similaridades.
 - **Compare** com embeddings pré-treinados em PT (NILC, fastText).
 
+> **Variante guiada**: antes de testar analogias, verifique similaridades simples primeiro (palavras que deveriam ficar próximas: "cachorro"/"gato", "rei"/"rainha") — se isso já falhar, o problema é o treino (corpus pequeno, poucas épocas), e testar analogias mais complexas antes de resolver isso é perda de tempo.
+
 ### Projeto 6.3 — Implementar BPE do zero
 - Em Python puro, sem `tokenizers`.
 - Treine em um corpus pequeno.
 - Compare com `tiktoken` ou `tokenizers` da HF.
 - **Referência guia**: o vídeo do Karpathy sobre tokenização.
+
+> **Variante guiada**: rode seu BPE com poucas iterações de merge primeiro (ex.: 10) e imprima o vocabulário resultante — confirme que os merges fazem sentido (pares frequentes tipo "e"+"s") antes de rodar as milhares de iterações necessárias para um tokenizer de verdade.
 
 ### Projeto 6.4 — NER com spaCy + customização
 - Use modelo PT-BR do spaCy.
