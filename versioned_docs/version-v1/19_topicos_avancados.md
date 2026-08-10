@@ -8,7 +8,7 @@ sidebar_position: 19
 
 > **Objetivo**: cobrir frentes de pesquisa ativas em 2024–2025 — Mixture of Experts, State Space Models (Mamba), modelos de difusão, world models, neuro-symbolic, interpretability profundo, e fronteiras emergentes.
 >
-> **Pré-requisitos**: Módulos 07, 08, 09. Conforto com leitura de papers.
+> **Pré-requisitos**: Módulos [07](07_transformers.md), [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.md). Conforto com leitura de papers.
 >
 > **Tempo de referência**: 6–10 semanas (não-linear; escolha sub-tópicos).
 
@@ -97,7 +97,7 @@ Pesquisa ativa, ainda longe de competir com autoregressivo.
 - 📄 **DiffuSeq**, **SEDD**.
 
 ### Difusão para vídeo
-Mod. 18 cobre. SDEs em alta dimensão, condicionamento temporal.
+Mod. [18](18_multimodal.md) cobre. SDEs em alta dimensão, condicionamento temporal.
 
 ### Aplicações além de imagem
 - Música (Stable Audio).
@@ -137,7 +137,7 @@ Aprender modelo do mundo (\(P(s' | s, a)\)) com rede neural; usar para planejame
 - **RAG** (eterno trade-off).
 
 ### Memória externa
-- **MemGPT** (visto em mod. 13).
+- **MemGPT** (visto em mod. [13](13_agentes_tools_protocolos.md)).
 - **Infini-attention** (Google). https://arxiv.org/abs/2404.07143
 - **Titans: Learning to Memorize at Test Time** (Google, 2024). https://arxiv.org/abs/2501.00663
 
@@ -149,7 +149,7 @@ Aprender modelo do mundo (\(P(s' | s, a)\)) com rede neural; usar para planejame
 
 ## 19.6 Reasoning models a fundo
 
-Mod. 09 introduziu; aqui aprofundamos.
+Mod. [09](09_treinamento_e_alinhamento.md) introduziu; aqui aprofundamos.
 
 ### Linhas de pesquisa
 - **CoT supervisionado** (treina em traces).
@@ -176,14 +176,14 @@ Combinar redes neurais com raciocínio simbólico/lógico.
 
 - **DeepProbLog**, **Logical Neural Networks**.
 - **Neuro-Symbolic Concept Learner** (MIT). https://arxiv.org/abs/1904.12584
-- **Tool-augmented LLMs** (mod. 13) é, em parte, neuro-symbolic na prática.
+- **Tool-augmented LLMs** (mod. [13](13_agentes_tools_protocolos.md)) é, em parte, neuro-symbolic na prática.
 - **Theorem proving** com LLMs: AlphaProof, AlphaGeometry (DeepMind). 📄 https://www.nature.com/articles/s41586-023-06747-5
 
 ---
 
 ## 19.8 Interpretability profundo
 
-Mod. 14 introduziu. Aqui, frentes ativas:
+Mod. [14](14_avaliacao_e_seguranca.md) introduziu. Aqui, frentes ativas:
 
 - **Sparse Autoencoders (SAEs)**: extrair features interpretáveis. Anthropic: Sonnet, Opus desencaixotados. https://transformer-circuits.pub/2024/scaling-monosemanticity/
 - **Activation steering** — manipular comportamento via vetores no espaço de ativação.
@@ -233,7 +233,7 @@ Aprender sequencialmente sem esquecer (catastrophic forgetting).
 - **Adapter-based** (relacionado a LoRA).
 
 ### Conexão com LLMs
-- **Continued pretraining** (mod. 09) é uma instância prática.
+- **Continued pretraining** (mod. [09](09_treinamento_e_alinhamento.md)) é uma instância prática.
 - **Model merging** (TIES, DARE, MoE-merge) — combinar modelos sem retreino.
 - 📄 **TIES-Merging**. https://arxiv.org/abs/2306.01708
 - 📄 **Model Soups** — Wortsman et al. (2022). https://arxiv.org/abs/2203.05482
@@ -306,7 +306,7 @@ Talvez a aplicação mais impactante de ML moderno fora de tech.
 - Compare estilos (DreamBooth-style vs LoRA-style).
 
 ### Projeto 19.5 — Reasoning RL pequeno
-- Já antecipado em mod. 09 e 17.
+- Já antecipado em mod. [09](09_treinamento_e_alinhamento.md) e [17](17_aprendizado_reforco.md).
 - Aqui: aprofunde com process reward model.
 - Compare outcome-only vs PRM.
 
@@ -330,7 +330,7 @@ Talvez a aplicação mais impactante de ML moderno fora de tech.
 
 - **Tratar tudo aqui como "vai dominar logo"** — muitas dessas frentes são especulativas; mantenha ceticismo.
 - **Confundir performance em paper com resultado em produção** — papers reportam o melhor caso.
-- **Pular fundamentos** porque "é mais legal" — sem mod. 7–9, este módulo é mágica.
+- **Pular fundamentos** porque "é mais legal" — sem mod. [7](07_transformers.md)–[9](09_treinamento_e_alinhamento.md), este módulo é mágica.
 - **Treinar difusão sem GPU adequada** — é caro e lento; comece com modelos pequenos.
 
 ---

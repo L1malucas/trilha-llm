@@ -8,7 +8,7 @@ sidebar_position: 14
 
 > **Objetivo**: avaliar LLMs cientificamente — benchmarks, LLM-as-judge, alucinação, viés, calibração — e proteger sistemas contra ataques (prompt injection, jailbreaks, data leakage). Inclui interpretabilidade mecanística como ferramenta de safety.
 >
-> **Pré-requisitos**: Módulos 09, 11–13.
+> **Pré-requisitos**: Módulos [09](09_treinamento_e_alinhamento.md), [11](11_prompt_engineering.md)–[13](13_agentes_tools_protocolos.md).
 >
 > **Tempo de referência**: 3–4 semanas.
 
@@ -133,7 +133,7 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 
 ### Mitigação
 - **RAG** com grounding obrigatório.
-- **Constrained generation** (mod. 11).
+- **Constrained generation** (mod. [11](11_prompt_engineering.md)).
 - **Self-consistency**.
 - **Chain of Verification**. 📄 https://arxiv.org/abs/2309.11495
 - **Citação obrigatória** com validação.
@@ -200,7 +200,7 @@ LLMs grandes pré-RLHF tendem a ser bem calibrados. **RLHF tipicamente piora cal
 ## 14.8 Adversarial robustness e Jailbreaks
 
 ### Tipos de ataque
-- **Prompt injection** direto e indireto (revisar mod. 11).
+- **Prompt injection** direto e indireto (revisar mod. [11](11_prompt_engineering.md)).
 - **Jailbreak**: induzir comportamento proibido (DAN, role-play, encoding, multi-turn).
 - **Universal adversarial suffixes**. 📄 https://arxiv.org/abs/2307.15043
 - **Many-shot jailbreaking** (Anthropic). https://www.anthropic.com/news/many-shot-jailbreaking
@@ -324,7 +324,7 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 - Use Promptfoo ou Inspect AI.
 
 ### Projeto 14.4 — Red-team mini
-- Pegue um chatbot que você construiu (do mod. 12 ou 13).
+- Pegue um chatbot que você construiu (do mod. [12](12_rag.md) ou 13).
 - 10 categorias de ataque: jailbreak, prompt injection, PII extraction, role-play malicioso, etc.
 - 5 ataques por categoria.
 - Adicione Llama Guard 3 e meça redução de incidentes.
@@ -356,10 +356,10 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Eval frameworks | Engenharia de produção (mod. 15) |
-| Guardrails | Produção (mod. 15) |
-| Privacy considerations | Inferência local (revisar mod. 10) |
-| Bias e fairness | Multimodal (mod. 18) |
+| Eval frameworks | Engenharia de produção (mod. [15](15_engenharia_producao.md)) |
+| Guardrails | Produção (mod. [15](15_engenharia_producao.md)) |
+| Privacy considerations | Inferência local (revisar mod. [10](10_eficiencia_e_inferencia_local.md)) |
+| Bias e fairness | Multimodal (mod. [18](18_multimodal.md)) |
 
 ---
 

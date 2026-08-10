@@ -6,9 +6,9 @@ sidebar_position: 5
 
 # Módulo 05 — Deep Learning (Fundamentos e Arquiteturas)
 
-> **Objetivo**: dominar redes neurais a ponto de implementar do zero, treinar com confiança, e entender CNNs, RNNs/LSTMs e suas limitações — preparando o terreno conceitual para Transformers (mod. 07).
+> **Objetivo**: dominar redes neurais a ponto de implementar do zero, treinar com confiança, e entender CNNs, RNNs/LSTMs e suas limitações — preparando o terreno conceitual para Transformers (mod. [07](07_transformers.md)).
 >
-> **Pré-requisitos**: Módulos 01–04.
+> **Pré-requisitos**: Módulos [01](01_matematica.md)–[04](04_ml_moderno.md).
 >
 > **Tempo de referência**: 6–10 semanas.
 
@@ -58,7 +58,7 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 
 ### Otimização
 - **SGD**, **SGD com Momentum**, **Nesterov**.
-- **Adam, AdamW** (revisar do mod. 01 com mais profundidade).
+- **Adam, AdamW** (revisar do mod. [01](01_matematica.md) com mais profundidade).
 - **Learning rate schedules**: step decay, cosine annealing, **warmup**.
 - **Gradient clipping** (essencial em RNNs e LLMs).
 
@@ -97,7 +97,7 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 - **GoogLeNet/Inception** (2014) — módulos.
 - **ResNet** (2015) — **skip connections**, fundamentais para ir além de 100 camadas.
 - **DenseNet**, **EfficientNet**.
-- **Vision Transformer (ViT)** — preview do mod. 16.
+- **Vision Transformer (ViT)** — preview do mod. [16](16_visao_computacional.md).
 
 ### Por que skip connections importam para LLMs
 Transformers usam residual connections derivadas das ResNets. Entender o problema que ResNet resolve é entender por que Transformers profundos treinam.
@@ -114,7 +114,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 ### Por que estudá-las (apesar de obsoletas para grandes textos)
 - Foram a forma de modelar sequências antes dos Transformers.
 - Permitem entender por que os Transformers ganharam (paralelização, dependências de longo alcance).
-- **State Space Models** (Mamba — mod. 19) recuperam ideias recorrentes.
+- **State Space Models** (Mamba — mod. [19](19_topicos_avancados.md)) recuperam ideias recorrentes.
 
 ### Conceitos
 - **RNN vanilla**: hidden state, BPTT (backprop through time), problema de gradientes.
@@ -141,7 +141,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 
 ### Por que importa
 - Embeddings em LLMs são, conceitualmente, "encoders" treinados.
-- Difusão (mod. 19) é a evolução desses paradigmas.
+- Difusão (mod. [19](19_topicos_avancados.md)) é a evolução desses paradigmas.
 
 ### Referências
 - 📄 **Auto-Encoding Variational Bayes** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
@@ -156,7 +156,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - `DataLoader`, `Dataset`, custom datasets.
 - Training loop manual: forward → loss → backward → optimizer.step().
 - **`torch.compile`** (PyTorch 2.x, JIT).
-- **`torch.distributed`**: DDP, FSDP (preview do mod. 09).
+- **`torch.distributed`**: DDP, FSDP (preview do mod. [09](09_treinamento_e_alinhamento.md)).
 - **PyTorch Lightning** (abstração sobre PyTorch para cortar boilerplate).
 - **Hugging Face Accelerate** (alternativa).
 
@@ -202,14 +202,14 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 ### Projeto 5.4 — char-RNN (gerador de texto caractere a caractere)
 - Implemente LSTM em PyTorch.
 - Treine em corpus de texto à sua escolha (Shakespeare, código, letras de música).
-- Gere texto novo. Compare com versão GPT mínima (preview de mod. 07).
+- Gere texto novo. Compare com versão GPT mínima (preview de mod. [07](07_transformers.md)).
 
 ### Projeto 5.5 — VAE no MNIST
 - Implemente encoder, decoder, reparameterization trick.
 - Visualize espaço latente em 2D.
 - Gere amostras interpolando no espaço latente.
 
-### Projeto 5.6 (cross-link com mod. 14) — Pipeline de experimentação completo
+### Projeto 5.6 (cross-link com mod. [14](14_avaliacao_e_seguranca.md)) — Pipeline de experimentação completo
 - Use W&B para log.
 - Faça grid de experimentos: 3 arquiteturas × 3 learning rates × 2 batch sizes.
 - Analise a tabela de resultados.
@@ -232,12 +232,12 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 | Conceito daqui | Aparece em |
 |---|---|
 | Backpropagation | Treinamento de Transformers |
-| Skip connections | Transformers (mod. 07) |
-| Layer Normalization | Transformers (mod. 07) |
-| Adam, warmup | Treinamento de LLMs (mod. 09) |
+| Skip connections | Transformers (mod. [07](07_transformers.md)) |
+| Layer Normalization | Transformers (mod. [07](07_transformers.md)) |
+| Adam, warmup | Treinamento de LLMs (mod. [09](09_treinamento_e_alinhamento.md)) |
 | RNN encoder-decoder | Conceito que Transformers substituem |
-| Attention (Bahdanau) | Self-attention (mod. 07) |
-| Embeddings em autoencoders | Word embeddings (mod. 06) |
+| Attention (Bahdanau) | Self-attention (mod. [07](07_transformers.md)) |
+| Embeddings em autoencoders | Word embeddings (mod. [06](06_nlp_classico.md)) |
 
 ---
 

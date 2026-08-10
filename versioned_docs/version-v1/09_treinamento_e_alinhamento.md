@@ -8,7 +8,7 @@ sidebar_position: 9
 
 > **Objetivo**: entender o ciclo completo de criação de uma LLM moderna — do pré-treinamento bruto ao modelo "instruct/chat" alinhado, incluindo SFT, DPO, RLHF e variações.
 >
-> **Pré-requisitos**: Módulos 07–08.
+> **Pré-requisitos**: Módulos [07](07_transformers.md)–[08](08_llms_arquiteturas.md).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -203,7 +203,7 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 
 - **Loss de validação** (mas não basta).
 - **Perplexity** em conjuntos held-out por domínio.
-- **Benchmarks** (MMLU, GSM8K, HumanEval, etc. — ver mod. 14).
+- **Benchmarks** (MMLU, GSM8K, HumanEval, etc. — ver mod. [14](14_avaliacao_e_seguranca.md)).
 - **Eval qualitativa** (rodadas com prompts próprios).
 - **LM-Eval-Harness** (EleutherAI). https://github.com/EleutherAI/lm-evaluation-harness
 
@@ -257,10 +257,10 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 
 | Conceito daqui | Aparece em |
 |---|---|
-| LoRA, QLoRA | Eficiência (mod. 10), customização (mod. 13) |
-| Chat templates | Prompt engineering (mod. 11), Agentes (mod. 13) |
-| RLHF/DPO mindset | Avaliação (mod. 14), safety |
-| Reasoning RL | Agentes complexos (mod. 13) |
+| LoRA, QLoRA | Eficiência (mod. [10](10_eficiencia_e_inferencia_local.md)), customização (mod. [13](13_agentes_tools_protocolos.md)) |
+| Chat templates | Prompt engineering (mod. [11](11_prompt_engineering.md)), Agentes (mod. [13](13_agentes_tools_protocolos.md)) |
+| RLHF/DPO mindset | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)), safety |
+| Reasoning RL | Agentes complexos (mod. [13](13_agentes_tools_protocolos.md)) |
 
 ---
 

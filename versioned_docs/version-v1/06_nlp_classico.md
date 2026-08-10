@@ -8,7 +8,7 @@ sidebar_position: 6
 
 > **Objetivo**: entender como linguagem foi tratada *antes* dos Transformers — e por que isso ainda importa. Sem essa base, "embeddings", "tokenização" e "contexto" são só palavras.
 >
-> **Pré-requisitos**: Módulos 01–05.
+> **Pré-requisitos**: Módulos [01](01_matematica.md)–[05](05_deep_learning.md).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -86,7 +86,7 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 - Vocabulário grande → vetores enormes e esparsos.
 - Sem ordem (em BoW puro).
 
-### Modelos de tópicos (cross-link mod. 04)
+### Modelos de tópicos (cross-link mod. [04](04_ml_moderno.md))
 - **Latent Semantic Analysis (LSA)** via SVD em matriz termo-documento.
 - **Latent Dirichlet Allocation (LDA)**.
 - **Non-negative Matrix Factorization (NMF)**.
@@ -117,7 +117,7 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 
 ### Limitações
 - **Estáticos**: "banco" tem o mesmo embedding em "banco do parque" e "banco financeiro".
-- Resolvido depois por embeddings contextuais (ELMo, BERT — mod. 08).
+- Resolvido depois por embeddings contextuais (ELMo, BERT — mod. [08](08_llms_arquiteturas.md)).
 
 ### Papers fundadores (todos obrigatórios para ler)
 - 📄 **Efficient Estimation of Word Representations in Vector Space (Word2Vec)** — Mikolov et al. (2013). https://arxiv.org/abs/1301.3781
@@ -246,13 +246,13 @@ Modelar P(w_n | w_1, ..., w_{n-1}) com a aproximação de Markov: P(w_n | w_{n-k
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Tokenização (BPE, SentencePiece) | LLMs (mod. 08, 09) |
+| Tokenização (BPE, SentencePiece) | LLMs (mod. [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.md)) |
 | Word embeddings | Embeddings contextuais em LLMs |
 | Hipótese distribucional | Toda IA moderna |
-| Perplexity | Avaliação de LLMs (mod. 14) |
-| Seq2Seq | Encoder-decoder em Transformers (mod. 07) |
-| Attention sobre RNN (Bahdanau) | Self-attention (mod. 07) |
-| TF-IDF | Sparse retrieval em RAG (mod. 12) |
+| Perplexity | Avaliação de LLMs (mod. [14](14_avaliacao_e_seguranca.md)) |
+| Seq2Seq | Encoder-decoder em Transformers (mod. [07](07_transformers.md)) |
+| Attention sobre RNN (Bahdanau) | Self-attention (mod. [07](07_transformers.md)) |
+| TF-IDF | Sparse retrieval em RAG (mod. [12](12_rag.md)) |
 
 ---
 

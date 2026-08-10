@@ -8,7 +8,7 @@ sidebar_position: 13
 
 > **Objetivo**: dominar o paradigma de agentes — LLMs que decidem, planejam, usam ferramentas, mantêm estado, colaboram. Function calling, ReAct, MCP, frameworks (LangGraph, CrewAI, Mastra), padrões multi-agente.
 >
-> **Pré-requisitos**: Módulos 11, 12.
+> **Pré-requisitos**: Módulos [11](11_prompt_engineering.md), [12](12_rag.md).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -278,7 +278,7 @@ Não dá para entender o que agente fez sem **trace estruturado**: cada chamada 
 - 🛠 **Phoenix** (Arize). https://github.com/Arize-ai/phoenix
 - 🛠 **OpenTelemetry GenAI** — padrão emergente. https://opentelemetry.io/docs/specs/semconv/gen-ai/
 
-Mais detalhes no módulo 15.
+Mais detalhes no módulo [15](15_engenharia_producao.md).
 
 ---
 
@@ -308,7 +308,7 @@ Mais detalhes no módulo 15.
 
 ### Projeto 13.1 — Agente ReAct from scratch
 - Sem framework. Loop manual em Python E em TS.
-- 3 ferramentas: cálculo (eval seguro), busca local (em corpus do mod. 12), data/hora.
+- 3 ferramentas: cálculo (eval seguro), busca local (em corpus do mod. [12](12_rag.md)), data/hora.
 - Logging estruturado de cada passo.
 
 ### Projeto 13.2 — Servidor MCP
@@ -365,11 +365,11 @@ Mais detalhes no módulo 15.
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Tool use | Avaliação (mod. 14), Produção (mod. 15) |
-| MCP | Integrações em produção (mod. 15) |
-| Agent observability | Engenharia de produção (mod. 15) |
-| Agentic RAG | RAG (mod. 12 — bidirecional) |
-| Multimodal agents | Mod. 18 |
+| Tool use | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)), Produção (mod. [15](15_engenharia_producao.md)) |
+| MCP | Integrações em produção (mod. [15](15_engenharia_producao.md)) |
+| Agent observability | Engenharia de produção (mod. [15](15_engenharia_producao.md)) |
+| Agentic RAG | RAG (mod. [12](12_rag.md) — bidirecional) |
+| Multimodal agents | Mod. [18](18_multimodal.md) |
 
 ---
 
