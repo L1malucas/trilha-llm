@@ -12,6 +12,16 @@ sidebar_position: 3
 >
 > **Tempo de referência**: 4–6 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar o trade-off bias-variância com um exemplo concreto, não só a definição.
+- Escolher entre regressão linear, árvore, boosting e kNN para um problema tabular, justificando a escolha.
+- Explicar a diferença estrutural entre bagging (Random Forest) e boosting (XGBoost) — não são a mesma ideia com nome diferente.
+- Detectar data leakage num pipeline de ML observando o código, não só a definição do termo.
+- Escolher a métrica certa para um problema desbalanceado, e explicar por que accuracy engana nesse caso.
+
 ---
 
 ## Por que isso importa
@@ -40,6 +50,12 @@ sidebar_position: 3
 - **No Free Lunch Theorem**: nenhum algoritmo é ótimo para tudo.
 - **Pipeline de ML**: ingestão → limpeza → features → modelo → avaliação → deploy.
 
+> **Intuição — bias-variância**: imagine ajustar uma curva a pontos de dados espalhados. Um modelo com **alto bias** (ex.: reta numa relação claramente curva) é "teimoso demais" — ignora padrões reais nos dados, erra sistematicamente da mesma forma (underfitting). Um modelo com **alta variância** (ex.: uma curva que serpenteia por cada ponto exatamente) é "influenciável demais" — memoriza ruído específico daquele conjunto de treino, e uma leve mudança nos dados produziria uma curva bem diferente (overfitting). O ponto ideal não é zero bias e zero variância (impossível na prática) — é o equilíbrio que minimiza o erro total em dados *novos*, não vistos no treino. Regularização (L1/L2) empurra deliberadamente o modelo pra ter mais bias em troca de menos variância, quando o modelo está memorizando demais.
+>
+> **Aplicação real**: overfitting em LLMs se manifesta diferente (o modelo "decorando" trechos do corpus de treino em vez de generalizar), mas a lógica é idêntica — é por isso que técnicas de regularização deste módulo (weight decay, early stopping) reaparecem sem mudança conceitual no mod. [05](05_deep_learning.md#53-otimização-e-regularização-para-dl).
+>
+> **Checkpoint**: sem olhar o texto, dê um exemplo (pode ser hipotético) de um modelo com alto bias e outro com alta variância no mesmo problema. Depois, explique por que "zero erro no treino" não é uma meta desejável.
+
 ### Referências
 - `Curso` **Stanford CS229** — vídeos + notas. https://cs229.stanford.edu/
 - `Livro` **The Elements of Statistical Learning** — Hastie, Tibshirani, Friedman. https://hastie.su.domains/ElemStatLearn/
@@ -66,6 +82,12 @@ sidebar_position: 3
 ### Probabilísticos
 - **Naive Bayes** (multinomial, Gaussian, Bernoulli).
 - **Linear/Quadratic Discriminant Analysis (LDA/QDA)**.
+
+> **Intuição por família**: modelos **lineares** traçam uma reta/plano/hiperplano separando os dados — rápidos, interpretáveis, mas limitados a relações (aproximadamente) lineares, a menos que você projete features não-lineares manualmente. **Árvores de decisão** são uma sequência de perguntas sim/não ("idade > 30? renda > X?") que particiona o espaço em regiões — capturam não-linearidade e interações naturalmente, mas uma única árvore profunda overfita fácil. **kNN** não "aprende" nada explicitamente — classifica um ponto novo olhando para seus vizinhos mais próximos no conjunto de treino; simples, mas caro em tempo de inferência e sofre com a maldição da dimensionalidade (em espaços de alta dimensão, "próximo" perde significado).
+>
+> **Intuição — bagging vs boosting** (a distinção mais confundida deste módulo): **Random Forest** (bagging) treina muitas árvores *independentes*, cada uma numa amostra aleatória dos dados, e faz a média das previsões — reduz variância porque erros aleatórios de árvores individuais se cancelam. **Gradient Boosting** (XGBoost, LightGBM) treina árvores *sequencialmente*, cada nova árvore focando em corrigir os erros que as anteriores ainda cometem (aprendendo a prever o *resíduo* do ensemble atual) — reduz bias porque o ensemble fica progressivamente melhor no que ainda erra. São estratégias opostas: bagging paraleliza e reduz variância; boosting é sequencial e reduz bias. É por isso que gradient boosting costuma vencer em benchmarks tabulares (Kaggle inclusive) — ele ataca diretamente o erro residual, enquanto Random Forest só reduz ruído de árvores já razoavelmente boas.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre bagging e boosting numa frase cada. Depois, explique por que kNN sofre mais com dimensionalidade alta do que uma árvore de decisão.
 
 ### Referências (papers fundadores)
 - `Paper` **Random Forests** — Breiman (2001). https://link.springer.com/article/10.1023/A:1010933404324
@@ -94,6 +116,12 @@ sidebar_position: 3
 - **One-Class SVM**.
 - **Autoencoders** (cross-link com DL — módulo [05](05_deep_learning.md)).
 
+> **Intuição — k-Means**: alterna entre dois passos até estabilizar — (1) atribuir cada ponto ao centróide mais próximo, (2) recalcular cada centróide como a média dos pontos atribuídos a ele. É um processo iterativo simples, mas assume que clusters são "bolhas" aproximadamente esféricas de tamanho parecido — falha visivelmente em clusters alongados, aninhados ou de densidade muito diferente (é aí que DBSCAN, baseado em densidade em vez de distância ao centróide, se sai melhor).
+>
+> **Intuição — PCA vs t-SNE/UMAP**: PCA (mod. [01](01_matematica.md#11-álgebra-linear)) preserva a variância global dos dados — boa para compressão/reconstrução, mas pode esconder estrutura local (clusters próximos podem ficar sobrepostos na projeção). t-SNE e UMAP otimizam para preservar *vizinhança local* (pontos próximos no espaço original ficam próximos na visualização 2D/3D), o que produz visualizações mais "limpas" com clusters separados — mas a distância *entre* clusters na visualização não tem significado confiável (t-SNE/UMAP não preservam estrutura global), e por isso não devem alimentar um modelo downstream, só servir para inspeção visual.
+>
+> **Checkpoint**: sem olhar o texto, explique por que k-Means falha em clusters com formato alongado (não esférico). Depois, explique por que você não deveria usar a saída de t-SNE como feature de entrada para outro modelo.
+
 ### Referências
 - `Paper` **t-SNE** — van der Maaten & Hinton (2008). https://www.jmlr.org/papers/v9/vandermaaten08a.html
 - `Paper` **UMAP** — McInnes et al. (2018). https://arxiv.org/abs/1802.03426
@@ -108,6 +136,8 @@ sidebar_position: 3
 - **Tratamento de missing values**: deleção, imputação simples, imputação multivariada.
 - **Feature engineering** clássica: interações, polinomiais, agregações temporais.
 - **Feature selection**: filter (correlação, mútua informação), wrapper (RFE), embedded (Lasso).
+
+> **Cuidado com target encoding**: usar a média do target por categoria como feature é poderoso, mas vaza informação do rótulo para a feature — se calculado ingenuamente sobre o dataset inteiro (incluindo o próprio ponto sendo codificado), o modelo "aprende" o vazamento em vez do padrão real, e a performance desaba fora da amostra. A forma correta calcula o encoding só com dados de treino (via cross-validation interna), nunca vendo o ponto que está sendo transformado.
 
 ### Referências
 - `Livro` **Feature Engineering for Machine Learning** — Zheng & Casari.
@@ -124,6 +154,10 @@ sidebar_position: 3
 - **Calibração de probabilidades**: Platt scaling, isotonic regression.
 - **Análise de erro**: matriz de confusão, residual plots.
 
+> **Intuição — três splits**: treino ajusta os parâmetros; validação escolhe hiperparâmetros e decide "quando parar"; teste mede a performance final, **uma única vez**. Se você usa o mesmo conjunto pra tudo, o modelo (ou você, escolhendo hiperparâmetros) acaba indiretamente "vendo" o teste múltiplas vezes — o número final fica otimista, porque parte da escolha já foi guiada por aquele conjunto. Curvas de aprendizado (erro de treino e validação em função do tamanho do dataset) são o diagnóstico direto de bias vs variância: gap grande entre as duas curvas indica alta variância (mais dados ajudariam); as duas curvas convergindo num erro alto indica alto bias (mais dados não ajudariam, o modelo é fraco demais).
+>
+> **Checkpoint**: sem olhar o texto, explique por que "tunar no test set" invalida a métrica final reportada. Depois, descreva o que uma curva de aprendizado mostraria para um modelo com alto bias.
+
 ### Referências
 - `Paper` **A Survey of Cross-Validation Procedures for Model Selection** — Arlot & Celisse (2010). https://arxiv.org/abs/0907.4728
 
@@ -137,6 +171,8 @@ sidebar_position: 3
 - Compare resultados em datasets sintéticos (blobs, moons).
 - Discuta limitações empíricas.
 
+> **Variante guiada**: rode primeiro no dataset "blobs" (clusters esféricos — deve funcionar bem) e só depois no "moons" (clusters em forma de lua — deve falhar visivelmente). Ver o próprio algoritmo falhar onde a teoria prevê que ele falharia é mais convincente do que só ler a limitação.
+
 ### Projeto 3.2 — Pipeline completo em problema tabular
 **O que prova**: que você sabe orquestrar um workflow real.
 - Dataset: Titanic, Adult Income, ou California Housing.
@@ -144,6 +180,8 @@ sidebar_position: 3
 - Compare ≥4 modelos: regressão logística, Random Forest, XGBoost, LightGBM.
 - Use cross-validation aninhada para tuning.
 - Análise de erro com SHAP (explica módulo [14](14_avaliacao_e_seguranca.md) também).
+
+> **Variante guiada**: antes de comparar os 4 modelos, formule uma hipótese de qual deve performar melhor no seu dataset específico, baseada na intuição da seção 3.2 — depois confira se a hipótese bateu, e se não bateu, investigue por quê (isso ensina mais do que só rodar e comparar números).
 
 ### Projeto 3.3 — Detecção de anomalias
 **O que prova**: que você sabe abordar problemas não-supervisionados.
@@ -155,6 +193,8 @@ sidebar_position: 3
 **O que prova**: que você entende boosting além do XGBoost-como-caixa-preta.
 - Implemente um GBM mínimo em NumPy: árvores fracas (decision stumps), gradiente da loss.
 - Compare com XGBoost no mesmo problema.
+
+> **Variante guiada**: implemente com apenas 1 árvore fraca primeiro e confirme que o resíduo (erro que a próxima árvore deve corrigir) faz sentido antes de encadear várias — isso isola o mecanismo central do boosting (cada árvore nova mira o erro da anterior) de bugs de acumulação.
 
 ---
 

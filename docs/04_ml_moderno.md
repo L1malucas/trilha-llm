@@ -12,6 +12,16 @@ sidebar_position: 4
 >
 > **Tempo de referência**: 3–5 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar por que self-supervised learning não é a mesma coisa que unsupervised learning, com um exemplo de tarefa de pretexto.
+- Explicar por que transfer learning funciona — o que exatamente é "transferido" entre tarefas.
+- Conectar few-shot prompting (o que LLMs fazem em produção) com few-shot learning clássico.
+- Explicar a diferença entre correlação e causa com um exemplo de confounding.
+- Justificar por que um modelo com probabilidade calibrada é mais útil em produção que um só "mais acurado".
+
 ---
 
 ## Por que isso importa
@@ -43,6 +53,14 @@ Exemplos canônicos:
 ### Por que isso é o coração dos LLMs
 LLMs modernos são **modelos auto-supervisionados em escala massiva**. Entender SSL é entender o pretraining.
 
+> **Intuição**: a diferença entre SSL e unsupervised learning tradicional (mod. [03](03_ml_classico.md#33-algoritmos-não-supervisionados)) é sutil mas fundamental: unsupervised learning (k-means, PCA) não tem noção de "certo" ou "errado" — só busca estrutura. SSL **inventa** um problema supervisionado a partir do próprio dado: "esconda a última palavra da frase, tente prevê-la" tem uma resposta certa verificável (a palavra que realmente estava lá), mesmo sem nenhum humano ter rotulado nada. É esse "rótulo de graça, derivado da estrutura dos dados" que permite treinar em quantidades de texto que seriam impossíveis de rotular manualmente — todo o texto da internet, no caso de um LLM.
+>
+> **Exemplo resolvido — contrastive learning**: imagine duas versões da mesma foto de um cachorro (uma cortada, uma com cor alterada) — são um "par positivo": o modelo deve aprender a representá-las de forma parecida no espaço de embeddings. Uma foto de um gato é o "par negativo": deve ficar distante no espaço de embeddings da foto do cachorro. Repetindo isso em milhões de pares, o modelo aprende uma noção de "similaridade visual" sem nenhum humano ter dito "isto é um cachorro" — é assim que CLIP (mod. [18](18_multimodal.mdx)) aprende embeddings de imagem alinhados com texto, sem rotulagem manual de categoria.
+>
+> **Aplicação real**: next-token prediction (GPT) e masked language modeling (BERT) são as duas tarefas de pretexto que definem os dois grandes ramos de LLMs modernos (decoder-only vs encoder-only, mod. [07](07_transformers.mdx#74-arquiteturas-de-transformer)) — a escolha da tarefa de pretexto molda o que o modelo fica bom em fazer depois.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre SSL e unsupervised learning tradicional. Depois, explique por que "prever a próxima palavra" conta como uma tarefa supervisionada, mesmo sem rótulo humano.
+
 ### Papers fundamentais
 - `Paper` **A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)** — Chen et al. (2020). https://arxiv.org/abs/2002.05709
 - `Paper` **Momentum Contrast for Unsupervised Visual Representation Learning (MoCo)** — He et al. (2019). https://arxiv.org/abs/1911.05722
@@ -65,6 +83,12 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 - **Fine-tuning gradual** (gradual unfreezing).
 - **Domain adaptation**: ajustar a distribuição-alvo.
 
+> **Intuição**: um modelo pré-treinado numa tarefa-fonte massiva (todo texto da internet, ou milhões de imagens do ImageNet) aprende representações internas genéricas e reutilizáveis — as primeiras camadas de uma CNN de visão aprendem bordas e texturas, úteis para qualquer tarefa visual; as camadas de um LLM aprendem sintaxe, semântica e conhecimento de mundo, úteis para qualquer tarefa de texto. Transfer learning reaproveita essas representações já aprendidas em vez de aprender do zero — é a diferença entre ensinar alguém que já sabe ler a ler um domínio técnico específico, versus ensinar alguém analfabeto a ler *e* entender o domínio técnico ao mesmo tempo. Feature extraction (congelar tudo, só treinar a cabeça) é apropriado quando a tarefa-alvo é parecida com a tarefa-fonte e há pouco dado; fine-tuning completo faz sentido quando há mais dado disponível e a tarefa-alvo é mais distinta.
+>
+> **Aplicação real**: todo fine-tuning de LLM (LoRA, QLoRA, full fine-tuning — mod. [09](09_treinamento_e_alinhamento.mdx)) é transfer learning: o pré-treinamento massivo em texto genérico é a tarefa-fonte, e adaptar o modelo pra seguir instruções ou uma tarefa específica é a tarefa-alvo, feita com ordens de magnitude menos dado do que seria necessário do zero.
+>
+> **Checkpoint**: sem olhar o texto, explique por que as primeiras camadas de uma rede pré-treinada costumam ser mais reaproveitáveis entre tarefas do que as últimas.
+
 ### Referências
 - `Paper` **A Survey on Transfer Learning** — Pan & Yang (2010). https://www.cse.ust.hk/~qyang/Docs/2009/tkde_transfer_learning.pdf
 - `Paper` **Universal Language Model Fine-tuning (ULMFiT)** — Howard & Ruder (2018). https://arxiv.org/abs/1801.06146 (clássico em NLP)
@@ -81,6 +105,10 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 ### Por que importa para LLMs
 Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de few-shot learning sem gradient updates — comportamento "in-context" que aparece com escala.
 
+> **Intuição**: few-shot/meta-learning clássico (MAML, Prototypical Networks) ainda envolve *algum* ajuste de parâmetros — o modelo é explicitamente treinado para se adaptar rápido a partir de poucos exemplos. O que LLMs grandes fazem é mais surpreendente: dado alguns exemplos *no prompt* (sem nenhum gradient update, sem tocar nos pesos), o modelo "aprende" o padrão só olhando o contexto — é literalmente inferência, não treinamento. Esse comportamento (in-context learning) não foi projetado explicitamente; ele emerge como consequência do pré-treinamento em escala e é um dos fenômenos mais estudados (e ainda parcialmente misteriosos) em LLMs modernos.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre few-shot learning clássico (MAML) e few-shot prompting num LLM — qual dos dois ajusta pesos?
+
 ### Papers
 - `Paper` **Model-Agnostic Meta-Learning (MAML)** — Finn et al. (2017). https://arxiv.org/abs/1703.03400
 - `Paper` **Matching Networks for One Shot Learning** — Vinyals et al. (2016). https://arxiv.org/abs/1606.04080
@@ -95,6 +123,8 @@ Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de
 - **Blending**: variante simples de stacking com holdout.
 - **Bayesian Model Averaging**.
 - **Snapshot Ensembles** (em DL).
+
+> Stacking generaliza a ideia de "combinar modelos" (mod. [03](03_ml_classico.md#32-algoritmos-supervisionados), bagging/boosting) um passo além: em vez de uma regra fixa de combinação (média, voto), um **meta-modelo aprende** a melhor forma de combinar as previsões dos modelos base — útil quando os modelos base têm pontos fortes complementares (um lida melhor com um subgrupo de casos, outro com outro).
 
 ### Referências
 - `Livro` **Ensemble Methods: Foundations and Algorithms** — Zhou.
@@ -132,6 +162,8 @@ NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, tran
 - **Pseudo-labeling**, **co-training**.
 - **Data augmentation** como forma de "criar" supervisão.
 
+> **Intuição**: active learning inverte a pergunta usual — em vez de "que modelo treinar com os dados que tenho", pergunta "quais exemplos, se rotulados, mais reduziriam a incerteza do modelo". Tipicamente, o modelo é usado pra identificar os casos em que está mais inseguro (probabilidade próxima de 50% numa classificação binária, por exemplo), e esses viram prioridade de rotulagem humana — extrai mais valor de um orçamento fixo de anotação do que rotular aleatoriamente.
+
 ### Referências
 - `Paper` **Snorkel: Rapid Training Data Creation with Weak Supervision** — Ratner et al. (2017). https://arxiv.org/abs/1711.10160
 - `Livro` **Active Learning** — Burr Settles. http://burrsettles.com/pub/settles.activelearning.pdf
@@ -151,10 +183,14 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - **Instrumental variables**.
 - **Difference-in-differences**.
 
+> **Intuição — confounding**: imagine observar que cidades com mais sorveterias têm mais afogamentos — correlação real nos dados. Seria um erro concluir que sorvete causa afogamento. A variável escondida (confounder) é a temperatura: dias quentes aumentam venda de sorvete *e* aumentam natação, que aumenta afogamentos. Um modelo puramente preditivo (mod. [03](03_ml_classico.md)) captura a correlação perfeitamente bem e seria "acurado" prevendo afogamentos a partir de vendas de sorvete — mas seria inútil (e enganoso) para decidir uma intervenção ("vamos fechar sorveterias pra reduzir afogamentos?" não funcionaria). Causal inference existe exatamente pra distinguir essas duas perguntas.
+
 ### Conexão com IA
 - Avaliação justa de modelos.
 - Compreensão de viés algorítmico.
 - Em RL: causalidade é fundamental.
+
+> **Checkpoint**: sem olhar o texto, explique o exemplo do sorvete/afogamento com suas próprias palavras — qual é o confounder, e por que ele engana um modelo puramente correlacional?
 
 ### Referências
 - `Livro` **Causal Inference: The Mixtape** — Cunningham (gratuito). https://mixtape.scunning.com/
@@ -175,6 +211,8 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - LLMs são fundamentalmente modelos probabilísticos sobre tokens.
 - Uncertainty quantification é o que diferencia "modelo bom" de "modelo confiável".
 
+> **Intuição**: um modelo que erra sabendo que está incerto é mais útil que um que erra com a mesma confiança de quando acerta — em produção, "não sei" é uma resposta valiosa que um modelo mal calibrado nunca dá. Uncertainty quantification (deep ensembles, dropout bayesiano) tenta extrair essa informação de "quão confiante devo estar nesta previsão" de modelos que, por padrão, sempre dão uma resposta com a mesma confiança aparente. Em LLMs, isso se relaciona diretamente com alucinação (mod. [14](14_avaliacao_e_seguranca.md)): um modelo "sabe" quando está extrapolando além do que aprendeu com confiança, na maioria dos casos, mas expressar essa incerteza de forma calibrada continua sendo um problema em aberto.
+
 ### Referências
 - `Livro` **Probabilistic Machine Learning (vol. 2: Advanced Topics)** — Murphy. https://probml.github.io/pml-book/
 - `Paper` **Auto-Encoding Variational Bayes (VAE)** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
@@ -194,6 +232,8 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - Avalie via linear probing (treine só uma cabeça linear sobre os embeddings).
 - **O que isso prova**: que self-supervision pode aprender boas representações sem rótulos.
 
+> **Variante guiada**: antes de treinar com contrastive loss, visualize alguns pares positivos/negativos gerados pelas augmentations — confirme que os pares positivos ainda "parecem" a mesma imagem pra um humano, e os negativos não. Um par positivo distorcido demais (irreconhecível) atrapalha o treino tanto quanto um bug de código.
+
 ### Projeto 4.3 — Hyperparameter optimization sério
 - Aplique Optuna num XGBoost para um problema com tempo de treinamento ~minutos.
 - Compare com random search e grid search.
@@ -204,6 +244,8 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - Treine modelo, identifique 50 exemplos mais incertos no pool não-rotulado.
 - "Rotule" (consultando ground-truth disponível) e retreine.
 - Compare curva de aprendizado vs random sampling.
+
+> **Variante guiada**: rode o loop de active learning e o de random sampling lado a lado, plotando accuracy vs número de exemplos rotulados para os dois — a diferença entre as curvas é a evidência concreta do valor de active learning.
 
 ### Projeto 4.5 (opcional) — Análise causal simples
 - Use o dataset Lalonde (clássico em causal inference).
