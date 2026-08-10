@@ -12,6 +12,16 @@ sidebar_position: 13
 >
 > **Tempo de referência**: 4–6 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Distinguir workflow, router e agente de verdade — e explicar por que a diferença importa para custo e previsibilidade.
+- Explicar o ciclo completo de function calling, do lado do modelo e do lado do orquestrador.
+- Explicar o que MCP padroniza e por que isso importa para quem constrói integrações.
+- Escolher a topologia multi-agente certa (ou nenhuma) para um problema dado.
+- Explicar por que code execution sem sandbox é um risco de segurança, não só uma prática ruim.
+
 ---
 
 ## Por que isso importa
@@ -36,6 +46,10 @@ Sistema baseado em LLM que:
 - **Tool-calling agent**: ReAct, decide ações dinamicamente. Agente padrão.
 - **Multi-agente**: múltiplos LLMs colaborando.
 - **Autonomous agent**: longo horizonte, auto-correção, planejamento meta.
+
+> **Intuição**: a diferença entre workflow e agente não é sobre "usar LLM" — é sobre **onde mora o controle de fluxo**. Num workflow, o código decide a sequência de passos e o LLM só preenche conteúdo dentro de cada passo (previsível, testável, barato). Num agente de verdade, o *LLM* decide a sequência — quantos passos, em que ordem, quando parar — o que ganha flexibilidade pra tarefas abertas, mas perde previsibilidade e controle de custo (um agente pode, em teoria, rodar por muito mais passos que o esperado). O espectro acima é uma régua de "quanto controle você está cedendo ao modelo", não uma hierarquia de "melhor para pior" — a recomendação da própria Anthropic (referência abaixo) é usar o mínimo de agência necessário pra tarefa, não o máximo disponível.
+>
+> **Checkpoint**: sem olhar o texto, explique a diferença entre um "router" e um "tool-calling agent" nesse espectro. Depois, explique por que "mais agência" não é sempre a escolha certa.
 
 ### Referências
 - `Paper` **Building Effective Agents** (Anthropic, 2024) — leitura essencial. https://www.anthropic.com/engineering/building-effective-agents
@@ -68,6 +82,8 @@ Sistema executa: "14:32 JST"
 Modelo gera resposta final.
 ```
 
+> **Intuição**: o modelo *nunca executa nada* — ele só gera texto (JSON estruturado, mod. [11](11_prompt_engineering.md#115-structured-output)) descrevendo a intenção de chamar uma função com certos argumentos. Todo o poder (e todo o risco) está no seu código, que decide se e como executar essa intenção. É por isso que "validar argumentos do modelo" não é paranoia — o modelo é, estruturalmente, só uma fonte de sugestões de ação; seu orquestrador é o único ponto que decide se essas sugestões viram execução real. Um function-calling que executa direto o que o modelo retorna, sem validação, está tratando texto gerado por um modelo probabilístico como se fosse comando confiável.
+
 ### Ferramentas e bibliotecas
 - `Ferramenta` **OpenAI Python/TS SDKs**.
 - `Ferramenta` **Anthropic SDKs**.
@@ -76,6 +92,8 @@ Modelo gera resposta final.
 
 ### Validação
 **Sempre** valide argumentos retornados pelo modelo (Pydantic, Zod). Modelo pode produzir JSON inválido ou argumentos perigosos.
+
+> **Checkpoint**: sem olhar o texto, explique por que "o modelo decidiu chamar essa função" não é o mesmo que "essa função deve ser executada sem verificação".
 
 ### Referências
 - `Paper` **Toolformer: Language Models Can Teach Themselves to Use Tools** — Schick et al. (2023). https://arxiv.org/abs/2302.04761
@@ -114,6 +132,8 @@ while not done:
 - **Episodic**: experiências passadas indexadas para recall.
 - **Semantic**: conhecimento abstraído.
 
+> **Intuição**: cada tipo de memória resolve uma limitação diferente do modelo. Short-term é literalmente o que cabe na janela de contexto do LLM — finita e cara (mais tokens = mais custo e mais risco de "lost in the middle", mod. [12](12_rag.mdx#127-geração-com-contexto)). Long-term contorna esse limite armazenando informação *fora* do contexto (num banco vetorial, por exemplo) e trazendo de volta só o relevante quando necessário — é literalmente RAG (mod. 12) aplicado à memória do próprio agente, em vez de a uma base de conhecimento externa. Episodic e semantic são refinamentos: episodic guarda "o que aconteceu" (experiências específicas, recuperáveis por similaridade), semantic guarda "o que foi aprendido/abstraído" daquelas experiências — a diferença entre lembrar de um evento específico e lembrar de uma regra geral extraída de vários eventos.
+
 ### Ferramentas
 - `Ferramenta` **Mem0** — camada de memória para LLMs. https://mem0.ai/
 - `Ferramenta` **LangGraph** tem checkpointing nativo.
@@ -141,10 +161,14 @@ Protocolo aberto da Anthropic (proposto fim de 2024) para padronizar como LLMs e
 - **Prompts**: templates parametrizáveis.
 - **Transports**: stdio (local), HTTP/SSE (remoto), Streamable HTTP.
 
+> **Intuição — "USB para IA"**: antes do MCP, cada integração (Slack, GitHub, um banco de dados interno) precisava de um adaptador específico escrito para cada framework de agente diferente — N ferramentas × M frameworks = N×M integrações para manter. MCP padroniza a interface entre "coisa que expõe capacidades" (server) e "coisa que consome capacidades" (client/host), do mesmo jeito que USB padronizou a interface entre periférico e computador — um servidor MCP escrito uma vez funciona com qualquer client MCP (Claude Desktop, um IDE, um agente customizado), sem reescrever nada. O ganho é de manutenção e composição: quem constrói uma integração a constrói uma vez; quem constrói um agente ganha acesso a todo o ecossistema de servidores MCP existentes sem escrever adaptador nenhum.
+
 ### Por que importa
 - Desacopla **provedor** de **capacidade**: troque LLM, não troque integrações.
 - Padroniza segurança, descoberta de tools, autenticação (OAuth para servidores remotos).
 - Ecossistema crescente: GitHub, Slack, Notion, Postgres, Filesystem, etc.
+
+> **Checkpoint**: sem olhar o texto, explique o problema de "N ferramentas × M frameworks" que MCP resolve, com suas próprias palavras.
 
 ### SDKs
 - `Ferramenta` **MCP Python SDK**. https://github.com/modelcontextprotocol/python-sdk
@@ -173,6 +197,8 @@ Framework de agentes multi-LLM com mensagens entre eles. https://github.com/micr
 - **AutoGPT** (2023) — primeiro agente autônomo viral. https://github.com/Significant-Gravitas/AutoGPT
 - **BabyAGI** — minimalista, didático.
 - **GPT Engineer** — agente para gerar projetos.
+
+> Vale notar a diferença de escopo: MCP (seção 13.5) padroniza como um agente acessa *ferramentas e dados*; A2A padroniza como *agentes diferentes conversam entre si* — são complementares, não concorrentes, resolvendo camadas diferentes do mesmo problema de interoperabilidade.
 
 ---
 
@@ -220,6 +246,10 @@ Framework de agentes multi-LLM com mensagens entre eles. https://github.com/micr
 - **Cascata de erros**: erro em A vira input ruim para B.
 - **Difícil debugar**.
 
+> **Intuição**: multi-agente é essencialmente decomposição de tarefa (mod. [11](11_prompt_engineering.md#116-prompts-complexos-técnicas-avançadas)) aplicada em nível de sistema em vez de prompt único — cada agente tem um escopo mais estreito (e um prompt/persona mais focado), o que pode melhorar qualidade por sub-tarefa. Mas o custo não é só em tokens (cada agente é uma ou mais chamadas LLM completas): é também em superfície de erro — numa pipeline sequencial, um erro do agente A vira *entrada* do agente B, que não tem como saber que a entrada já está corrompida. É por isso que a recomendação padrão (mesmo dos criadores de frameworks multi-agente) é começar com um único agente bem prompted, e só fragmentar em múltiplos quando há evidência concreta de que um agente único está sobrecarregado ou confuso sobre seu papel.
+>
+> **Checkpoint**: sem olhar o texto, explique por que erros em pipelines multi-agente sequenciais são mais difíceis de debugar que erros num agente único.
+
 ### Referências
 - `Paper` **AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation** — Wu et al. (2023). https://arxiv.org/abs/2308.08155
 - `Paper` **MetaGPT: Meta Programming for Multi-Agent Collaborative Framework**. https://arxiv.org/abs/2308.00352
@@ -243,6 +273,8 @@ Muitos problemas (matemática, análise de dados) são melhor resolvidos com **c
 ### Riscos
 - Execução de código gerado por LLM em ambiente sem sandbox = catástrofe esperando para acontecer.
 - **Sempre** isole.
+
+> **Intuição**: código gerado por um LLM tem a mesma confiabilidade que texto gerado por um LLM — pode estar certo, pode alucinar uma chamada perigosa, pode (via prompt injection, mod. [11](11_prompt_engineering.md#118-prompt-injection-e-segurança)) ter sido manipulado por um input malicioso a fazer algo destrutivo. Rodar esse código diretamente no mesmo ambiente da sua aplicação é conceder a um texto gerado probabilisticamente o mesmo nível de confiança que você daria a código revisado por humano. Sandboxing (Docker, gVisor, Firecracker, ou serviços dedicados como e2b) isola a execução — se o código tentar deletar arquivos, acessar rede indevidamente, ou consumir recursos indefinidamente, o dano fica contido ao sandbox descartável, não à sua infraestrutura real.
 
 ### Referências
 - `Paper` **PAL: Program-Aided Language Models** — Gao et al. (2022). https://arxiv.org/abs/2211.10435
@@ -311,6 +343,8 @@ Mais detalhes no módulo [15](15_engenharia_producao.mdx).
 - 3 ferramentas: cálculo (eval seguro), busca local (em corpus do mod. [12](12_rag.mdx)), data/hora.
 - Logging estruturado de cada passo.
 
+> **Variante guiada**: implemente e teste cada tool isoladamente (fora do loop do agente) antes de conectá-las — confirme que `calc("2+2")` retorna 4 e que a busca retorna resultados sensatos, antes de depurar por que o *agente* não está usando a ferramenta certa. Separa bug de tool de bug de orquestração.
+
 ### Projeto 13.2 — Servidor MCP
 - Crie um servidor MCP em Python que expõe:
   - Tool: `query_db(sql: str)` (sandboxed SQLite).
@@ -329,6 +363,8 @@ Mais detalhes no módulo [15](15_engenharia_producao.mdx).
 - Agentes: Pesquisador → Redator → Revisor → Editor.
 - Cada um tem prompt e tools específicas.
 - Orquestre em CrewAI ou em LangGraph.
+
+> **Variante guiada**: antes de encadear os 4 agentes, rode cada um isoladamente com uma entrada de exemplo e confira a saída — um pipeline de 4 agentes onde um deles produz saída ruim silenciosamente é muito mais difícil de diagnosticar depois de tudo encadeado.
 
 ### Projeto 13.5 — Agente com code execution
 - Use smolagents `CodeAgent` ou AutoGen.
