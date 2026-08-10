@@ -88,6 +88,10 @@ const config = {
             label: 'Trilha',
           },
           {
+            type: 'docsVersionDropdown',
+            position: 'left',
+          },
+          {
             href: `https://github.com/${GITHUB_USER}/${REPO_NAME}`,
             label: 'GitHub',
             position: 'right',
