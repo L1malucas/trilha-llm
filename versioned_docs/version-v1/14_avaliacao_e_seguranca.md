@@ -8,7 +8,7 @@ sidebar_position: 14
 
 > **Objetivo**: avaliar LLMs cientificamente — benchmarks, LLM-as-judge, alucinação, viés, calibração — e proteger sistemas contra ataques (prompt injection, jailbreaks, data leakage). Inclui interpretabilidade mecanística como ferramenta de safety.
 >
-> **Pré-requisitos**: Módulos [09](09_treinamento_e_alinhamento.md), [11](11_prompt_engineering.md)–[13](13_agentes_tools_protocolos.md).
+> **Pré-requisitos**: Módulos [09](09_treinamento_e_alinhamento.mdx), [11](11_prompt_engineering.md)–[13](13_agentes_tools_protocolos.md).
 >
 > **Tempo de referência**: 3–4 semanas.
 
@@ -23,28 +23,28 @@ sidebar_position: 14
 ## 14.1 Benchmarks acadêmicos clássicos
 
 ### Conhecimento e raciocínio
-- **MMLU (Massive Multitask Language Understanding)** — 57 áreas de conhecimento. 📄 https://arxiv.org/abs/2009.03300
-- **MMLU-Pro** — versão mais difícil. 📄 https://arxiv.org/abs/2406.01574
-- **BIG-Bench / BIG-Bench Hard** — 200+ tarefas diversas. 📄 https://arxiv.org/abs/2206.04615
-- **HellaSwag** — commonsense reasoning. 📄 https://arxiv.org/abs/1905.07830
-- **ARC (AI2 Reasoning Challenge)**. 📄 https://arxiv.org/abs/1803.05457
-- **TruthfulQA** — checa veracidade contra mitos comuns. 📄 https://arxiv.org/abs/2109.07958
-- **GPQA** — perguntas de pós-graduação resistentes a Google. 📄 https://arxiv.org/abs/2311.12022
+- **MMLU (Massive Multitask Language Understanding)** — 57 áreas de conhecimento. `Paper` https://arxiv.org/abs/2009.03300
+- **MMLU-Pro** — versão mais difícil. `Paper` https://arxiv.org/abs/2406.01574
+- **BIG-Bench / BIG-Bench Hard** — 200+ tarefas diversas. `Paper` https://arxiv.org/abs/2206.04615
+- **HellaSwag** — commonsense reasoning. `Paper` https://arxiv.org/abs/1905.07830
+- **ARC (AI2 Reasoning Challenge)**. `Paper` https://arxiv.org/abs/1803.05457
+- **TruthfulQA** — checa veracidade contra mitos comuns. `Paper` https://arxiv.org/abs/2109.07958
+- **GPQA** — perguntas de pós-graduação resistentes a Google. `Paper` https://arxiv.org/abs/2311.12022
 
 ### Matemática
-- **GSM8K** — problemas de matemática elementar. 📄 https://arxiv.org/abs/2110.14168
-- **MATH** — problemas de competição. 📄 https://arxiv.org/abs/2103.03874
+- **GSM8K** — problemas de matemática elementar. `Paper` https://arxiv.org/abs/2110.14168
+- **MATH** — problemas de competição. `Paper` https://arxiv.org/abs/2103.03874
 - **AIME** — provas de olimpíada (em modo eval).
 
 ### Código
-- **HumanEval** — completar funções Python. 📄 https://arxiv.org/abs/2107.03374
+- **HumanEval** — completar funções Python. `Paper` https://arxiv.org/abs/2107.03374
 - **MBPP** — Mostly Basic Python Problems.
 - **LiveCodeBench** — problemas atualizados, anti-contaminação. https://livecodebench.github.io/
 - **SWE-bench / SWE-bench Verified** — bugs reais em repos. https://www.swebench.com/
 
 ### Linguagem geral
 - **GLUE / SuperGLUE** — clássicos pré-LLM.
-- **HELM (Holistic Evaluation of LMs)** — Stanford CRFM. 📄 https://arxiv.org/abs/2211.09110
+- **HELM (Holistic Evaluation of LMs)** — Stanford CRFM. `Paper` https://arxiv.org/abs/2211.09110
 - **LiveBench** — benchmark dinâmico. https://livebench.ai/
 
 ### Português / multilíngue
@@ -54,9 +54,9 @@ sidebar_position: 14
 - **MEGA** — benchmark multilíngue do Microsoft. https://arxiv.org/abs/2303.12528
 
 ### Ferramentas
-- 🛠 **lm-evaluation-harness** (EleutherAI) — padrão de fato para rodar benchmarks. https://github.com/EleutherAI/lm-evaluation-harness
-- 🛠 **HELM** runner. https://github.com/stanford-crfm/helm
-- 🛠 **BIG-Bench** runner.
+- `Ferramenta` **lm-evaluation-harness** (EleutherAI) — padrão de fato para rodar benchmarks. https://github.com/EleutherAI/lm-evaluation-harness
+- `Ferramenta` **HELM** runner. https://github.com/stanford-crfm/helm
+- `Ferramenta` **BIG-Bench** runner.
 
 ---
 
@@ -82,8 +82,8 @@ Usar LLM forte para avaliar saída de outro LLM. Escala bem para outputs livres 
 - Humanos no loop para calibrar.
 
 ### Referências
-- 📄 **Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena** — Zheng et al. (2023). https://arxiv.org/abs/2306.05685
-- 📄 **Large Language Models are not Fair Evaluators** — Wang et al. (2023). https://arxiv.org/abs/2305.17926
+- `Paper` **Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena** — Zheng et al. (2023). https://arxiv.org/abs/2306.05685
+- `Paper` **Large Language Models are not Fair Evaluators** — Wang et al. (2023). https://arxiv.org/abs/2305.17926
 
 ---
 
@@ -94,7 +94,7 @@ Usar LLM forte para avaliar saída de outro LLM. Escala bem para outputs livres 
 - **Avaliação interna** com rubrica clara.
 
 ### Referências
-- 📄 **Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference** — Chiang et al. (2024). https://arxiv.org/abs/2403.04132
+- `Paper` **Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference** — Chiang et al. (2024). https://arxiv.org/abs/2403.04132
 
 ---
 
@@ -112,8 +112,8 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - Contamination detection (Min-K%, perplexity-based).
 
 ### Referências
-- 📄 **Detecting Pretraining Data from LLMs (Min-K%)** — Shi et al. (2023). https://arxiv.org/abs/2310.16789
-- 📄 **Investigating Data Contamination in Modern Benchmarks**. https://arxiv.org/abs/2311.09783
+- `Paper` **Detecting Pretraining Data from LLMs (Min-K%)** — Shi et al. (2023). https://arxiv.org/abs/2310.16789
+- `Paper` **Investigating Data Contamination in Modern Benchmarks**. https://arxiv.org/abs/2311.09783
 
 ---
 
@@ -135,7 +135,7 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - **RAG** com grounding obrigatório.
 - **Constrained generation** (mod. [11](11_prompt_engineering.md)).
 - **Self-consistency**.
-- **Chain of Verification**. 📄 https://arxiv.org/abs/2309.11495
+- **Chain of Verification**. `Paper` https://arxiv.org/abs/2309.11495
 - **Citação obrigatória** com validação.
 - **Modelos com refusal calibrado** (treinados a dizer "não sei").
 
@@ -145,7 +145,7 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - **HaluEval**. https://arxiv.org/abs/2305.11747
 
 ### Referências
-- 📄 **Survey of Hallucination in Natural Language Generation** — Ji et al. (2022). https://arxiv.org/abs/2202.03629
+- `Paper` **Survey of Hallucination in Natural Language Generation** — Ji et al. (2022). https://arxiv.org/abs/2202.03629
 
 ---
 
@@ -168,8 +168,8 @@ Modelos modernos viram benchmarks por terem visto **o próprio benchmark** duran
 - Trade-off com accuracy.
 
 ### Referências
-- 📄 **On the Dangers of Stochastic Parrots** — Bender et al. (2021). https://dl.acm.org/doi/10.1145/3442188.3445922
-- 📚 **Fairness and Machine Learning: Limitations and Opportunities** — Barocas, Hardt, Narayanan. https://fairmlbook.org/
+- `Paper` **On the Dangers of Stochastic Parrots** — Bender et al. (2021). https://dl.acm.org/doi/10.1145/3442188.3445922
+- `Livro` **Fairness and Machine Learning: Limitations and Opportunities** — Barocas, Hardt, Narayanan. https://fairmlbook.org/
 
 ---
 
@@ -192,8 +192,8 @@ Modelo bem calibrado: quando diz "80% certeza", está certo 80% das vezes.
 LLMs grandes pré-RLHF tendem a ser bem calibrados. **RLHF tipicamente piora calibração** (modelo aprende a parecer mais confiante).
 
 ### Referências
-- 📄 **Calibration of Pre-trained Transformers** — Desai & Durrett (2020). https://arxiv.org/abs/2003.07892
-- 📄 **Just Ask for Calibration** — Tian et al. (2023). https://arxiv.org/abs/2305.14975
+- `Paper` **Calibration of Pre-trained Transformers** — Desai & Durrett (2020). https://arxiv.org/abs/2003.07892
+- `Paper` **Just Ask for Calibration** — Tian et al. (2023). https://arxiv.org/abs/2305.14975
 
 ---
 
@@ -202,7 +202,7 @@ LLMs grandes pré-RLHF tendem a ser bem calibrados. **RLHF tipicamente piora cal
 ### Tipos de ataque
 - **Prompt injection** direto e indireto (revisar mod. [11](11_prompt_engineering.md)).
 - **Jailbreak**: induzir comportamento proibido (DAN, role-play, encoding, multi-turn).
-- **Universal adversarial suffixes**. 📄 https://arxiv.org/abs/2307.15043
+- **Universal adversarial suffixes**. `Paper` https://arxiv.org/abs/2307.15043
 - **Many-shot jailbreaking** (Anthropic). https://www.anthropic.com/news/many-shot-jailbreaking
 - **Crescendo** — ataque multi-turno escalado. https://arxiv.org/abs/2404.01833
 
@@ -213,15 +213,15 @@ LLMs grandes pré-RLHF tendem a ser bem calibrados. **RLHF tipicamente piora cal
 - **Adversarial training**.
 
 ### Ferramentas open
-- 🛠 **Llama Guard 3**. https://huggingface.co/meta-llama/Llama-Guard-3-8B
-- 🛠 **NVIDIA NeMo Guardrails**. https://github.com/NVIDIA/NeMo-Guardrails
-- 🛠 **Granite Guardian** (IBM).
-- 🛠 **promptfoo** com red-team modes.
+- `Ferramenta` **Llama Guard 3**. https://huggingface.co/meta-llama/Llama-Guard-3-8B
+- `Ferramenta` **NVIDIA NeMo Guardrails**. https://github.com/NVIDIA/NeMo-Guardrails
+- `Ferramenta` **Granite Guardian** (IBM).
+- `Ferramenta` **promptfoo** com red-team modes.
 
 ### Referências
-- 📄 **Universal and Transferable Adversarial Attacks on Aligned LLMs** — Zou et al. (2023). https://arxiv.org/abs/2307.15043
-- 📄 **AdvBench**. https://github.com/llm-attacks/llm-attacks
-- 📚 **OWASP Top 10 for LLM Applications**. https://owasp.org/www-project-top-10-for-large-language-model-applications/
+- `Paper` **Universal and Transferable Adversarial Attacks on Aligned LLMs** — Zou et al. (2023). https://arxiv.org/abs/2307.15043
+- `Paper` **AdvBench**. https://github.com/llm-attacks/llm-attacks
+- `Livro` **OWASP Top 10 for LLM Applications**. https://owasp.org/www-project-top-10-for-large-language-model-applications/
 
 ---
 
@@ -237,8 +237,8 @@ Tentativa estruturada e adversarial de fazer o modelo falhar (gerar conteúdo no
 - **Bug bounty** estilo segurança tradicional.
 
 ### Referências
-- 📄 **Red Teaming Language Models with Language Models** — Perez et al. (2022). https://arxiv.org/abs/2202.03286
-- 📚 **Anthropic — Responsible Scaling Policy**. https://www.anthropic.com/responsible-scaling-policy
+- `Paper` **Red Teaming Language Models with Language Models** — Perez et al. (2022). https://arxiv.org/abs/2202.03286
+- `Livro` **Anthropic — Responsible Scaling Policy**. https://www.anthropic.com/responsible-scaling-policy
 
 ---
 
@@ -256,8 +256,8 @@ Tentativa estruturada e adversarial de fazer o modelo falhar (gerar conteúdo no
 - **Auditing**: verificar memorização.
 
 ### Referências
-- 📄 **Extracting Training Data from Large Language Models** — Carlini et al. (2020). https://arxiv.org/abs/2012.07805
-- 📄 **Scalable Extraction of Training Data from (Production) Language Models** — Nasr et al. (2023). https://arxiv.org/abs/2311.17035
+- `Paper` **Extracting Training Data from Large Language Models** — Carlini et al. (2020). https://arxiv.org/abs/2012.07805
+- `Paper` **Scalable Extraction of Training Data from (Production) Language Models** — Nasr et al. (2023). https://arxiv.org/abs/2311.17035
 
 ---
 
@@ -279,32 +279,32 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 - **Induction heads** (cópia em context).
 
 ### Referências (estado da arte 2024–2025)
-- 📚 **Anthropic Transformer Circuits Thread**. https://transformer-circuits.pub/
-- 📄 **A Mathematical Framework for Transformer Circuits** — Elhage et al. (2021).
-- 📄 **In-context Learning and Induction Heads** — Olsson et al. (2022). https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/
-- 📄 **Toy Models of Superposition** — Elhage et al. (2022). https://transformer-circuits.pub/2022/toy_model/
-- 📄 **Towards Monosemanticity / Scaling Monosemanticity** — Anthropic. https://transformer-circuits.pub/2024/scaling-monosemanticity/
-- 📄 **Sparse Autoencoders Find Highly Interpretable Features**. https://arxiv.org/abs/2309.08600
+- `Livro` **Anthropic Transformer Circuits Thread**. https://transformer-circuits.pub/
+- `Paper` **A Mathematical Framework for Transformer Circuits** — Elhage et al. (2021).
+- `Paper` **In-context Learning and Induction Heads** — Olsson et al. (2022). https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/
+- `Paper` **Toy Models of Superposition** — Elhage et al. (2022). https://transformer-circuits.pub/2022/toy_model/
+- `Paper` **Towards Monosemanticity / Scaling Monosemanticity** — Anthropic. https://transformer-circuits.pub/2024/scaling-monosemanticity/
+- `Paper` **Sparse Autoencoders Find Highly Interpretable Features**. https://arxiv.org/abs/2309.08600
 
 ### Ferramentas
-- 🛠 **TransformerLens** (Neel Nanda). https://github.com/TransformerLensOrg/TransformerLens
-- 🛠 **SAELens**, **nnsight**.
-- 🎓 **ARENA — Alignment Research Engineer Accelerator**. https://www.arena.education/
+- `Ferramenta` **TransformerLens** (Neel Nanda). https://github.com/TransformerLensOrg/TransformerLens
+- `Ferramenta` **SAELens**, **nnsight**.
+- `Curso` **ARENA — Alignment Research Engineer Accelerator**. https://www.arena.education/
 
 ---
 
 ## 14.12 Frameworks de evaluation no dia a dia
 
-- 🛠 **Promptfoo** — eval declarativo, integra com CI. https://www.promptfoo.dev/
-- 🛠 **OpenAI Evals**. https://github.com/openai/evals
-- 🛠 **DeepEval**. https://github.com/confident-ai/deepeval
-- 🛠 **TruLens**. https://github.com/truera/trulens
-- 🛠 **Inspect AI** (UK AISI) — eval framework moderno. https://inspect.ai-safety-institute.org.uk/
-- 🛠 **lm-evaluation-harness** — para benchmarks acadêmicos.
+- `Ferramenta` **Promptfoo** — eval declarativo, integra com CI. https://www.promptfoo.dev/
+- `Ferramenta` **OpenAI Evals**. https://github.com/openai/evals
+- `Ferramenta` **DeepEval**. https://github.com/confident-ai/deepeval
+- `Ferramenta` **TruLens**. https://github.com/truera/trulens
+- `Ferramenta` **Inspect AI** (UK AISI) — eval framework moderno. https://inspect.ai-safety-institute.org.uk/
+- `Ferramenta` **lm-evaluation-harness** — para benchmarks acadêmicos.
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 14.1 — Suite de eval reprodutível
 - Configure `lm-evaluation-harness` em GPU local.
@@ -324,7 +324,7 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 - Use Promptfoo ou Inspect AI.
 
 ### Projeto 14.4 — Red-team mini
-- Pegue um chatbot que você construiu (do mod. [12](12_rag.md) ou 13).
+- Pegue um chatbot que você construiu (do mod. [12](12_rag.mdx) ou 13).
 - 10 categorias de ataque: jailbreak, prompt injection, PII extraction, role-play malicioso, etc.
 - 5 ataques por categoria.
 - Adicione Llama Guard 3 e meça redução de incidentes.
@@ -341,7 +341,7 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Avaliar em 1 seed** — variância de LLM é alta; rode múltiplas seeds.
 - **Confundir benchmark score com utilidade real** para *seu* uso.
@@ -356,10 +356,10 @@ Engenharia reversa do que **acontece dentro** dos pesos: circuitos, neurônios, 
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Eval frameworks | Engenharia de produção (mod. [15](15_engenharia_producao.md)) |
-| Guardrails | Produção (mod. [15](15_engenharia_producao.md)) |
+| Eval frameworks | Engenharia de produção (mod. [15](15_engenharia_producao.mdx)) |
+| Guardrails | Produção (mod. [15](15_engenharia_producao.mdx)) |
 | Privacy considerations | Inferência local (revisar mod. [10](10_eficiencia_e_inferencia_local.md)) |
-| Bias e fairness | Multimodal (mod. [18](18_multimodal.md)) |
+| Bias e fairness | Multimodal (mod. [18](18_multimodal.mdx)) |
 
 ---
 

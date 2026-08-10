@@ -8,7 +8,7 @@ sidebar_position: 13
 
 > **Objetivo**: dominar o paradigma de agentes — LLMs que decidem, planejam, usam ferramentas, mantêm estado, colaboram. Function calling, ReAct, MCP, frameworks (LangGraph, CrewAI, Mastra), padrões multi-agente.
 >
-> **Pré-requisitos**: Módulos [11](11_prompt_engineering.md), [12](12_rag.md).
+> **Pré-requisitos**: Módulos [11](11_prompt_engineering.md), [12](12_rag.mdx).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -38,9 +38,9 @@ Sistema baseado em LLM que:
 - **Autonomous agent**: longo horizonte, auto-correção, planejamento meta.
 
 ### Referências
-- 📄 **Building Effective Agents** (Anthropic, 2024) — leitura essencial. https://www.anthropic.com/engineering/building-effective-agents
-- 📄 **The Rise and Potential of Large Language Model Based Agents: A Survey** — Xi et al. (2023). https://arxiv.org/abs/2309.07864
-- 📄 **Cognitive Architectures for Language Agents** — Sumers et al. (2023). https://arxiv.org/abs/2309.02427
+- `Paper` **Building Effective Agents** (Anthropic, 2024) — leitura essencial. https://www.anthropic.com/engineering/building-effective-agents
+- `Paper` **The Rise and Potential of Large Language Model Based Agents: A Survey** — Xi et al. (2023). https://arxiv.org/abs/2309.07864
+- `Paper` **Cognitive Architectures for Language Agents** — Sumers et al. (2023). https://arxiv.org/abs/2309.02427
 
 ---
 
@@ -69,18 +69,18 @@ Modelo gera resposta final.
 ```
 
 ### Ferramentas e bibliotecas
-- 🛠 **OpenAI Python/TS SDKs**.
-- 🛠 **Anthropic SDKs**.
-- 🛠 **Vercel AI SDK** — abstração agnóstica de provedor para tools (TS). https://ai-sdk.dev/
-- 🛠 **Instructor** (Python) — tools com Pydantic.
+- `Ferramenta` **OpenAI Python/TS SDKs**.
+- `Ferramenta` **Anthropic SDKs**.
+- `Ferramenta` **Vercel AI SDK** — abstração agnóstica de provedor para tools (TS). https://ai-sdk.dev/
+- `Ferramenta` **Instructor** (Python) — tools com Pydantic.
 
 ### Validação
 **Sempre** valide argumentos retornados pelo modelo (Pydantic, Zod). Modelo pode produzir JSON inválido ou argumentos perigosos.
 
 ### Referências
-- 📄 **Toolformer: Language Models Can Teach Themselves to Use Tools** — Schick et al. (2023). https://arxiv.org/abs/2302.04761
-- 📄 **Gorilla: Large Language Model Connected with Massive APIs** — Patil et al. (2023). https://arxiv.org/abs/2305.15334
-- 📄 **ToolLLM** — Qin et al. (2023). https://arxiv.org/abs/2307.16789
+- `Paper` **Toolformer: Language Models Can Teach Themselves to Use Tools** — Schick et al. (2023). https://arxiv.org/abs/2302.04761
+- `Paper` **Gorilla: Large Language Model Connected with Massive APIs** — Patil et al. (2023). https://arxiv.org/abs/2305.15334
+- `Paper` **ToolLLM** — Qin et al. (2023). https://arxiv.org/abs/2307.16789
 
 ---
 
@@ -99,7 +99,7 @@ while not done:
 
 ### Variações
 - **Plan-and-Execute**: gerar plano primeiro, executar, replanejar se falhar.
-- 📄 **Plan-and-Solve Prompting**. https://arxiv.org/abs/2305.04091
+- `Paper` **Plan-and-Solve Prompting**. https://arxiv.org/abs/2305.04091
 - **Reflexion**: agente reflete sobre tentativas anteriores. https://arxiv.org/abs/2303.11366
 - **Voyager**: agente que adiciona habilidades a uma "skill library". https://arxiv.org/abs/2305.16291
 
@@ -115,20 +115,20 @@ while not done:
 - **Semantic**: conhecimento abstraído.
 
 ### Ferramentas
-- 🛠 **Mem0** — camada de memória para LLMs. https://mem0.ai/
-- 🛠 **LangGraph** tem checkpointing nativo.
-- 🛠 **Letta (ex-MemGPT)**. https://github.com/letta-ai/letta
+- `Ferramenta` **Mem0** — camada de memória para LLMs. https://mem0.ai/
+- `Ferramenta` **LangGraph** tem checkpointing nativo.
+- `Ferramenta` **Letta (ex-MemGPT)**. https://github.com/letta-ai/letta
 
 ### Referências
-- 📄 **MemGPT: Towards LLMs as Operating Systems** — Packer et al. (2023). https://arxiv.org/abs/2310.08560
-- 📄 **A Survey on Memory Mechanism of Large Language Model based Agents** (2024). https://arxiv.org/abs/2404.13501
+- `Paper` **MemGPT: Towards LLMs as Operating Systems** — Packer et al. (2023). https://arxiv.org/abs/2310.08560
+- `Paper` **A Survey on Memory Mechanism of Large Language Model based Agents** (2024). https://arxiv.org/abs/2404.13501
 
 ---
 
 ## 13.5 MCP — Model Context Protocol
 
-📄 **Especificação oficial**: https://modelcontextprotocol.io/
-🛠 **Repositório oficial**: https://github.com/modelcontextprotocol
+`Paper` **Especificação oficial**: https://modelcontextprotocol.io/
+`Ferramenta` **Repositório oficial**: https://github.com/modelcontextprotocol
 
 ### O que é
 Protocolo aberto da Anthropic (proposto fim de 2024) para padronizar como LLMs e aplicações cliente acessam **ferramentas, recursos, dados e prompts** de servidores externos. Análogo a "USB para IA".
@@ -147,9 +147,9 @@ Protocolo aberto da Anthropic (proposto fim de 2024) para padronizar como LLMs e
 - Ecossistema crescente: GitHub, Slack, Notion, Postgres, Filesystem, etc.
 
 ### SDKs
-- 🛠 **MCP Python SDK**. https://github.com/modelcontextprotocol/python-sdk
-- 🛠 **MCP TypeScript SDK**. https://github.com/modelcontextprotocol/typescript-sdk
-- 🛠 **MCP servers** (catálogo oficial). https://github.com/modelcontextprotocol/servers
+- `Ferramenta` **MCP Python SDK**. https://github.com/modelcontextprotocol/python-sdk
+- `Ferramenta` **MCP TypeScript SDK**. https://github.com/modelcontextprotocol/typescript-sdk
+- `Ferramenta` **MCP servers** (catálogo oficial). https://github.com/modelcontextprotocol/servers
 
 ### Hands-on
 - Servidor MCP em Python que expõe ferramentas para um banco SQLite local.
@@ -198,7 +198,7 @@ Framework de agentes multi-LLM com mensagens entre eles. https://github.com/micr
 - Performance crítica: frameworks adicionam latência.
 
 ### Referência
-- 📄 **Building Effective Agents** (Anthropic) — recomenda **começar simples**, frameworks só quando necessário. https://www.anthropic.com/engineering/building-effective-agents
+- `Paper` **Building Effective Agents** (Anthropic) — recomenda **começar simples**, frameworks só quando necessário. https://www.anthropic.com/engineering/building-effective-agents
 
 ---
 
@@ -221,8 +221,8 @@ Framework de agentes multi-LLM com mensagens entre eles. https://github.com/micr
 - **Difícil debugar**.
 
 ### Referências
-- 📄 **AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation** — Wu et al. (2023). https://arxiv.org/abs/2308.08155
-- 📄 **MetaGPT: Meta Programming for Multi-Agent Collaborative Framework**. https://arxiv.org/abs/2308.00352
+- `Paper` **AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation** — Wu et al. (2023). https://arxiv.org/abs/2308.08155
+- `Paper` **MetaGPT: Meta Programming for Multi-Agent Collaborative Framework**. https://arxiv.org/abs/2308.00352
 
 ---
 
@@ -245,8 +245,8 @@ Muitos problemas (matemática, análise de dados) são melhor resolvidos com **c
 - **Sempre** isole.
 
 ### Referências
-- 📄 **PAL: Program-Aided Language Models** — Gao et al. (2022). https://arxiv.org/abs/2211.10435
-- 📄 **Program of Thoughts** — Chen et al. (2022). https://arxiv.org/abs/2211.12588
+- `Paper` **PAL: Program-Aided Language Models** — Gao et al. (2022). https://arxiv.org/abs/2211.10435
+- `Paper` **Program of Thoughts** — Chen et al. (2022). https://arxiv.org/abs/2211.12588
 
 ---
 
@@ -272,13 +272,13 @@ Agentes que controlam interface gráfica (mouse, teclado) ou browser via screens
 Não dá para entender o que agente fez sem **trace estruturado**: cada chamada LLM, cada tool call, latências, tokens, decisões.
 
 ### Ferramentas
-- 🛠 **LangSmith** (LangChain). https://www.langchain.com/langsmith
-- 🛠 **Langfuse** (open-source). https://langfuse.com/
-- 🛠 **Helicone** — proxy + analytics. https://www.helicone.ai/
-- 🛠 **Phoenix** (Arize). https://github.com/Arize-ai/phoenix
-- 🛠 **OpenTelemetry GenAI** — padrão emergente. https://opentelemetry.io/docs/specs/semconv/gen-ai/
+- `Ferramenta` **LangSmith** (LangChain). https://www.langchain.com/langsmith
+- `Ferramenta` **Langfuse** (open-source). https://langfuse.com/
+- `Ferramenta` **Helicone** — proxy + analytics. https://www.helicone.ai/
+- `Ferramenta` **Phoenix** (Arize). https://github.com/Arize-ai/phoenix
+- `Ferramenta` **OpenTelemetry GenAI** — padrão emergente. https://opentelemetry.io/docs/specs/semconv/gen-ai/
 
-Mais detalhes no módulo [15](15_engenharia_producao.md).
+Mais detalhes no módulo [15](15_engenharia_producao.mdx).
 
 ---
 
@@ -304,11 +304,11 @@ Mais detalhes no módulo [15](15_engenharia_producao.md).
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 13.1 — Agente ReAct from scratch
 - Sem framework. Loop manual em Python E em TS.
-- 3 ferramentas: cálculo (eval seguro), busca local (em corpus do mod. [12](12_rag.md)), data/hora.
+- 3 ferramentas: cálculo (eval seguro), busca local (em corpus do mod. [12](12_rag.mdx)), data/hora.
 - Logging estruturado de cada passo.
 
 ### Projeto 13.2 — Servidor MCP
@@ -348,7 +348,7 @@ Mais detalhes no módulo [15](15_engenharia_producao.md).
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Loop infinito**: agente repete a mesma ação. Sempre tenha **max_steps** e detecção de loop.
 - **Tools sem validação**: argumentos do LLM tratados como confiáveis = falha de segurança.
@@ -365,11 +365,11 @@ Mais detalhes no módulo [15](15_engenharia_producao.md).
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Tool use | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)), Produção (mod. [15](15_engenharia_producao.md)) |
-| MCP | Integrações em produção (mod. [15](15_engenharia_producao.md)) |
-| Agent observability | Engenharia de produção (mod. [15](15_engenharia_producao.md)) |
-| Agentic RAG | RAG (mod. [12](12_rag.md) — bidirecional) |
-| Multimodal agents | Mod. [18](18_multimodal.md) |
+| Tool use | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)), Produção (mod. [15](15_engenharia_producao.mdx)) |
+| MCP | Integrações em produção (mod. [15](15_engenharia_producao.mdx)) |
+| Agent observability | Engenharia de produção (mod. [15](15_engenharia_producao.mdx)) |
+| Agentic RAG | RAG (mod. [12](12_rag.mdx) — bidirecional) |
+| Multimodal agents | Mod. [18](18_multimodal.mdx) |
 
 ---
 

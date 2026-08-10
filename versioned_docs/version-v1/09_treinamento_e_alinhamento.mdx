@@ -8,7 +8,7 @@ sidebar_position: 9
 
 > **Objetivo**: entender o ciclo completo de criação de uma LLM moderna — do pré-treinamento bruto ao modelo "instruct/chat" alinhado, incluindo SFT, DPO, RLHF e variações.
 >
-> **Pré-requisitos**: Módulos [07](07_transformers.md)–[08](08_llms_arquiteturas.md).
+> **Pré-requisitos**: Módulos [07](07_transformers.mdx)–[08](08_llms_arquiteturas.md).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -26,25 +26,19 @@ Modelos pré-treinados puros são *completion engines*, não assistentes. O comp
 
 ## 9.1 Pipeline completo de uma LLM moderna
 
-```
-Dados brutos
-    ↓
-Pré-processamento (filtros, dedup, tokenização)
-    ↓
-PRÉ-TREINAMENTO (next-token prediction em larga escala)
-    → Modelo BASE (ex: LLaMA-3-8B-base)
-    ↓
-SUPERVISED FINE-TUNING (SFT) com instruction data
-    → Modelo SFT
-    ↓
-PREFERENCE OPTIMIZATION (RLHF / DPO / GRPO / outras)
-    → Modelo INSTRUCT/CHAT (ex: LLaMA-3-8B-Instruct)
-    ↓
-(opcional) Continued pretraining em domínio
-    → Modelo especializado
-    ↓
-(opcional) Reasoning RL (R1-style)
-    → Modelo de raciocínio
+```mermaid
+flowchart TD
+    A["Dados brutos"] --> B["Pré-processamento<br/>(filtros, dedup, tokenização)"]
+    B --> C["Pré-treinamento<br/>(next-token prediction em larga escala)"]
+    C --> C1["Modelo BASE<br/>(ex: LLaMA-3-8B-base)"]
+    C1 --> D["Supervised Fine-Tuning (SFT)<br/>com instruction data"]
+    D --> D1["Modelo SFT"]
+    D1 --> E["Preference Optimization<br/>(RLHF / DPO / GRPO / outras)"]
+    E --> E1["Modelo INSTRUCT/CHAT<br/>(ex: LLaMA-3-8B-Instruct)"]
+    E1 -. opcional .-> F["Continued pretraining<br/>em domínio"]
+    F --> F1["Modelo especializado"]
+    E1 -. opcional .-> G["Reasoning RL<br/>(R1-style)"]
+    G --> G1["Modelo de raciocínio"]
 ```
 
 ---
@@ -73,13 +67,13 @@ PREFERENCE OPTIMIZATION (RLHF / DPO / GRPO / outras)
 - **Hugging Face Accelerate** — abstração mais alta sobre FSDP/DeepSpeed.
 
 ### Referências
-- 📄 **ZeRO: Memory Optimizations Toward Training Trillion Parameter Models** — Rajbhandari et al. (2019). https://arxiv.org/abs/1910.02054
-- 📄 **Megatron-LM** — Shoeybi et al. (2019). https://arxiv.org/abs/1909.08053
-- 📄 **PaLM Technical Report** — DeepMind/Google (2022). https://arxiv.org/abs/2204.02311
-- 📚 **The Ultra-Scale Playbook** (Hugging Face, 2024–2025) — guia profundo de paralelismo. https://huggingface.co/spaces/nanotron/ultrascale-playbook
+- `Paper` **ZeRO: Memory Optimizations Toward Training Trillion Parameter Models** — Rajbhandari et al. (2019). https://arxiv.org/abs/1910.02054
+- `Paper` **Megatron-LM** — Shoeybi et al. (2019). https://arxiv.org/abs/1909.08053
+- `Paper` **PaLM Technical Report** — DeepMind/Google (2022). https://arxiv.org/abs/2204.02311
+- `Livro` **The Ultra-Scale Playbook** (Hugging Face, 2024–2025) — guia profundo de paralelismo. https://huggingface.co/spaces/nanotron/ultrascale-playbook
 
 ### Cursos
-- 🎓 **Stanford CS336 — Language Modeling from Scratch** (literalmente sobre construir LLMs do zero). https://stanford-cs336.github.io/
+- `Curso` **Stanford CS336 — Language Modeling from Scratch** (literalmente sobre construir LLMs do zero). https://stanford-cs336.github.io/
 
 ---
 
@@ -107,9 +101,9 @@ Pegar um modelo BASE e ensinar a seguir o formato **instruction → response**.
 - **Mixing**: balancear domínios (chat, código, math).
 
 ### Referências
-- 📄 **Alpaca: A Strong, Replicable Instruction-Following Model**. https://crfm.stanford.edu/2023/03/13/alpaca.html
-- 📄 **Self-Instruct: Aligning Language Models with Self-Generated Instructions** — Wang et al. (2022). https://arxiv.org/abs/2212.10560
-- 📄 **The Tulu 3 Recipe** (AI2, 2024) — receita aberta completa de pós-treinamento. https://arxiv.org/abs/2411.15124
+- `Paper` **Alpaca: A Strong, Replicable Instruction-Following Model**. https://crfm.stanford.edu/2023/03/13/alpaca.html
+- `Paper` **Self-Instruct: Aligning Language Models with Self-Generated Instructions** — Wang et al. (2022). https://arxiv.org/abs/2212.10560
+- `Paper` **The Tulu 3 Recipe** (AI2, 2024) — receita aberta completa de pós-treinamento. https://arxiv.org/abs/2411.15124
 
 ---
 
@@ -119,17 +113,17 @@ Pegar um modelo BASE e ensinar a seguir o formato **instruction → response**.
 Fine-tuning completo de um modelo de 70B requer ~1 TB de GPU. PEFT adiciona/treina apenas uma fração pequena dos parâmetros.
 
 ### Métodos
-- **LoRA (Low-Rank Adaptation)** — adiciona matrizes de baixa-rank A·B aos pesos. 📄 https://arxiv.org/abs/2106.09685
-- **QLoRA** — LoRA + quantização do modelo base em 4-bit. Permite fine-tunar 65B em uma GPU de 48GB. 📄 https://arxiv.org/abs/2305.14314
-- **DoRA** — Weight-Decomposed LoRA (mais expressivo). 📄 https://arxiv.org/abs/2402.09353
+- **LoRA (Low-Rank Adaptation)** — adiciona matrizes de baixa-rank A·B aos pesos. `Paper` https://arxiv.org/abs/2106.09685
+- **QLoRA** — LoRA + quantização do modelo base em 4-bit. Permite fine-tunar 65B em uma GPU de 48GB. `Paper` https://arxiv.org/abs/2305.14314
+- **DoRA** — Weight-Decomposed LoRA (mais expressivo). `Paper` https://arxiv.org/abs/2402.09353
 - **Prefix Tuning**, **P-Tuning v2**, **Prompt Tuning** (treinam prefixos no input).
 - **(IA)³**, **AdaLoRA** — variantes.
 
 ### Ferramentas
-- 🛠 **Hugging Face PEFT**. https://huggingface.co/docs/peft
-- 🛠 **Unsloth** — fine-tuning otimizado, 2x mais rápido, 70% menos VRAM. https://github.com/unslothai/unsloth
-- 🛠 **Axolotl** — config-driven fine-tuning. https://github.com/axolotl-ai-cloud/axolotl
-- 🛠 **TRL** (Hugging Face) — training de reinforcement learning. https://huggingface.co/docs/trl
+- `Ferramenta` **Hugging Face PEFT**. https://huggingface.co/docs/peft
+- `Ferramenta` **Unsloth** — fine-tuning otimizado, 2x mais rápido, 70% menos VRAM. https://github.com/unslothai/unsloth
+- `Ferramenta` **Axolotl** — config-driven fine-tuning. https://github.com/axolotl-ai-cloud/axolotl
+- `Ferramenta` **TRL** (Hugging Face) — training de reinforcement learning. https://huggingface.co/docs/trl
 
 ---
 
@@ -146,24 +140,24 @@ SFT ensina formato. Mas como ensinar **bom** vs **ruim** quando "qualidade" é s
 4. KL-penalty contra modelo SFT inicial para evitar "reward hacking".
 
 ### Papers fundamentais
-- 📄 **Deep Reinforcement Learning from Human Preferences** — Christiano et al. (2017). https://arxiv.org/abs/1706.03741
-- 📄 **InstructGPT (Training language models to follow instructions with human feedback)** — Ouyang et al. (2022). https://arxiv.org/abs/2203.02155
-- 📄 **Constitutional AI: Harmlessness from AI Feedback** — Anthropic (Bai et al., 2022). https://arxiv.org/abs/2212.08073
-- 📄 **Llama 2 paper** — descreve RLHF em detalhe. https://arxiv.org/abs/2307.09288
+- `Paper` **Deep Reinforcement Learning from Human Preferences** — Christiano et al. (2017). https://arxiv.org/abs/1706.03741
+- `Paper` **InstructGPT (Training language models to follow instructions with human feedback)** — Ouyang et al. (2022). https://arxiv.org/abs/2203.02155
+- `Paper` **Constitutional AI: Harmlessness from AI Feedback** — Anthropic (Bai et al., 2022). https://arxiv.org/abs/2212.08073
+- `Paper` **Llama 2 paper** — descreve RLHF em detalhe. https://arxiv.org/abs/2307.09288
 
 ### Direct Preference Optimization (DPO) e variantes
 RLHF é caro e instável. DPO transforma o problema em uma loss supervisionada equivalente (matematicamente derivada do PPO + KL).
 
-- 📄 **Direct Preference Optimization (DPO)** — Rafailov et al. (2023). https://arxiv.org/abs/2305.18290
-- 📄 **IPO** — Identity Preference Optimization. https://arxiv.org/abs/2310.12036
-- 📄 **KTO (Kahneman-Tversky Optimization)** — não exige pares, só "good/bad". https://arxiv.org/abs/2402.01306
-- 📄 **ORPO** — Monolithic Preference Optimization sem reference model. https://arxiv.org/abs/2403.07691
-- 📄 **GRPO (Group Relative Policy Optimization)** — usado no DeepSeek-R1, sem value model. https://arxiv.org/abs/2402.03300
+- `Paper` **Direct Preference Optimization (DPO)** — Rafailov et al. (2023). https://arxiv.org/abs/2305.18290
+- `Paper` **IPO** — Identity Preference Optimization. https://arxiv.org/abs/2310.12036
+- `Paper` **KTO (Kahneman-Tversky Optimization)** — não exige pares, só "good/bad". https://arxiv.org/abs/2402.01306
+- `Paper` **ORPO** — Monolithic Preference Optimization sem reference model. https://arxiv.org/abs/2403.07691
+- `Paper` **GRPO (Group Relative Policy Optimization)** — usado no DeepSeek-R1, sem value model. https://arxiv.org/abs/2402.03300
 
 ### Referências práticas
-- 🛠 **TRL (Hugging Face)** — implementações de PPO, DPO, KTO, ORPO. https://huggingface.co/docs/trl
-- 📚 **Hugging Face — Alignment Handbook**. https://github.com/huggingface/alignment-handbook
-- 📚 **Tulu 3** — receita pública e detalhada de SFT + DPO + GRPO. https://arxiv.org/abs/2411.15124
+- `Ferramenta` **TRL (Hugging Face)** — implementações de PPO, DPO, KTO, ORPO. https://huggingface.co/docs/trl
+- `Livro` **Hugging Face — Alignment Handbook**. https://github.com/huggingface/alignment-handbook
+- `Livro` **Tulu 3** — receita pública e detalhada de SFT + DPO + GRPO. https://arxiv.org/abs/2411.15124
 
 ---
 
@@ -177,8 +171,8 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 - Funciona com modelos médios e gera ganhos enormes em raciocínio.
 
 ### Papers
-- 📄 **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning**. https://arxiv.org/abs/2501.12948
-- 📄 **DeepSeekMath** (introduz GRPO). https://arxiv.org/abs/2402.03300
+- `Paper` **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning**. https://arxiv.org/abs/2501.12948
+- `Paper` **DeepSeekMath** (introduz GRPO). https://arxiv.org/abs/2402.03300
 
 ---
 
@@ -194,8 +188,8 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 - Learning rate baixo, warmup curto.
 
 ### Referências
-- 📄 **Continued Pre-Training of Large Language Models: How to (re)warm your model?** https://arxiv.org/abs/2308.04014
-- 📄 **Don't Stop Pretraining** — Gururangan et al. (2020). https://arxiv.org/abs/2004.10964
+- `Paper` **Continued Pre-Training of Large Language Models: How to (re)warm your model?** https://arxiv.org/abs/2308.04014
+- `Paper` **Don't Stop Pretraining** — Gururangan et al. (2020). https://arxiv.org/abs/2004.10964
 
 ---
 
@@ -209,7 +203,7 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 9.1 — SFT em modelo pequeno
 - Modelo: TinyLlama 1.1B ou Phi-3 mini.
@@ -242,7 +236,7 @@ Treinar puramente com RL sobre tarefas verificáveis (matemática, código), sem
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Treinar SFT em formato errado** — cada modelo tem seu chat template (ChatML, Llama-3, Gemma, etc.). Não respeitar isso destrói performance.
 - **Misturar BOS/EOS errados** — bug silencioso comum.

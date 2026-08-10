@@ -34,11 +34,14 @@ const config = {
 
   onBrokenLinks: 'throw',
 
-  // Content is plain Markdown (LaTeX-style math, pseudo-code with `<`/`>`/`{}`),
-  // not written for MDX/JSX — parse as CommonMark instead of MDX.
+  // Most content is plain Markdown (LaTeX-style math, pseudo-code with
+  // `<`/`>`/`{}`) not written for MDX/JSX. Files needing MDX features
+  // (Mermaid diagrams) opt in individually via the `.mdx` extension.
   markdown: {
-    format: 'md',
+    format: 'detect',
+    mermaid: true,
   },
+  themes: ['@docusaurus/theme-mermaid'],
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you

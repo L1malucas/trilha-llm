@@ -8,7 +8,7 @@ sidebar_position: 18
 
 > **Objetivo**: dominar modelos que combinam texto + imagem + áudio (+ vídeo). VLMs (LLaVA, Qwen-VL, InternVL), modelos de fala (Whisper, voice models), modelos visão-linguagem-ação, omni-modal.
 >
-> **Pré-requisitos**: Módulos [07](07_transformers.md), [08](08_llms_arquiteturas.md), [16](16_visao_computacional.md).
+> **Pré-requisitos**: Módulos [07](07_transformers.mdx), [08](08_llms_arquiteturas.md), [16](16_visao_computacional.md).
 >
 > **Tempo de referência**: 4–6 semanas.
 
@@ -23,10 +23,13 @@ A interface humana com IA está se tornando inerentemente multimodal: foto + per
 ## 18.1 Padrões arquiteturais multimodais
 
 ### Encoders separados + projetor (padrão LLaVA-style)
-```
-imagem → vision encoder (CLIP/SigLIP) → projetor MLP/Q-Former → tokens visuais
-texto → tokenizer → tokens textuais
-[tokens visuais ⊕ tokens textuais] → LLM → resposta
+```mermaid
+flowchart LR
+    IMG["imagem"] --> VE["vision encoder<br/>(CLIP/SigLIP)"] --> PROJ["projetor<br/>(MLP/Q-Former)"] --> TV["tokens visuais"]
+    TXT["texto"] --> TOK["tokenizer"] --> TT["tokens textuais"]
+    TV --> CAT((("⊕")))
+    TT --> CAT
+    CAT --> LLM["LLM"] --> RESP["resposta"]
 ```
 
 Este é o padrão dominante: **encoder visual congelado** + **projetor treinado** para mapear features visuais ao espaço de embedding do LLM.
@@ -36,7 +39,7 @@ LLM tem camadas extras de cross-attention que consultam features visuais. Mais c
 
 ### Native multimodal / unified tokenizer
 Modelo treinado from scratch com tokens unificados (texto + imagem patches + áudio frames). Tendência atual:
-- **Chameleon** (Meta). 📄 https://arxiv.org/abs/2405.09818
+- **Chameleon** (Meta). `Paper` https://arxiv.org/abs/2405.09818
 - **Gemini** (treinamento conjunto desde o início).
 - **GPT-4o** (omni-modal nativo).
 
@@ -44,8 +47,8 @@ Modelo treinado from scratch com tokens unificados (texto + imagem patches + áu
 MoE onde experts se especializam por modalidade.
 
 ### Referências
-- 📄 **Flamingo: a Visual Language Model for Few-Shot Learning** — Alayrac et al. (DeepMind, 2022). https://arxiv.org/abs/2204.14198
-- 📄 **A Survey on Multimodal Large Language Models**. https://arxiv.org/abs/2306.13549
+- `Paper` **Flamingo: a Visual Language Model for Few-Shot Learning** — Alayrac et al. (DeepMind, 2022). https://arxiv.org/abs/2204.14198
+- `Paper` **A Survey on Multimodal Large Language Models**. https://arxiv.org/abs/2306.13549
 
 ---
 
@@ -54,7 +57,7 @@ MoE onde experts se especializam por modalidade.
 ### CLIP
 Treina encoder visual + encoder textual com **contrastive loss**: pares (imagem, caption) próximos no espaço; não-pares afastados.
 
-📄 **Learning Transferable Visual Models From Natural Language Supervision (CLIP)** — Radford et al. (2021). https://arxiv.org/abs/2103.00020
+`Paper` **Learning Transferable Visual Models From Natural Language Supervision (CLIP)** — Radford et al. (2021). https://arxiv.org/abs/2103.00020
 
 ### Por que CLIP foi um marco
 - **Zero-shot classification**: classifique sem treinar — só descreva as classes em texto.
@@ -63,8 +66,8 @@ Treina encoder visual + encoder textual com **contrastive loss**: pares (imagem,
 
 ### Variantes melhoradas
 - **OpenCLIP** (LAION) — reproduções abertas em vários tamanhos. https://github.com/mlfoundations/open_clip
-- **SigLIP / SigLIP 2** — sigmoid loss em vez de softmax, melhor escalabilidade. 📄 https://arxiv.org/abs/2303.15343
-- **EVA-CLIP** — escala maior. 📄 https://arxiv.org/abs/2303.15389
+- **SigLIP / SigLIP 2** — sigmoid loss em vez de softmax, melhor escalabilidade. `Paper` https://arxiv.org/abs/2303.15343
+- **EVA-CLIP** — escala maior. `Paper` https://arxiv.org/abs/2303.15389
 - **Jina-CLIP** — multimodal embeddings unificados.
 
 ### Aplicações
@@ -77,9 +80,9 @@ Treina encoder visual + encoder textual com **contrastive loss**: pares (imagem,
 
 ## 18.3 BLIP, BLIP-2 e modelos de captioning
 
-- 📄 **BLIP** — Li et al. (2022). https://arxiv.org/abs/2201.12086
-- 📄 **BLIP-2** — uses Q-Former para conectar encoder visual congelado a LLM congelado, treinando só ponte. https://arxiv.org/abs/2301.12597
-- 📄 **InstructBLIP** — instruct-tuning do BLIP-2. https://arxiv.org/abs/2305.06500
+- `Paper` **BLIP** — Li et al. (2022). https://arxiv.org/abs/2201.12086
+- `Paper` **BLIP-2** — uses Q-Former para conectar encoder visual congelado a LLM congelado, treinando só ponte. https://arxiv.org/abs/2301.12597
+- `Paper` **InstructBLIP** — instruct-tuning do BLIP-2. https://arxiv.org/abs/2305.06500
 
 ### Q-Former
 Módulo aprendível que extrai número fixo de "query tokens" do encoder visual, comprimindo informação para o LLM. Padrão em vários VLMs.
@@ -88,7 +91,7 @@ Módulo aprendível que extrai número fixo de "query tokens" do encoder visual,
 
 ## 18.4 LLaVA e a família de VLMs open
 
-📄 **Visual Instruction Tuning (LLaVA)** — Liu et al. (2023). https://arxiv.org/abs/2304.08485
+`Paper` **Visual Instruction Tuning (LLaVA)** — Liu et al. (2023). https://arxiv.org/abs/2304.08485
 
 ### LLaVA recipe
 1. Pegue LLM forte (Vicuna/LLaMA).
@@ -100,18 +103,18 @@ Resultado: VLM competitivo com fração do compute.
 
 ### Família LLaVA
 - **LLaVA-1.5**, **LLaVA-NeXT** (high-res). https://llava-vl.github.io/
-- **LLaVA-OneVision** — single-image, multi-image, vídeo. 📄 https://arxiv.org/abs/2408.03326
+- **LLaVA-OneVision** — single-image, multi-image, vídeo. `Paper` https://arxiv.org/abs/2408.03326
 - **LLaVA-CoT / LLaVA-o1** — reasoning visual.
 
 ### Outros VLMs open de 2024–2025
-- **Qwen-VL / Qwen2-VL / Qwen2.5-VL** (Alibaba). 📄 https://arxiv.org/abs/2409.12191
-- **InternVL / InternVL 2 / InternVL 2.5** (OpenGVLab). 📄 https://arxiv.org/abs/2312.14238
-- **MiniCPM-V** (OpenBMB) — VLM eficiente para edge. 📄 https://arxiv.org/abs/2408.01800
+- **Qwen-VL / Qwen2-VL / Qwen2.5-VL** (Alibaba). `Paper` https://arxiv.org/abs/2409.12191
+- **InternVL / InternVL 2 / InternVL 2.5** (OpenGVLab). `Paper` https://arxiv.org/abs/2312.14238
+- **MiniCPM-V** (OpenBMB) — VLM eficiente para edge. `Paper` https://arxiv.org/abs/2408.01800
 - **Pixtral** (Mistral). https://mistral.ai/news/pixtral-12b
-- **Molmo** (Allen AI). 📄 https://arxiv.org/abs/2409.17146
+- **Molmo** (Allen AI). `Paper` https://arxiv.org/abs/2409.17146
 - **Phi-3.5-Vision / Phi-4 Multimodal** (Microsoft).
 - **PaliGemma** (Google) — modelo educacional aberto, ótima base. https://github.com/google-research/big_vision
-- **NVLM** (NVIDIA). 📄 https://arxiv.org/abs/2409.11402
+- **NVLM** (NVIDIA). `Paper` https://arxiv.org/abs/2409.11402
 - **Idefics 2 / 3** (Hugging Face). https://arxiv.org/abs/2405.02246
 
 ---
@@ -139,20 +142,20 @@ Modelos modernos (Qwen2-VL, InternVL 2.5) processam imagens em resolução nativ
 - **CogAgent**, **ShowUI**, **Anthropic Claude Computer Use**, **OS-Copilot**.
 
 ### Referências
-- 📄 **Qwen2-VL Technical Report**. https://arxiv.org/abs/2409.12191
-- 📄 **CogAgent**. https://arxiv.org/abs/2312.08914
+- `Paper` **Qwen2-VL Technical Report**. https://arxiv.org/abs/2409.12191
+- `Paper` **CogAgent**. https://arxiv.org/abs/2312.08914
 
 ---
 
 ## 18.6 Modelos de áudio e fala
 
 ### ASR (Automatic Speech Recognition)
-- 📄 **Whisper** — Radford et al. (OpenAI, 2022). https://arxiv.org/abs/2212.04356
+- `Paper` **Whisper** — Radford et al. (OpenAI, 2022). https://arxiv.org/abs/2212.04356
   - Aberto, multilíngue, robusto.
   - Variantes otimizadas: **faster-whisper** (CTranslate2), **whisper.cpp**, **Distil-Whisper**.
 - **SeamlessM4T** (Meta) — speech-to-text + speech-to-speech multilíngue.
 - **NVIDIA Parakeet, Canary** — alta precisão, otimizados.
-- **wav2vec 2.0** — self-supervised foundation. 📄 https://arxiv.org/abs/2006.11477
+- **wav2vec 2.0** — self-supervised foundation. `Paper` https://arxiv.org/abs/2006.11477
 
 ### TTS (Text-to-Speech)
 - **XTTS / Coqui TTS** (descontinuado, mas códigos abertos). https://github.com/coqui-ai/TTS
@@ -173,7 +176,7 @@ Modelos modernos (Qwen2-VL, InternVL 2.5) processam imagens em resolução nativ
 - **Mini-Omni**, **GLM-4-Voice**.
 
 ### Referências
-- 🎓 **Hugging Face Audio Course**. https://huggingface.co/learn/audio-course
+- `Curso` **Hugging Face Audio Course**. https://huggingface.co/learn/audio-course
 
 ---
 
@@ -197,7 +200,7 @@ Modelos modernos (Qwen2-VL, InternVL 2.5) processam imagens em resolução nativ
 - **AnimateDiff**.
 
 ### Referências
-- 📄 **Sora technical report** (OpenAI, 2024) — não há paper formal, mas blog post detalhado. https://openai.com/research/video-generation-models-as-world-simulators
+- `Paper` **Sora technical report** (OpenAI, 2024) — não há paper formal, mas blog post detalhado. https://openai.com/research/video-generation-models-as-world-simulators
 
 ---
 
@@ -205,7 +208,7 @@ Modelos modernos (Qwen2-VL, InternVL 2.5) processam imagens em resolução nativ
 
 Para robótica e agentes embodied.
 
-- **RT-1, RT-2** (Google) — modelos que produzem ações de robô a partir de visão + instrução. 📄 https://robotics-transformer2.github.io/
+- **RT-1, RT-2** (Google) — modelos que produzem ações de robô a partir de visão + instrução. `Paper` https://robotics-transformer2.github.io/
 - **OpenVLA** (open). https://openvla.github.io/
 - **π0** (Physical Intelligence). https://www.physicalintelligence.company/blog/pi0
 - **Octo**.
@@ -233,14 +236,14 @@ Para robótica e agentes embodied.
 - Documentos: **DocVQA**, **ChartQA**, **InfographicVQA**, **AI2D**.
 
 ### Referências práticas
-- 🎓 **Hugging Face — Fine-tuning VLMs**. https://huggingface.co/learn/cookbook/fine_tuning_vlm_trl
+- `Curso` **Hugging Face — Fine-tuning VLMs**. https://huggingface.co/learn/cookbook/fine_tuning_vlm_trl
 
 ---
 
 ## 18.10 Avaliação de multimodal
 
 ### Benchmarks
-- **MMMU** — Massive Multi-discipline Multimodal Understanding. 📄 https://arxiv.org/abs/2311.16502
+- **MMMU** — Massive Multi-discipline Multimodal Understanding. `Paper` https://arxiv.org/abs/2311.16502
 - **MMBench** — checklists granulares. https://arxiv.org/abs/2307.06281
 - **MM-Vet**. https://arxiv.org/abs/2308.02490
 - **OCRBench**, **DocVQA**, **ChartQA**, **AI2D**.
@@ -261,14 +264,14 @@ Para robótica e agentes embodied.
 ### RAG com imagens
 - Embeddings unificados (CLIP, SigLIP, Jina-CLIP, **CLIP-Math**, **Cohere Multimodal**).
 - Busca: query texto → recupera imagens; query imagem → recupera textos.
-- **ColPali** — RAG sobre PDFs com layout via visão. 📄 https://arxiv.org/abs/2407.01449
+- **ColPali** — RAG sobre PDFs com layout via visão. `Paper` https://arxiv.org/abs/2407.01449
 
 ### Document RAG moderno
 ColPali e variantes pulam OCR: embeddam **imagem da página** diretamente. Excelente para layouts complexos (finance, science, legal).
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 18.1 — Zero-shot com CLIP
 - Use OpenCLIP em Python e em TS (transformers.js).
@@ -307,7 +310,7 @@ ColPali e variantes pulam OCR: embeddam **imagem da página** diretamente. Excel
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Misturar tokenizer/processor errado**: VLMs têm processors específicos (image_processor + tokenizer); usar errado quebra silenciosamente.
 - **Resolução errada**: forçar 224×224 em modelos high-res = qualidade despenca.
@@ -323,8 +326,8 @@ ColPali e variantes pulam OCR: embeddam **imagem da página** diretamente. Excel
 | Conceito daqui | Aparece em |
 |---|---|
 | VLMs | Agentes computer-use (mod. [13](13_agentes_tools_protocolos.md)) |
-| Multimodal embeddings | RAG (mod. [12](12_rag.md)) |
-| Whisper / TTS | Aplicações de produção (mod. [15](15_engenharia_producao.md)) |
+| Multimodal embeddings | RAG (mod. [12](12_rag.mdx)) |
+| Whisper / TTS | Aplicações de produção (mod. [15](15_engenharia_producao.mdx)) |
 | Diffusion models | Tópicos avançados (mod. [19](19_topicos_avancados.md)) |
 | Avaliação multimodal | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
 

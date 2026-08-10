@@ -22,16 +22,16 @@ sidebar_position: 7
 
 ## 7.1 O paper fundador
 
-📄 **Attention Is All You Need** — Vaswani et al. (2017). https://arxiv.org/abs/1706.03762
+`Paper` **Attention Is All You Need** — Vaswani et al. (2017). https://arxiv.org/abs/1706.03762
 
 **Leia, releia, releia.** Implemente as equações. Desenhe os diagramas. Quando achar que entendeu, leia de novo.
 
 ### Material de apoio para o paper
-- 🎓 **The Illustrated Transformer** — Jay Alammar. http://jalammar.github.io/illustrated-transformer/ (didática inigualável)
-- 🎓 **The Annotated Transformer** — Harvard NLP (paper anotado com código PyTorch). http://nlp.seas.harvard.edu/annotated-transformer/
-- 🎓 **Karpathy — Let's build GPT: from scratch, in code, spelled out** (vídeo). https://www.youtube.com/watch?v=kCc8FmEb1nY
-- 🎓 **Karpathy — Neural Networks: Zero to Hero — makemore series** (constrói até GPT). https://karpathy.ai/zero-to-hero.html
-- 🎓 **Stanford CS25 — Transformers United**. https://web.stanford.edu/class/cs25/
+- `Curso` **The Illustrated Transformer** — Jay Alammar. http://jalammar.github.io/illustrated-transformer/ (didática inigualável)
+- `Curso` **The Annotated Transformer** — Harvard NLP (paper anotado com código PyTorch). http://nlp.seas.harvard.edu/annotated-transformer/
+- `Curso` **Karpathy — Let's build GPT: from scratch, in code, spelled out** (vídeo). https://www.youtube.com/watch?v=kCc8FmEb1nY
+- `Curso` **Karpathy — Neural Networks: Zero to Hero — makemore series** (constrói até GPT). https://karpathy.ai/zero-to-hero.html
+- `Curso` **Stanford CS25 — Transformers United**. https://web.stanford.edu/class/cs25/
 
 ---
 
@@ -66,8 +66,8 @@ Self-attention é **permutation-invariant** (não vê ordem). Linguagem é orden
 - **Sinusoidal positional encoding** (paper original) — funções seno/cosseno em frequências diferentes.
 - **Learned positional embeddings** (BERT, GPT-2).
 - **Relative positional encoding** (T5, Transformer-XL).
-- **RoPE (Rotary Position Embedding)** — usado em LLaMA, Mistral, Qwen. Estado da arte. 📄 https://arxiv.org/abs/2104.09864
-- **ALiBi (Attention with Linear Biases)** — usado em alguns modelos de longo contexto. 📄 https://arxiv.org/abs/2108.12409
+- **RoPE (Rotary Position Embedding)** — usado em LLaMA, Mistral, Qwen. Estado da arte. `Paper` https://arxiv.org/abs/2104.09864
+- **ALiBi (Attention with Linear Biases)** — usado em alguns modelos de longo contexto. `Paper` https://arxiv.org/abs/2108.12409
 
 ### Por que importa
 Position encoding define a capacidade do modelo de **extrapolar contexto** (tamanho de janela maior do que viu no treino). RoPE e ALiBi são respostas a esse problema.
@@ -99,10 +99,10 @@ Position encoding define a capacidade do modelo de **extrapolar contexto** (tama
 - **State Space Models** (Mamba, RWKV) — alternativas a attention. Mod. [19](19_topicos_avancados.md).
 
 ### Referências
-- 📄 **BERT** — Devlin et al. (2018). https://arxiv.org/abs/1810.04805
-- 📄 **GPT-2 (Language Models are Unsupervised Multitask Learners)** — Radford et al. (2019). https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
-- 📄 **T5 (Exploring the Limits of Transfer Learning)** — Raffel et al. (2019). https://arxiv.org/abs/1910.10683
-- 📄 **BART** — Lewis et al. (2019). https://arxiv.org/abs/1910.13461
+- `Paper` **BERT** — Devlin et al. (2018). https://arxiv.org/abs/1810.04805
+- `Paper` **GPT-2 (Language Models are Unsupervised Multitask Learners)** — Radford et al. (2019). https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+- `Paper` **T5 (Exploring the Limits of Transfer Learning)** — Raffel et al. (2019). https://arxiv.org/abs/1910.10683
+- `Paper` **BART** — Lewis et al. (2019). https://arxiv.org/abs/1910.13461
 
 ---
 
@@ -110,18 +110,17 @@ Position encoding define a capacidade do modelo de **extrapolar contexto** (tama
 
 Um "Transformer block" típico (decoder-only moderno):
 
-```
-input
-  ↓
-LayerNorm (pre-norm é o padrão moderno)
-  ↓
-Multi-Head Self-Attention (com causal mask)
-  ↓ (residual connection do input)
-LayerNorm
-  ↓
-Feed-Forward Network (geralmente 4× a dimensão)
-  ↓ (residual connection)
-output
+```mermaid
+flowchart TD
+    IN["input"] --> LN1["LayerNorm<br/>(pre-norm é o padrão moderno)"]
+    LN1 --> MHA["Multi-Head Self-Attention<br/>(com causal mask)"]
+    IN -. residual .-> ADD1(("+"))
+    MHA --> ADD1
+    ADD1 --> LN2["LayerNorm"]
+    LN2 --> FFN["Feed-Forward Network<br/>(geralmente 4× a dimensão)"]
+    ADD1 -. residual .-> ADD2(("+"))
+    FFN --> ADD2
+    ADD2 --> OUT["output"]
 ```
 
 ### Detalhes que diferem entre modelos
@@ -132,8 +131,8 @@ output
 - **Tie weights**: amarrar embeddings de entrada e saída (economiza parâmetros).
 
 ### Referências
-- 📄 **GLU Variants Improve Transformer (SwiGLU)** — Shazeer (2020). https://arxiv.org/abs/2002.05202
-- 📄 **On Layer Normalization in the Transformer Architecture** — Xiong et al. (2020). https://arxiv.org/abs/2002.04745
+- `Paper` **GLU Variants Improve Transformer (SwiGLU)** — Shazeer (2020). https://arxiv.org/abs/2002.05202
+- `Paper` **On Layer Normalization in the Transformer Architecture** — Xiong et al. (2020). https://arxiv.org/abs/2002.04745
 
 ---
 
@@ -152,8 +151,8 @@ output
 - Warmup: ~1–10% dos steps.
 
 ### Referências práticas
-- 📄 **A Recipe for Training Neural Networks** — Karpathy. http://karpathy.github.io/2019/04/25/recipe/
-- 📚 **The Hugging Face Course — Training a causal LM**. https://huggingface.co/learn/llm-course
+- `Paper` **A Recipe for Training Neural Networks** — Karpathy. http://karpathy.github.io/2019/04/25/recipe/
+- `Livro` **The Hugging Face Course — Training a causal LM**. https://huggingface.co/learn/llm-course
 
 ---
 
@@ -163,16 +162,16 @@ output
 Attention é **O(n²)** em memória e tempo (n = comprimento da sequência). Inviabiliza contextos muito longos.
 
 ### Soluções
-- **Flash Attention** — exato, mas otimizado para hierarquia de memória de GPU. Hoje, padrão de fato em treino e inferência. 📄 https://arxiv.org/abs/2205.14135 (v1), https://arxiv.org/abs/2307.08691 (v2)
-- **Grouped-Query Attention (GQA)** — compartilha K/V entre cabeças. Usado em LLaMA 2/3, Mistral. 📄 https://arxiv.org/abs/2305.13245
+- **Flash Attention** — exato, mas otimizado para hierarquia de memória de GPU. Hoje, padrão de fato em treino e inferência. `Paper` https://arxiv.org/abs/2205.14135 (v1), https://arxiv.org/abs/2307.08691 (v2)
+- **Grouped-Query Attention (GQA)** — compartilha K/V entre cabeças. Usado em LLaMA 2/3, Mistral. `Paper` https://arxiv.org/abs/2305.13245
 - **Multi-Query Attention (MQA)** — caso extremo de GQA com 1 cabeça K/V.
 - **Sliding Window Attention** (Mistral) — atenção apenas a janela local.
 - **Sparse Attention** (Longformer, BigBird).
 - **Linear Attention** (Performer, Linformer) — aproximações que reduzem a O(n).
 
 ### Referências
-- 📄 **Longformer: The Long-Document Transformer** — Beltagy et al. (2020). https://arxiv.org/abs/2004.05150
-- 📄 **Linformer: Self-Attention with Linear Complexity** — Wang et al. (2020). https://arxiv.org/abs/2006.04768
+- `Paper` **Longformer: The Long-Document Transformer** — Beltagy et al. (2020). https://arxiv.org/abs/2004.05150
+- `Paper` **Linformer: Self-Attention with Linear Complexity** — Wang et al. (2020). https://arxiv.org/abs/2006.04768
 
 ---
 
@@ -183,12 +182,12 @@ Attention é **O(n²)** em memória e tempo (n = comprimento da sequência). Inv
 - **Mechanistic interpretability** (preview do mod. [14](14_avaliacao_e_seguranca.md)): circuit analysis, induction heads.
 
 ### Referências
-- 📄 **A Mathematical Framework for Transformer Circuits** — Anthropic (Elhage et al., 2021). https://transformer-circuits.pub/2021/framework/index.html
-- 🛠 **BertViz** (visualização de attention). https://github.com/jessevig/bertviz
+- `Paper` **A Mathematical Framework for Transformer Circuits** — Anthropic (Elhage et al., 2021). https://transformer-circuits.pub/2021/framework/index.html
+- `Ferramenta` **BertViz** (visualização de attention). https://github.com/jessevig/bertviz
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 7.1 — Self-attention em NumPy
 - Implemente scaled dot-product attention puro.
@@ -224,7 +223,7 @@ Attention é **O(n²)** em memória e tempo (n = comprimento da sequência). Inv
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Não entender o causal mask** — bug clássico que vaza informação do futuro.
 - **Misturar `(batch, seq, dim)` e `(seq, batch, dim)`** — PyTorch tem ambas convenções; preste atenção.
@@ -239,11 +238,11 @@ Attention é **O(n²)** em memória e tempo (n = comprimento da sequência). Inv
 | Conceito daqui | Aparece em |
 |---|---|
 | Self-attention, Q/K/V | Toda LLM moderna (mod. [08](08_llms_arquiteturas.md)+) |
-| Causal mask | GPT-likes (mod. [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.md)) |
+| Causal mask | GPT-likes (mod. [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.mdx)) |
 | RoPE | LLaMA, Mistral (mod. [08](08_llms_arquiteturas.md)) |
 | Pre-norm + RMSNorm | LLMs modernos |
 | GQA, MQA | Eficiência de inferência (mod. [10](10_eficiencia_e_inferencia_local.md)) |
-| Flash Attention | Treinamento e inferência (mod. [09](09_treinamento_e_alinhamento.md), [10](10_eficiencia_e_inferencia_local.md)) |
+| Flash Attention | Treinamento e inferência (mod. [09](09_treinamento_e_alinhamento.mdx), [10](10_eficiencia_e_inferencia_local.md)) |
 | Encoder-decoder | T5, BART, NLLB |
 
 ---

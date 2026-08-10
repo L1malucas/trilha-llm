@@ -50,10 +50,10 @@ Sem isso, você não consegue ler papers, não entende por que algo falha, e fic
 
 ### Referências
 
-- 🎓 **MIT 18.06 — Linear Algebra**, Gilbert Strang (vídeos + livro). https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/
-- 🎓 **3Blue1Brown — Essence of Linear Algebra** (intuição visual, indispensável). https://www.3blue1brown.com/topics/linear-algebra
-- 📚 **Mathematics for Machine Learning**, cap. 2–4. https://mml-book.github.io/
-- 📚 **Linear Algebra Done Right** — Sheldon Axler (mais rigoroso, opcional).
+- `Curso` **MIT 18.06 — Linear Algebra**, Gilbert Strang (vídeos + livro). https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/
+- `Curso` **3Blue1Brown — Essence of Linear Algebra** (intuição visual, indispensável). https://www.3blue1brown.com/topics/linear-algebra
+- `Livro` **Mathematics for Machine Learning**, cap. 2–4. https://mml-book.github.io/
+- `Livro` **Linear Algebra Done Right** — Sheldon Axler (mais rigoroso, opcional).
 
 ---
 
@@ -80,11 +80,11 @@ Backpropagation é, literalmente, regra da cadeia aplicada a uma composição mu
 
 ### Referências
 
-- 🎓 **3Blue1Brown — Essence of Calculus**. https://www.3blue1brown.com/topics/calculus
-- 🎓 **MIT 18.01 — Single Variable Calculus**. https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/
-- 🎓 **MIT 18.02 — Multivariable Calculus**. https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/
-- 📚 **Mathematics for Machine Learning**, cap. 5. https://mml-book.github.io/
-- 📄 **Automatic Differentiation in Machine Learning: a Survey** — Baydin et al. (2018). https://arxiv.org/abs/1502.05767
+- `Curso` **3Blue1Brown — Essence of Calculus**. https://www.3blue1brown.com/topics/calculus
+- `Curso` **MIT 18.01 — Single Variable Calculus**. https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/
+- `Curso` **MIT 18.02 — Multivariable Calculus**. https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/
+- `Livro` **Mathematics for Machine Learning**, cap. 5. https://mml-book.github.io/
+- `Paper` **Automatic Differentiation in Machine Learning: a Survey** — Baydin et al. (2018). https://arxiv.org/abs/1502.05767
 
 ---
 
@@ -115,10 +115,10 @@ Backpropagation é, literalmente, regra da cadeia aplicada a uma composição mu
 
 ### Referências
 
-- 🎓 **MIT 6.041 — Probabilistic Systems Analysis**. https://ocw.mit.edu/courses/6-041-probabilistic-systems-analysis-and-applied-probability-fall-2010/
-- 📚 **Mathematics for Machine Learning**, cap. 6. https://mml-book.github.io/
-- 📚 **Pattern Recognition and Machine Learning** — Bishop, cap. 1–2.
-- 📚 **Probabilistic Machine Learning** (vol. 1) — Kevin Murphy. https://probml.github.io/pml-book/
+- `Curso` **MIT 6.041 — Probabilistic Systems Analysis**. https://ocw.mit.edu/courses/6-041-probabilistic-systems-analysis-and-applied-probability-fall-2010/
+- `Livro` **Mathematics for Machine Learning**, cap. 6. https://mml-book.github.io/
+- `Livro` **Pattern Recognition and Machine Learning** — Bishop, cap. 1–2.
+- `Livro` **Probabilistic Machine Learning** (vol. 1) — Kevin Murphy. https://probml.github.io/pml-book/
 
 ---
 
@@ -148,14 +148,14 @@ Backpropagation é, literalmente, regra da cadeia aplicada a uma composição mu
 
 ### Referências
 
-- 📄 **Adam: A Method for Stochastic Optimization** — Kingma & Ba (2014). https://arxiv.org/abs/1412.6980
-- 📄 **Decoupled Weight Decay Regularization (AdamW)** — Loshchilov & Hutter (2017). https://arxiv.org/abs/1711.05101
-- 📚 **Convex Optimization** — Boyd & Vandenberghe (livro completo gratuito). https://web.stanford.edu/~boyd/cvxbook/
-- 🎓 **Stanford EE364A — Convex Optimization**. https://web.stanford.edu/class/ee364a/
+- `Paper` **Adam: A Method for Stochastic Optimization** — Kingma & Ba (2014). https://arxiv.org/abs/1412.6980
+- `Paper` **Decoupled Weight Decay Regularization (AdamW)** — Loshchilov & Hutter (2017). https://arxiv.org/abs/1711.05101
+- `Livro` **Convex Optimization** — Boyd & Vandenberghe (livro completo gratuito). https://web.stanford.edu/~boyd/cvxbook/
+- `Curso` **Stanford EE364A — Convex Optimization**. https://web.stanford.edu/class/ee364a/
 
 ---
 
-## 🧪 Projetos práticos (curtos, obrigatórios)
+## Projetos práticos (curtos, obrigatórios)
 
 Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemática**. Use NumPy puro. O ponto é "ver" a matemática rodar.
 
@@ -177,7 +177,7 @@ Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemá
 **O que prova**: que você entende a regra da cadeia mecanicamente.
 - Implemente um motor de autodiferenciação reverso para escalares (estilo `micrograd` do Karpathy, mas escreva sozinho primeiro).
 - Treine uma rede de 1 camada para XOR.
-- **Referência conceitual**: 🎓 Karpathy — *The spelled-out intro to neural networks and backpropagation: building micrograd*. https://www.youtube.com/watch?v=VMj-3S1tku0
+- **Referência conceitual**: `Curso` Karpathy — *The spelled-out intro to neural networks and backpropagation: building micrograd*. https://www.youtube.com/watch?v=VMj-3S1tku0
 
 ### Projeto 1.4 — Comparativo de otimizadores
 **O que prova**: que você entende as diferenças entre SGD, Momentum, Adam.
@@ -187,10 +187,10 @@ Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemá
 
 ---
 
-## ⚠️ Erros comuns nesta fase
+## Erros comuns nesta fase
 
 - **Ler sem implementar.** Matemática não-implementada não vira intuição.
-- **Pular álgebra linear** porque "parece básico". Toda operação em DL é álgebra linear; se você não enxerga isso, vai sofrer no módulo [7](07_transformers.md).
+- **Pular álgebra linear** porque "parece básico". Toda operação em DL é álgebra linear; se você não enxerga isso, vai sofrer no módulo [7](07_transformers.mdx).
 - **Estudar otimização antes de cálculo.** Ordem importa.
 - **Achar que `numpy` é trivial.** Não é. Broadcasting, vetorização e *shapes* são onde a maioria dos bugs nasce.
 
@@ -200,9 +200,9 @@ Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemá
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Produto matricial | DL (forward pass) — Mod. [5](05_deep_learning.md), Transformers — Mod. [7](07_transformers.md) |
+| Produto matricial | DL (forward pass) — Mod. [5](05_deep_learning.md), Transformers — Mod. [7](07_transformers.mdx) |
 | Regra da cadeia | Backpropagation — Mod. [5](05_deep_learning.md) |
-| MLE / Cross-entropy | Loss functions — Mod. [5](05_deep_learning.md), [9](09_treinamento_e_alinhamento.md) |
+| MLE / Cross-entropy | Loss functions — Mod. [5](05_deep_learning.md), [9](09_treinamento_e_alinhamento.mdx) |
 | SVD | Embeddings, LoRA — Mod. [6](06_nlp_classico.md), [10](10_eficiencia_e_inferencia_local.md) |
 | Adam | Treinamento de qualquer rede moderna |
 | Distribuições | Sampling em LLMs (temperature, top-k) — Mod. [11](11_prompt_engineering.md) |

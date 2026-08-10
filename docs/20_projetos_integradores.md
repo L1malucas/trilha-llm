@@ -270,14 +270,14 @@ Quando você concluir 2–3 desses projetos, deve poder afirmar:
 
 Você não "termina" IA — a área se move semanalmente. Mantenha hábito de:
 
-- 📰 **arXiv (cs.CL, cs.LG)** — sanity check semanal.
-- 📰 **Hugging Face Daily Papers**. https://huggingface.co/papers
-- 📰 **Anthropic Engineering blog**, **OpenAI**, **Mistral**, **DeepMind**, **Google AI**.
-- 📰 **Sebastian Raschka — Ahead of AI** newsletter.
-- 📰 **Andrej Karpathy** — toda saída dele.
-- 📰 **Lilian Weng — lilianweng.github.io** — long-form deep dives.
-- 📰 **Jay Alammar** — visualizações didáticas.
-- 📰 **Simon Willison** — engenharia prática com LLMs.
+- `Fonte` **arXiv (cs.CL, cs.LG)** — sanity check semanal.
+- `Fonte` **Hugging Face Daily Papers**. https://huggingface.co/papers
+- `Fonte` **Anthropic Engineering blog**, **OpenAI**, **Mistral**, **DeepMind**, **Google AI**.
+- `Fonte` **Sebastian Raschka — Ahead of AI** newsletter.
+- `Fonte` **Andrej Karpathy** — toda saída dele.
+- `Fonte` **Lilian Weng — lilianweng.github.io** — long-form deep dives.
+- `Fonte` **Jay Alammar** — visualizações didáticas.
+- `Fonte` **Simon Willison** — engenharia prática com LLMs.
 
 E principalmente: **construa**. Toda nova técnica ganha solidez quando passa pelas suas próprias mãos.
 
@@ -289,4 +289,4 @@ Esta trilha tem ~21 arquivos e centenas de referências. **Não é um currículo
 
 Você não precisa fazer tudo. Você precisa fazer **o suficiente para virar quem você quer ser**. O resto, conforme demanda.
 
-Bom trabalho. 🚀
+Bom trabalho.

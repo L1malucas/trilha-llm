@@ -8,7 +8,7 @@ sidebar_position: 10
 
 > **Objetivo**: rodar e otimizar LLMs em hardware modesto (laptop, GPU consumer, CPU, edge). Quantização, distilação, KV-cache, servidores de inferência, edge inference.
 >
-> **Pré-requisitos**: Módulos [07](07_transformers.md)–[09](09_treinamento_e_alinhamento.md).
+> **Pré-requisitos**: Módulos [07](07_transformers.mdx)–[09](09_treinamento_e_alinhamento.mdx).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -37,8 +37,8 @@ Reduzir precisão dos pesos (e/ou ativações): FP32 → FP16 → BF16 → INT8 
 
 ### Formatos importantes
 - **GGUF** — formato do `llama.cpp`. Suporta Q2_K, Q3_K_S/M/L, Q4_K_S/M, Q5_K_S/M, Q6_K, Q8_0, etc.
-- **GPTQ** — quantização inteligente baseada em segunda ordem. Bom para GPU. 📄 https://arxiv.org/abs/2210.17323
-- **AWQ (Activation-aware Weight Quantization)** — usa estatísticas de ativação. 📄 https://arxiv.org/abs/2306.00978
+- **GPTQ** — quantização inteligente baseada em segunda ordem. Bom para GPU. `Paper` https://arxiv.org/abs/2210.17323
+- **AWQ (Activation-aware Weight Quantization)** — usa estatísticas de ativação. `Paper` https://arxiv.org/abs/2306.00978
 - **bitsandbytes** — quantização 8-bit/4-bit em PyTorch.
 - **FP8** (training-time, em H100/MI300).
 
@@ -58,11 +58,11 @@ Exemplo: LLaMA-3 8B em Q4_K_M cabe folgado em GPU de 8 GB.
 - **Q8** é praticamente lossless mas dobra o footprint vs Q4.
 
 ### Referências
-- 📄 **LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale** — Dettmers et al. (2022). https://arxiv.org/abs/2208.07339
-- 📄 **GPTQ** — Frantar et al. (2022). https://arxiv.org/abs/2210.17323
-- 📄 **AWQ** — Lin et al. (2023). https://arxiv.org/abs/2306.00978
-- 📄 **A Survey of Quantization Methods for Efficient Neural Network Inference**. https://arxiv.org/abs/2103.13630
-- 📚 **Hugging Face — Quantization documentation**. https://huggingface.co/docs/transformers/main/en/quantization/overview
+- `Paper` **LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale** — Dettmers et al. (2022). https://arxiv.org/abs/2208.07339
+- `Paper` **GPTQ** — Frantar et al. (2022). https://arxiv.org/abs/2210.17323
+- `Paper` **AWQ** — Lin et al. (2023). https://arxiv.org/abs/2306.00978
+- `Paper` **A Survey of Quantization Methods for Efficient Neural Network Inference**. https://arxiv.org/abs/2103.13630
+- `Livro` **Hugging Face — Quantization documentation**. https://huggingface.co/docs/transformers/main/en/quantization/overview
 
 ---
 
@@ -72,33 +72,33 @@ Exemplo: LLaMA-3 8B em Q4_K_M cabe folgado em GPU de 8 GB.
 Em geração autoregressiva, K e V de tokens passados não mudam. Cachear evita recomputar.
 
 ### Otimizações modernas
-- **PagedAttention** (vLLM) — gerência de KV-cache estilo memória virtual. 📄 https://arxiv.org/abs/2309.06180
+- **PagedAttention** (vLLM) — gerência de KV-cache estilo memória virtual. `Paper` https://arxiv.org/abs/2309.06180
 - **Continuous Batching** — agrupa requisições em diferentes estágios. Padrão em vLLM, TGI.
-- **Speculative Decoding** — modelo pequeno propõe tokens, modelo grande valida. 📄 https://arxiv.org/abs/2211.17192
+- **Speculative Decoding** — modelo pequeno propõe tokens, modelo grande valida. `Paper` https://arxiv.org/abs/2211.17192
 - **Flash Decoding** — variante de Flash Attention para inferência.
 - **Prompt Caching** — cachear prefixos comuns entre chamadas.
 
 ### Referências
-- 📄 **Efficient Memory Management for LLM Serving with PagedAttention (vLLM)** — Kwon et al. (2023). https://arxiv.org/abs/2309.06180
-- 📄 **Speculative Decoding** — Leviathan et al. (2022). https://arxiv.org/abs/2211.17192
+- `Paper` **Efficient Memory Management for LLM Serving with PagedAttention (vLLM)** — Kwon et al. (2023). https://arxiv.org/abs/2309.06180
+- `Paper` **Speculative Decoding** — Leviathan et al. (2022). https://arxiv.org/abs/2211.17192
 
 ---
 
 ## 10.3 Servidores de inferência
 
 ### Locais (uma máquina)
-- 🛠 **Ollama** — UX simples, GGUF, Mac/Linux/Windows. https://ollama.com/
-- 🛠 **llama.cpp** — backend C++ rápido, base do Ollama, controla detalhes. https://github.com/ggml-org/llama.cpp
-- 🛠 **LM Studio** — GUI desktop. https://lmstudio.ai/
-- 🛠 **GPT4All**. https://www.nomic.ai/gpt4all
-- 🛠 **Jan**. https://jan.ai/
+- `Ferramenta` **Ollama** — UX simples, GGUF, Mac/Linux/Windows. https://ollama.com/
+- `Ferramenta` **llama.cpp** — backend C++ rápido, base do Ollama, controla detalhes. https://github.com/ggml-org/llama.cpp
+- `Ferramenta` **LM Studio** — GUI desktop. https://lmstudio.ai/
+- `Ferramenta` **GPT4All**. https://www.nomic.ai/gpt4all
+- `Ferramenta` **Jan**. https://jan.ai/
 
 ### Servidor (alta performance, multi-usuário)
-- 🛠 **vLLM** — padrão para servir LLMs em GPU. https://docs.vllm.ai/
-- 🛠 **TGI (Text Generation Inference)** (Hugging Face). https://github.com/huggingface/text-generation-inference
-- 🛠 **TensorRT-LLM** (NVIDIA). Performance máxima em hardware NVIDIA.
-- 🛠 **SGLang** — alternativa moderna com runtime próprio. https://github.com/sgl-project/sglang
-- 🛠 **MLC-LLM** — compila modelos para múltiplos backends (CUDA, Metal, Vulkan, WebGPU). https://github.com/mlc-ai/mlc-llm
+- `Ferramenta` **vLLM** — padrão para servir LLMs em GPU. https://docs.vllm.ai/
+- `Ferramenta` **TGI (Text Generation Inference)** (Hugging Face). https://github.com/huggingface/text-generation-inference
+- `Ferramenta` **TensorRT-LLM** (NVIDIA). Performance máxima em hardware NVIDIA.
+- `Ferramenta` **SGLang** — alternativa moderna com runtime próprio. https://github.com/sgl-project/sglang
+- `Ferramenta` **MLC-LLM** — compila modelos para múltiplos backends (CUDA, Metal, Vulkan, WebGPU). https://github.com/mlc-ai/mlc-llm
 
 ### API compatível com OpenAI
 A maioria dos servidores acima expõe API compatível OpenAI (`/v1/chat/completions`). Isso permite trocar provedor sem mudar código.
@@ -126,10 +126,10 @@ Sim, é possível. Útil quando:
 ## 10.5 Inferência em edge
 
 ### Mobile / Browser
-- 🛠 **transformers.js** — ONNX runtime no browser/Node. https://huggingface.co/docs/transformers.js
-- 🛠 **MLC-LLM Web** — modelos rodando via WebGPU. https://github.com/mlc-ai/web-llm
-- 🛠 **Apple MLX** — framework Apple para Apple Silicon. https://github.com/ml-explore/mlx
-- 🛠 **MediaPipe LLM** (Google). https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference
+- `Ferramenta` **transformers.js** — ONNX runtime no browser/Node. https://huggingface.co/docs/transformers.js
+- `Ferramenta` **MLC-LLM Web** — modelos rodando via WebGPU. https://github.com/mlc-ai/web-llm
+- `Ferramenta` **Apple MLX** — framework Apple para Apple Silicon. https://github.com/ml-explore/mlx
+- `Ferramenta` **MediaPipe LLM** (Google). https://ai.google.dev/edge/mediapipe/solutions/genai/llm_inference
 
 ### Apple Silicon
 - M1/M2/M3 com unified memory são surpreendentemente bons para LLMs.
@@ -155,7 +155,7 @@ Treinar modelo pequeno (student) para imitar saídas de modelo grande (teacher).
 - **Feature distillation**: alinhar representações intermediárias.
 
 ### Modelos famosos por destilação
-- **DistilBERT** (40% menor que BERT, 97% performance). 📄 https://arxiv.org/abs/1910.01108
+- **DistilBERT** (40% menor que BERT, 97% performance). `Paper` https://arxiv.org/abs/1910.01108
 - **TinyLlama** (1.1B, treinado long).
 - **Phi-3** (filosofia: dataset sintético de alta qualidade do GPT-4).
 - **Gemma 2** (destilação de Gemini).
@@ -166,9 +166,9 @@ Treinar modelo pequeno (student) para imitar saídas de modelo grande (teacher).
 - Precisa de inferência rápida em produção.
 
 ### Referências
-- 📄 **Distilling the Knowledge in a Neural Network** — Hinton, Vinyals, Dean (2015). https://arxiv.org/abs/1503.02531
-- 📄 **MiniLLM: Knowledge Distillation of Large Language Models** — Gu et al. (2023). https://arxiv.org/abs/2306.08543
-- 📄 **Phi-3 Technical Report**. https://arxiv.org/abs/2404.14219
+- `Paper` **Distilling the Knowledge in a Neural Network** — Hinton, Vinyals, Dean (2015). https://arxiv.org/abs/1503.02531
+- `Paper` **MiniLLM: Knowledge Distillation of Large Language Models** — Gu et al. (2023). https://arxiv.org/abs/2306.08543
+- `Paper` **Phi-3 Technical Report**. https://arxiv.org/abs/2404.14219
 
 ---
 
@@ -186,9 +186,9 @@ Remover pesos pouco importantes. Pode ser:
 Inferência de Mixtral 8×7B usa apenas ~13B "ativos" por token, mesmo tendo 47B totais. Vantagem para inferência; desvantagem em VRAM total necessária.
 
 ### Referências
-- 📄 **The Lottery Ticket Hypothesis** — Frankle & Carbin (2018). https://arxiv.org/abs/1803.03635
-- 📄 **SparseGPT** — Frantar & Alistarh (2023). https://arxiv.org/abs/2301.00774
-- 📄 **Wanda: A Simple and Effective Pruning Approach for LLMs**. https://arxiv.org/abs/2306.11695
+- `Paper` **The Lottery Ticket Hypothesis** — Frankle & Carbin (2018). https://arxiv.org/abs/1803.03635
+- `Paper` **SparseGPT** — Frantar & Alistarh (2023). https://arxiv.org/abs/2301.00774
+- `Paper` **Wanda: A Simple and Effective Pruning Approach for LLMs**. https://arxiv.org/abs/2306.11695
 
 ---
 
@@ -209,12 +209,12 @@ Inferência de Mixtral 8×7B usa apenas ~13B "ativos" por token, mesmo tendo 47B
 - **Logit bias** — manipular probabilidades de tokens específicos.
 
 ### Referências
-- 📄 **The Curious Case of Neural Text Degeneration (top-p)** — Holtzman et al. (2019). https://arxiv.org/abs/1904.09751
-- 🛠 **Outlines** — structured generation. https://github.com/dottxt-ai/outlines
+- `Paper` **The Curious Case of Neural Text Degeneration (top-p)** — Holtzman et al. (2019). https://arxiv.org/abs/1904.09751
+- `Ferramenta` **Outlines** — structured generation. https://github.com/dottxt-ai/outlines
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 10.1 — Quantizar e comparar
 - Pegue LLaMA 3 8B (ou Qwen 2.5 7B).
@@ -257,7 +257,7 @@ Inferência de Mixtral 8×7B usa apenas ~13B "ativos" por token, mesmo tendo 47B
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Quantizar excessivamente** modelos pequenos — degradação grande. Q4 em 70B ≠ Q4 em 1B.
 - **Esquecer KV-cache** ao implementar inferência manual — fica 100× mais lento.
@@ -272,8 +272,8 @@ Inferência de Mixtral 8×7B usa apenas ~13B "ativos" por token, mesmo tendo 47B
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Servidor local | RAG (mod. [12](12_rag.md)), Agentes (mod. [13](13_agentes_tools_protocolos.md)), Produção (mod. [15](15_engenharia_producao.md)) |
-| Quantização | Deploy mobile (mod. [18](18_multimodal.md)), edge |
+| Servidor local | RAG (mod. [12](12_rag.mdx)), Agentes (mod. [13](13_agentes_tools_protocolos.md)), Produção (mod. [15](15_engenharia_producao.mdx)) |
+| Quantização | Deploy mobile (mod. [18](18_multimodal.mdx)), edge |
 | Sampling | Prompt engineering (mod. [11](11_prompt_engineering.md)), avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
 | Constrained generation | Tools/structured output (mod. [13](13_agentes_tools_protocolos.md)) |
 

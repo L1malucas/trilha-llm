@@ -38,12 +38,12 @@ Isto é o módulo que separa "fiz um chatbot" de "operou um sistema de IA".
 Adicione: tokens in/out por chamada, custo, prompt versionado, modelo, sampling params, score do juiz/eval, score do guardrail.
 
 ### Ferramentas
-- 🛠 **Langfuse** — open-source, self-hostable. https://langfuse.com/
-- 🛠 **LangSmith** — SaaS LangChain. https://www.langchain.com/langsmith
-- 🛠 **Helicone** — proxy + analytics. https://www.helicone.ai/
-- 🛠 **Phoenix** (Arize). https://github.com/Arize-ai/phoenix
-- 🛠 **Weights & Biases — Weave**. https://wandb.ai/site/weave
-- 🛠 **OpenTelemetry GenAI semantic conventions** — padrão emergente. https://opentelemetry.io/docs/specs/semconv/gen-ai/
+- `Ferramenta` **Langfuse** — open-source, self-hostable. https://langfuse.com/
+- `Ferramenta` **LangSmith** — SaaS LangChain. https://www.langchain.com/langsmith
+- `Ferramenta` **Helicone** — proxy + analytics. https://www.helicone.ai/
+- `Ferramenta` **Phoenix** (Arize). https://github.com/Arize-ai/phoenix
+- `Ferramenta` **Weights & Biases — Weave**. https://wandb.ai/site/weave
+- `Ferramenta` **OpenTelemetry GenAI semantic conventions** — padrão emergente. https://opentelemetry.io/docs/specs/semconv/gen-ai/
 
 ### TS / JS
 - Langfuse, Helicone e LangSmith têm SDKs TS.
@@ -71,7 +71,7 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 - **Cache de prompts** (Anthropic prompt caching, OpenAI prompt caching) — reduz custo de prompts longos repetidos.
 - **Cache semântico** — cache em nível de query (com embedding match).
 - **Roteamento entre modelos** — modelo barato resolve o fácil; modelo caro só para o difícil. Routers: RouteLLM, Martian.
-- **Compactação de prompts** — LLMLingua. 📄 https://arxiv.org/abs/2310.05736
+- **Compactação de prompts** — LLMLingua. `Paper` https://arxiv.org/abs/2310.05736
 - **Modelos menores fine-tunados** para tarefas específicas.
 - **Batching** quando latência permite.
 - **Streaming** para latência percebida menor (não custo, mas UX).
@@ -112,9 +112,9 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 - **HTTP cache padrão** para recursos (docs, embeddings).
 
 ### Ferramentas
-- 🛠 **GPTCache**. https://github.com/zilliztech/GPTCache
-- 🛠 **Redis** com vector search.
-- 🛠 **Provedor cache** (Anthropic, OpenAI).
+- `Ferramenta` **GPTCache**. https://github.com/zilliztech/GPTCache
+- `Ferramenta` **Redis** com vector search.
+- `Ferramenta` **Provedor cache** (Anthropic, OpenAI).
 
 ### Cuidados
 - Stale cache em domínios dinâmicos.
@@ -183,8 +183,10 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 - **Arize Phoenix** — drift e tracing combinados.
 
 ### Ciclo
-```
-prod logs → sample → human/auto eval → identificar regressões → ajustar (prompt/model/RAG) → eval offline → deploy
+```mermaid
+flowchart LR
+    A["prod logs"] --> B["sample"] --> C["human/auto eval"] --> D["identificar regressões"]
+    D --> E["ajustar<br/>(prompt/model/RAG)"] --> F["eval offline"] --> G["deploy"] --> A
 ```
 
 ---
@@ -208,10 +210,10 @@ prod logs → sample → human/auto eval → identificar regressões → ajustar
   - Random seed (quando aplicável).
 
 ### Ferramentas
-- 🛠 **MLflow**. https://mlflow.org/
-- 🛠 **Weights & Biases**. https://wandb.ai/
-- 🛠 **Aim**. https://github.com/aimhubio/aim
-- 🛠 **DVC**. https://dvc.org/
+- `Ferramenta` **MLflow**. https://mlflow.org/
+- `Ferramenta` **Weights & Biases**. https://wandb.ai/
+- `Ferramenta` **Aim**. https://github.com/aimhubio/aim
+- `Ferramenta` **DVC**. https://dvc.org/
 
 ---
 
@@ -252,20 +254,23 @@ Como em microsserviços tradicionais: se taxa de erro > X em janela Y, "abre" o 
 ## 15.11 Padrões de arquitetura de aplicação
 
 ### Single-call (mais simples)
-```
-Frontend → Backend → LLM Provider → Backend → Frontend
+```mermaid
+flowchart LR
+    F["Frontend"] --> B["Backend"] --> L["LLM Provider"] --> B --> F
 ```
 
 ### RAG-augmented
-```
-Frontend → Backend → [Retriever → Vector DB] → LLM → Backend → Frontend
+```mermaid
+flowchart LR
+    F["Frontend"] --> B["Backend"] --> R["Retriever"] --> VDB["Vector DB"]
+    VDB --> L["LLM"] --> B --> F
 ```
 
 ### Agentic
-```
-Frontend → Agent Orchestrator (LangGraph/Mastra)
-                ↓ ↑ múltiplas iterações
-            LLM + Tools (DB, APIs, Files, MCP servers)
+```mermaid
+flowchart LR
+    F["Frontend"] --> O["Agent Orchestrator<br/>(LangGraph/Mastra)"]
+    O <-->|"múltiplas iterações"| T["LLM + Tools<br/>(DB, APIs, Files, MCP servers)"]
 ```
 
 ### Multi-tenant
@@ -287,10 +292,10 @@ Atenção a:
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 15.1 — Observability completo
-- Pegue um pipeline RAG/agente do mod. [12](12_rag.md) ou 13.
+- Pegue um pipeline RAG/agente do mod. [12](12_rag.mdx) ou 13.
 - Adicione Langfuse self-hosted (Docker compose).
 - Capture traces detalhados + custo por chamada.
 - Construa dashboard com p50/p95 de TTFT, custo/dia, taxa de erro.
@@ -330,7 +335,7 @@ Atenção a:
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Não logar prompt + resposta** completos — debug fica impossível.
 - **Logar PII** sem redação — exposição legal.

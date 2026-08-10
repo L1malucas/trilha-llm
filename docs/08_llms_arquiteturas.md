@@ -8,7 +8,7 @@ sidebar_position: 8
 
 > **Objetivo**: conhecer as famílias de LLMs, suas escolhas arquiteturais, scaling laws, e os modelos abertos de 2024–2025 que definem o estado da arte open-source.
 >
-> **Pré-requisitos**: Módulo [07](07_transformers.md).
+> **Pré-requisitos**: Módulo [07](07_transformers.mdx).
 >
 > **Tempo de referência**: 3–4 semanas.
 
@@ -25,38 +25,38 @@ Saber que "GPT é decoder-only" não é suficiente. Você precisa entender por q
 ### Encoder-only
 **Para quê**: classificação, extração, embeddings, NER.
 
-- 📄 **BERT** — Devlin et al. (2018). https://arxiv.org/abs/1810.04805
-- 📄 **RoBERTa** (BERT melhor treinado) — Liu et al. (2019). https://arxiv.org/abs/1907.11692
-- 📄 **DeBERTa** (disentangled attention, ainda muito competitivo) — He et al. (2020). https://arxiv.org/abs/2006.03654
-- 📄 **ELECTRA** (replaced token detection, mais eficiente que MLM) — Clark et al. (2020). https://arxiv.org/abs/2003.10555
-- 📄 **ModernBERT** (2024) — atualiza BERT com avanços recentes. https://arxiv.org/abs/2412.13663
+- `Paper` **BERT** — Devlin et al. (2018). https://arxiv.org/abs/1810.04805
+- `Paper` **RoBERTa** (BERT melhor treinado) — Liu et al. (2019). https://arxiv.org/abs/1907.11692
+- `Paper` **DeBERTa** (disentangled attention, ainda muito competitivo) — He et al. (2020). https://arxiv.org/abs/2006.03654
+- `Paper` **ELECTRA** (replaced token detection, mais eficiente que MLM) — Clark et al. (2020). https://arxiv.org/abs/2003.10555
+- `Paper` **ModernBERT** (2024) — atualiza BERT com avanços recentes. https://arxiv.org/abs/2412.13663
 
 ### Decoder-only (autoregressivos)
 **Para quê**: geração, chat, completion, raciocínio.
 
-- 📄 **GPT-2** — Radford et al. (2019). https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
-- 📄 **GPT-3 (Language Models are Few-Shot Learners)** — Brown et al. (2020). https://arxiv.org/abs/2005.14165
-- 📄 **LLaMA** — Touvron et al. (2023). https://arxiv.org/abs/2302.13971
-- 📄 **LLaMA 2** — Touvron et al. (2023). https://arxiv.org/abs/2307.09288
-- 📄 **The Llama 3 Herd of Models** (LLaMA 3) — Meta AI (2024). https://arxiv.org/abs/2407.21783
-- 📄 **Mistral 7B** — Jiang et al. (2023). https://arxiv.org/abs/2310.06825
-- 📄 **Mixtral of Experts** — Jiang et al. (2024). https://arxiv.org/abs/2401.04088
-- 📄 **Qwen2 Technical Report** — Yang et al. (2024). https://arxiv.org/abs/2407.10671
-- 📄 **Qwen2.5 Technical Report** (2024). https://arxiv.org/abs/2412.15115
-- 📄 **Gemma: Open Models** — Google DeepMind (2024). https://arxiv.org/abs/2403.08295
-- 📄 **Gemma 2** — Google DeepMind (2024). https://arxiv.org/abs/2408.00118
-- 📄 **Phi-3 Technical Report** (Microsoft, foco em modelos pequenos potentes). https://arxiv.org/abs/2404.14219
-- 📄 **DeepSeek-V3 Technical Report** — DeepSeek-AI (2024). https://arxiv.org/abs/2412.19437
-- 📄 **DeepSeek-R1** (raciocínio via RL puro). https://arxiv.org/abs/2501.12948
+- `Paper` **GPT-2** — Radford et al. (2019). https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+- `Paper` **GPT-3 (Language Models are Few-Shot Learners)** — Brown et al. (2020). https://arxiv.org/abs/2005.14165
+- `Paper` **LLaMA** — Touvron et al. (2023). https://arxiv.org/abs/2302.13971
+- `Paper` **LLaMA 2** — Touvron et al. (2023). https://arxiv.org/abs/2307.09288
+- `Paper` **The Llama 3 Herd of Models** (LLaMA 3) — Meta AI (2024). https://arxiv.org/abs/2407.21783
+- `Paper` **Mistral 7B** — Jiang et al. (2023). https://arxiv.org/abs/2310.06825
+- `Paper` **Mixtral of Experts** — Jiang et al. (2024). https://arxiv.org/abs/2401.04088
+- `Paper` **Qwen2 Technical Report** — Yang et al. (2024). https://arxiv.org/abs/2407.10671
+- `Paper` **Qwen2.5 Technical Report** (2024). https://arxiv.org/abs/2412.15115
+- `Paper` **Gemma: Open Models** — Google DeepMind (2024). https://arxiv.org/abs/2403.08295
+- `Paper` **Gemma 2** — Google DeepMind (2024). https://arxiv.org/abs/2408.00118
+- `Paper` **Phi-3 Technical Report** (Microsoft, foco em modelos pequenos potentes). https://arxiv.org/abs/2404.14219
+- `Paper` **DeepSeek-V3 Technical Report** — DeepSeek-AI (2024). https://arxiv.org/abs/2412.19437
+- `Paper` **DeepSeek-R1** (raciocínio via RL puro). https://arxiv.org/abs/2501.12948
 
 ### Encoder-Decoder
 **Para quê**: text-to-text unificado (tradução, sumarização, QA).
 
-- 📄 **T5** — Raffel et al. (2019). https://arxiv.org/abs/1910.10683
-- 📄 **BART** — Lewis et al. (2019). https://arxiv.org/abs/1910.13461
-- 📄 **mT5** (multilíngue). https://arxiv.org/abs/2010.11934
-- 📄 **Flan-T5** (instruction-tuned T5). https://arxiv.org/abs/2210.11416
-- 📄 **NLLB-200** (No Language Left Behind, tradução em 200 idiomas). https://arxiv.org/abs/2207.04672
+- `Paper` **T5** — Raffel et al. (2019). https://arxiv.org/abs/1910.10683
+- `Paper` **BART** — Lewis et al. (2019). https://arxiv.org/abs/1910.13461
+- `Paper` **mT5** (multilíngue). https://arxiv.org/abs/2010.11934
+- `Paper` **Flan-T5** (instruction-tuned T5). https://arxiv.org/abs/2210.11416
+- `Paper` **NLLB-200** (No Language Left Behind, tradução em 200 idiomas). https://arxiv.org/abs/2207.04672
 
 ---
 
@@ -66,9 +66,9 @@ Saber que "GPT é decoder-only" não é suficiente. Você precisa entender por q
 Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**? Existe um equilíbrio ótimo?
 
 ### Papers fundamentais
-- 📄 **Scaling Laws for Neural Language Models** — Kaplan et al. (2020). https://arxiv.org/abs/2001.08361 (Conclusão: aumentar N rapidamente; D mais lento.)
-- 📄 **Training Compute-Optimal Large Language Models (Chinchilla)** — Hoffmann et al. (2022). https://arxiv.org/abs/2203.15556 (Corrige Kaplan: N e D devem escalar juntos. Resultado: tokens por parâmetro ≈ 20 é o ótimo de compute.)
-- 📄 **Beyond Chinchilla-Optimal: Training Smaller Models Longer** (LLaMA 3 e outros pós-Chinchilla mostram que treinar **muito mais** que Chinchilla-ótimo melhora qualidade na inferência, mesmo desperdiçando compute de treino).
+- `Paper` **Scaling Laws for Neural Language Models** — Kaplan et al. (2020). https://arxiv.org/abs/2001.08361 (Conclusão: aumentar N rapidamente; D mais lento.)
+- `Paper` **Training Compute-Optimal Large Language Models (Chinchilla)** — Hoffmann et al. (2022). https://arxiv.org/abs/2203.15556 (Corrige Kaplan: N e D devem escalar juntos. Resultado: tokens por parâmetro ≈ 20 é o ótimo de compute.)
+- `Paper` **Beyond Chinchilla-Optimal: Training Smaller Models Longer** (LLaMA 3 e outros pós-Chinchilla mostram que treinar **muito mais** que Chinchilla-ótimo melhora qualidade na inferência, mesmo desperdiçando compute de treino).
 
 ### Implicação prática
 - **Modelos pequenos bem treinados** (ex: Phi-3 mini, Llama 3.2 3B) podem competir com modelos grandes.
@@ -94,9 +94,9 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 - **Common Corpus** (especial atenção a licenças abertas).
 
 ### Referências
-- 📄 **Scaling Language Models: Methods, Analysis & Insights from Training Gopher** — DeepMind (2021). https://arxiv.org/abs/2112.11446
-- 📄 **OPT: Open Pre-trained Transformer** — Meta (2022, com logbook do treinamento, leitura excelente). https://arxiv.org/abs/2205.01068
-- 📄 **BLOOM** (consórcio aberto BigScience, 176B). https://arxiv.org/abs/2211.05100
+- `Paper` **Scaling Language Models: Methods, Analysis & Insights from Training Gopher** — DeepMind (2021). https://arxiv.org/abs/2112.11446
+- `Paper` **OPT: Open Pre-trained Transformer** — Meta (2022, com logbook do treinamento, leitura excelente). https://arxiv.org/abs/2205.01068
+- `Paper` **BLOOM** (consórcio aberto BigScience, 176B). https://arxiv.org/abs/2211.05100
 
 ---
 
@@ -113,10 +113,10 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 - **Long context**: 128k → 1M+ tokens (LongRoPE, YaRN, NTK-aware scaling).
 
 ### Referências
-- 📄 **Mixture of Experts (Outrageously Large NN)** — Shazeer et al. (2017). https://arxiv.org/abs/1701.06538
-- 📄 **Switch Transformers** — Fedus et al. (2021). https://arxiv.org/abs/2101.03961
-- 📄 **YaRN: Efficient Context Window Extension** — Peng et al. (2023). https://arxiv.org/abs/2309.00071
-- 📄 **LongRoPE** — Microsoft (2024). https://arxiv.org/abs/2402.13753
+- `Paper` **Mixture of Experts (Outrageously Large NN)** — Shazeer et al. (2017). https://arxiv.org/abs/1701.06538
+- `Paper` **Switch Transformers** — Fedus et al. (2021). https://arxiv.org/abs/2101.03961
+- `Paper` **YaRN: Efficient Context Window Extension** — Peng et al. (2023). https://arxiv.org/abs/2309.00071
+- `Paper` **LongRoPE** — Microsoft (2024). https://arxiv.org/abs/2402.13753
 
 ---
 
@@ -124,9 +124,9 @@ Como performance varia com **parâmetros (N)**, **dados (D)**, e **compute (C)**
 
 A onda de 2024–2025 — modelos otimizados para "pensar" antes de responder.
 
-- 📄 **Let's Verify Step by Step** (Process Reward Models). https://arxiv.org/abs/2305.20050
-- 📄 **DeepSeek-R1** — RL puro para raciocínio, com modelo aberto. https://arxiv.org/abs/2501.12948
-- 📄 **Self-Taught Reasoner (STaR)** — Zelikman et al. (2022). https://arxiv.org/abs/2203.14465
+- `Paper` **Let's Verify Step by Step** (Process Reward Models). https://arxiv.org/abs/2305.20050
+- `Paper` **DeepSeek-R1** — RL puro para raciocínio, com modelo aberto. https://arxiv.org/abs/2501.12948
+- `Paper` **Self-Taught Reasoner (STaR)** — Zelikman et al. (2022). https://arxiv.org/abs/2203.14465
 
 ### Conceito
 Modelos geram "chain of thought" longo *antes* da resposta final. Treinamento via RL com recompensa em corretude. Aumenta drasticamente performance em matemática, código, lógica.
@@ -176,7 +176,7 @@ Modelos geram "chain of thought" longo *antes* da resposta final. Treinamento vi
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 8.1 — Comparativo de modelos abertos
 - Escolha 4 modelos: LLaMA 3 8B, Mistral 7B, Gemma 2 9B, Qwen 2.5 7B.
@@ -190,7 +190,7 @@ Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 - Faça resumo de 1–2 páginas em Markdown.
 
 ### Projeto 8.3 — Implementar uma "mini-LLaMA"
-- Pegue o nanoGPT do mod. [07](07_transformers.md).
+- Pegue o nanoGPT do mod. [07](07_transformers.mdx).
 - Modifique para usar: RMSNorm, SwiGLU, RoPE, GQA.
 - Treine no Tiny Shakespeare ou subconjunto do FineWeb.
 - Compare com a versão original.
@@ -208,7 +208,7 @@ Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **"Modelo X é melhor"** sem qualificar tarefa, idioma, contexto.
 - **Ignorar licenças** — nem todo modelo "aberto" tem uso comercial permitido (LLaMA tem cláusulas; Gemma tem termos próprios).
@@ -222,10 +222,10 @@ Escolha 3 dos relacionados acima (sugestão: LLaMA 3, Mixtral, DeepSeek-V3).
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Pre-training | Treinamento (mod. [09](09_treinamento_e_alinhamento.md)) |
-| Embedding models | RAG (mod. [12](12_rag.md)) |
+| Pre-training | Treinamento (mod. [09](09_treinamento_e_alinhamento.mdx)) |
+| Embedding models | RAG (mod. [12](12_rag.mdx)) |
 | Tokenização específica do modelo | Tudo o que envolve usar o modelo |
-| Scaling laws | Decisões de fine-tuning (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Scaling laws | Decisões de fine-tuning (mod. [09](09_treinamento_e_alinhamento.mdx)) |
 | Reasoning models | Agentes (mod. [13](13_agentes_tools_protocolos.md)), avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
 
 ---

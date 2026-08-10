@@ -8,7 +8,7 @@ sidebar_position: 11
 
 > **Objetivo**: dominar a arte e ciência de instruir LLMs. Não é "truque mágico"; é interface técnica entre intenção humana e modelo. Inclui CoT, ToT, ReAct, structured output, prompt injection.
 >
-> **Pré-requisitos**: Módulos [07](07_transformers.md)–[10](10_eficiencia_e_inferencia_local.md).
+> **Pré-requisitos**: Módulos [07](07_transformers.mdx)–[10](10_eficiencia_e_inferencia_local.md).
 >
 > **Tempo de referência**: 2–3 semanas.
 
@@ -72,9 +72,9 @@ Mostrar 1–10 exemplos. Útil quando:
 "Você é um revisor técnico sênior..." — melhora consistência, mas evite usar como muleta para prompts mal estruturados.
 
 ### Referências
-- 📄 **Language Models are Few-Shot Learners (GPT-3)** — Brown et al. (2020). https://arxiv.org/abs/2005.14165
-- 📚 **Prompt Engineering Guide** (DAIR.AI). https://www.promptingguide.ai/
-- 📄 **OpenAI — Prompt engineering best practices** (parte da documentação oficial).
+- `Paper` **Language Models are Few-Shot Learners (GPT-3)** — Brown et al. (2020). https://arxiv.org/abs/2005.14165
+- `Livro` **Prompt Engineering Guide** (DAIR.AI). https://www.promptingguide.ai/
+- `Paper` **OpenAI — Prompt engineering best practices** (parte da documentação oficial).
 
 ---
 
@@ -83,16 +83,16 @@ Mostrar 1–10 exemplos. Útil quando:
 ### Chain-of-Thought
 Pedir para o modelo "pensar passo a passo" antes da resposta. Melhora drasticamente raciocínio em modelos grandes.
 
-- 📄 **Chain-of-Thought Prompting Elicits Reasoning in Large Language Models** — Wei et al. (2022). https://arxiv.org/abs/2201.11903
-- 📄 **Large Language Models are Zero-Shot Reasoners** ("Let's think step by step") — Kojima et al. (2022). https://arxiv.org/abs/2205.11916
+- `Paper` **Chain-of-Thought Prompting Elicits Reasoning in Large Language Models** — Wei et al. (2022). https://arxiv.org/abs/2201.11903
+- `Paper` **Large Language Models are Zero-Shot Reasoners** ("Let's think step by step") — Kojima et al. (2022). https://arxiv.org/abs/2205.11916
 
 ### Self-Consistency
 Gerar várias CoTs com `temperature > 0`, votar na resposta mais comum.
-- 📄 **Self-Consistency Improves CoT Reasoning** — Wang et al. (2022). https://arxiv.org/abs/2203.11171
+- `Paper` **Self-Consistency Improves CoT Reasoning** — Wang et al. (2022). https://arxiv.org/abs/2203.11171
 
 ### Tree-of-Thought (ToT)
 Explorar múltiplos caminhos como árvore, com avaliação intermediária.
-- 📄 **Tree of Thoughts: Deliberate Problem Solving with LLMs** — Yao et al. (2023). https://arxiv.org/abs/2305.10601
+- `Paper` **Tree of Thoughts: Deliberate Problem Solving with LLMs** — Yao et al. (2023). https://arxiv.org/abs/2305.10601
 
 ### Graph-of-Thought, Skeleton-of-Thought
 Variantes para casos específicos.
@@ -105,7 +105,7 @@ Variantes para casos específicos.
 
 ## 11.4 ReAct: raciocínio + ação
 
-📄 **ReAct: Synergizing Reasoning and Acting in Language Models** — Yao et al. (2022). https://arxiv.org/abs/2210.03629
+`Paper` **ReAct: Synergizing Reasoning and Acting in Language Models** — Yao et al. (2022). https://arxiv.org/abs/2210.03629
 
 Padrão:
 ```
@@ -132,9 +132,9 @@ Aplicações reais consomem JSON, não prosa. "Parsing prosa" é frágil.
 - **Pydantic** (Python) / **Zod** (TS) para validação no client.
 
 ### Ferramentas
-- 🛠 **Outlines** (Python). https://github.com/dottxt-ai/outlines
-- 🛠 **Instructor** (Python, wrapper sobre OpenAI/Anthropic com Pydantic). https://github.com/jxnl/instructor
-- 🛠 **Vercel AI SDK — `generateObject` com Zod** (TS). https://ai-sdk.dev/
+- `Ferramenta` **Outlines** (Python). https://github.com/dottxt-ai/outlines
+- `Ferramenta` **Instructor** (Python, wrapper sobre OpenAI/Anthropic com Pydantic). https://github.com/jxnl/instructor
+- `Ferramenta` **Vercel AI SDK — `generateObject` com Zod** (TS). https://ai-sdk.dev/
 
 ---
 
@@ -142,23 +142,23 @@ Aplicações reais consomem JSON, não prosa. "Parsing prosa" é frágil.
 
 ### Decomposição
 Quebrar tarefa em subtarefas. Cada subtarefa é um prompt menor, encadeado.
-- 📄 **Decomposed Prompting** — Khot et al. (2022). https://arxiv.org/abs/2210.02406
+- `Paper` **Decomposed Prompting** — Khot et al. (2022). https://arxiv.org/abs/2210.02406
 
 ### Self-Refine
 Modelo gera, critica, revisa.
-- 📄 **Self-Refine: Iterative Refinement with Self-Feedback** — Madaan et al. (2023). https://arxiv.org/abs/2303.17651
+- `Paper` **Self-Refine: Iterative Refinement with Self-Feedback** — Madaan et al. (2023). https://arxiv.org/abs/2303.17651
 
 ### Reflexion
 Agente reflete sobre falhas para melhorar.
-- 📄 **Reflexion: Language Agents with Verbal Reinforcement Learning** — Shinn et al. (2023). https://arxiv.org/abs/2303.11366
+- `Paper` **Reflexion: Language Agents with Verbal Reinforcement Learning** — Shinn et al. (2023). https://arxiv.org/abs/2303.11366
 
 ### Plan-and-Solve
 Planejar antes de executar.
-- 📄 **Plan-and-Solve Prompting** — Wang et al. (2023). https://arxiv.org/abs/2305.04091
+- `Paper` **Plan-and-Solve Prompting** — Wang et al. (2023). https://arxiv.org/abs/2305.04091
 
 ### Least-to-Most
 Resolver subproblemas progressivos.
-- 📄 **Least-to-Most Prompting** — Zhou et al. (2022). https://arxiv.org/abs/2205.10625
+- `Paper` **Least-to-Most Prompting** — Zhou et al. (2022). https://arxiv.org/abs/2205.10625
 
 ---
 
@@ -167,9 +167,9 @@ Resolver subproblemas progressivos.
 LLMs grandes "aprendem" da janela de contexto sem gradient updates. Ainda é fenômeno parcialmente entendido.
 
 ### Papers
-- 📄 **Why Can GPT Learn In-Context? Language Models Implicitly Perform Gradient Descent as Meta-Optimizers** — Dai et al. (2022). https://arxiv.org/abs/2212.10559
-- 📄 **A Survey on In-context Learning**. https://arxiv.org/abs/2301.00234
-- 📄 **Larger language models do in-context learning differently**. https://arxiv.org/abs/2303.03846
+- `Paper` **Why Can GPT Learn In-Context? Language Models Implicitly Perform Gradient Descent as Meta-Optimizers** — Dai et al. (2022). https://arxiv.org/abs/2212.10559
+- `Paper` **A Survey on In-context Learning**. https://arxiv.org/abs/2301.00234
+- `Paper` **Larger language models do in-context learning differently**. https://arxiv.org/abs/2303.03846
 
 ### Prática
 - Ordem dos exemplos importa.
@@ -198,10 +198,10 @@ LLMs grandes "aprendem" da janela de contexto sem gradient updates. Ainda é fen
 - **Output validation** com schemas.
 
 ### Referências
-- 📄 **Prompt Injection attack against LLM-integrated Applications** — Liu et al. (2023). https://arxiv.org/abs/2306.05499
-- 📄 **Universal and Transferable Adversarial Attacks on Aligned LLMs** — Zou et al. (2023). https://arxiv.org/abs/2307.15043
-- 📚 **OWASP Top 10 for LLM Applications**. https://owasp.org/www-project-top-10-for-large-language-model-applications/
-- 📄 **Constitutional AI** — Anthropic. https://arxiv.org/abs/2212.08073
+- `Paper` **Prompt Injection attack against LLM-integrated Applications** — Liu et al. (2023). https://arxiv.org/abs/2306.05499
+- `Paper` **Universal and Transferable Adversarial Attacks on Aligned LLMs** — Zou et al. (2023). https://arxiv.org/abs/2307.15043
+- `Livro` **OWASP Top 10 for LLM Applications**. https://owasp.org/www-project-top-10-for-large-language-model-applications/
+- `Paper` **Constitutional AI** — Anthropic. https://arxiv.org/abs/2212.08073
 
 ---
 
@@ -214,13 +214,13 @@ LLMs grandes "aprendem" da janela de contexto sem gradient updates. Ainda é fen
 - **Versionamento de prompts** (eles mudam tanto quanto código).
 
 ### Ferramentas
-- 🛠 **Promptfoo** — testing CLI/CI para prompts. https://www.promptfoo.dev/
-- 🛠 **LangSmith / Langfuse** — observability + eval. (Mais em mod. [15](15_engenharia_producao.md).)
-- 🛠 **OpenAI Evals**. https://github.com/openai/evals
-- 🛠 **DSPy** (Stanford) — abordagem programática para prompts otimizáveis. https://github.com/stanfordnlp/dspy
+- `Ferramenta` **Promptfoo** — testing CLI/CI para prompts. https://www.promptfoo.dev/
+- `Ferramenta` **LangSmith / Langfuse** — observability + eval. (Mais em mod. [15](15_engenharia_producao.mdx).)
+- `Ferramenta` **OpenAI Evals**. https://github.com/openai/evals
+- `Ferramenta` **DSPy** (Stanford) — abordagem programática para prompts otimizáveis. https://github.com/stanfordnlp/dspy
 
 ### Referências
-- 📄 **DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines** — Khattab et al. (2023). https://arxiv.org/abs/2310.03714
+- `Paper` **DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines** — Khattab et al. (2023). https://arxiv.org/abs/2310.03714
 
 ---
 
@@ -236,7 +236,7 @@ Não exista prompt "ótimo universal". Avalie por modelo.
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 11.1 — Suite de testes de prompts
 - Tarefa: extração estruturada de informações de receitas (ingredientes, modo de preparo, tempo).
@@ -275,7 +275,7 @@ Não exista prompt "ótimo universal". Avalie por modelo.
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Não usar chat template** correto do modelo. Bug silencioso, qualidade despenca.
 - **Confiar em "responda em JSON"** sem grammar — modelo vaza prosa nas bordas.
@@ -293,8 +293,8 @@ Não exista prompt "ótimo universal". Avalie por modelo.
 | ReAct | Agentes (mod. [13](13_agentes_tools_protocolos.md)) |
 | Structured output | Tools/MCP (mod. [13](13_agentes_tools_protocolos.md)) |
 | LLM-as-judge | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
-| Prompt injection | Segurança (mod. [14](14_avaliacao_e_seguranca.md)), Produção (mod. [15](15_engenharia_producao.md)) |
-| DSPy / promptfoo | Engenharia de produção (mod. [15](15_engenharia_producao.md)) |
+| Prompt injection | Segurança (mod. [14](14_avaliacao_e_seguranca.md)), Produção (mod. [15](15_engenharia_producao.mdx)) |
+| DSPy / promptfoo | Engenharia de produção (mod. [15](15_engenharia_producao.mdx)) |
 
 ---
 

@@ -6,7 +6,7 @@ sidebar_position: 17
 
 # Módulo 17 — Aprendizado por Reforço
 
-> **Objetivo**: dominar RL clássico (MDPs, Q-learning, policy gradient) e moderno (DQN, PPO, AlphaZero, RL para LLMs). Conexão com RLHF/GRPO do módulo [09](09_treinamento_e_alinhamento.md).
+> **Objetivo**: dominar RL clássico (MDPs, Q-learning, policy gradient) e moderno (DQN, PPO, AlphaZero, RL para LLMs). Conexão com RLHF/GRPO do módulo [09](09_treinamento_e_alinhamento.mdx).
 >
 > **Pré-requisitos**: Módulos [01](01_matematica.md) (matemática, especialmente prob/stat e otimização), 05 (DL).
 >
@@ -42,9 +42,9 @@ Mesmo se você nunca treinar um agente RL puro, **RLHF/GRPO usa as mesmas ferram
 - **Equação de Bellman**.
 
 ### Referências (canônicas)
-- 📚 **Reinforcement Learning: An Introduction** — Sutton & Barto. ✅ Gratuito. http://incompleteideas.net/book/the-book-2nd.html
-- 🎓 **DeepMind x UCL — Reinforcement Learning Course** (David Silver). ✅ Vídeos gratuitos. https://www.davidsilver.uk/teaching/
-- 🎓 **UC Berkeley CS285 — Deep RL** (Sergey Levine). https://rail.eecs.berkeley.edu/deeprlcourse/
+- `Livro` **Reinforcement Learning: An Introduction** — Sutton & Barto. Gratuito. http://incompleteideas.net/book/the-book-2nd.html
+- `Curso` **DeepMind x UCL — Reinforcement Learning Course** (David Silver). `Gratuito` Vídeos gratuitos. https://www.davidsilver.uk/teaching/
+- `Curso` **UC Berkeley CS285 — Deep RL** (Sergey Levine). https://rail.eecs.berkeley.edu/deeprlcourse/
 
 ---
 
@@ -65,7 +65,7 @@ Implemente em NumPy:
 - Visualize convergência das funções de valor.
 
 ### Referências
-- 📚 Sutton & Barto, caps. 3–7.
+- `Livro` Sutton & Barto, caps. 3–7.
 
 ---
 
@@ -73,8 +73,8 @@ Implemente em NumPy:
 
 ### DQN (Deep Q-Network)
 Generalização de Q-learning com rede neural aproximando Q.
-- 📄 **Playing Atari with Deep Reinforcement Learning** — Mnih et al. (2013). https://arxiv.org/abs/1312.5602
-- 📄 **Human-level control through deep RL (Nature)** — Mnih et al. (2015). https://www.nature.com/articles/nature14236
+- `Paper` **Playing Atari with Deep Reinforcement Learning** — Mnih et al. (2013). https://arxiv.org/abs/1312.5602
+- `Paper` **Human-level control through deep RL (Nature)** — Mnih et al. (2015). https://www.nature.com/articles/nature14236
 
 ### Truques que tornaram DQN viável
 - **Experience replay** (descorrelacionar amostras).
@@ -83,10 +83,10 @@ Generalização de Q-learning com rede neural aproximando Q.
 - **Frame stacking**.
 
 ### Variações
-- **Double DQN**. 📄 https://arxiv.org/abs/1509.06461
-- **Dueling DQN**. 📄 https://arxiv.org/abs/1511.06581
-- **Prioritized Experience Replay**. 📄 https://arxiv.org/abs/1511.05952
-- **Rainbow** — combina tudo. 📄 https://arxiv.org/abs/1710.02298
+- **Double DQN**. `Paper` https://arxiv.org/abs/1509.06461
+- **Dueling DQN**. `Paper` https://arxiv.org/abs/1511.06581
+- **Prioritized Experience Replay**. `Paper` https://arxiv.org/abs/1511.05952
+- **Rainbow** — combina tudo. `Paper` https://arxiv.org/abs/1710.02298
 
 ---
 
@@ -103,24 +103,24 @@ Combinar policy network (actor) + value network (critic) para reduzir variância
 
 ### A2C / A3C
 Asynchronous Advantage Actor-Critic.
-- 📄 **Asynchronous Methods for Deep RL** — Mnih et al. (2016). https://arxiv.org/abs/1602.01783
+- `Paper` **Asynchronous Methods for Deep RL** — Mnih et al. (2016). https://arxiv.org/abs/1602.01783
 
 ### TRPO
 Trust Region Policy Optimization — restrição em KL para estabilidade.
-- 📄 **Trust Region Policy Optimization** — Schulman et al. (2015). https://arxiv.org/abs/1502.05477
+- `Paper` **Trust Region Policy Optimization** — Schulman et al. (2015). https://arxiv.org/abs/1502.05477
 
 ### PPO (Proximal Policy Optimization)
 **O algoritmo padrão moderno**. Simplificação de TRPO usando clipping. Usado em RLHF, jogos, robótica.
-- 📄 **Proximal Policy Optimization Algorithms** — Schulman et al. (2017). https://arxiv.org/abs/1707.06347
+- `Paper` **Proximal Policy Optimization Algorithms** — Schulman et al. (2017). https://arxiv.org/abs/1707.06347
 
 ### GRPO (Group Relative Policy Optimization)
 Variante usada no DeepSeek-R1/Math, sem value model separado.
-- 📄 **DeepSeekMath**. https://arxiv.org/abs/2402.03300
+- `Paper` **DeepSeekMath**. https://arxiv.org/abs/2402.03300
 
 ### DDPG, TD3, SAC
 Para ações contínuas (robótica).
-- 📄 **DDPG** — Lillicrap et al. (2015). https://arxiv.org/abs/1509.02971
-- 📄 **Soft Actor-Critic (SAC)**. https://arxiv.org/abs/1801.01290
+- `Paper` **DDPG** — Lillicrap et al. (2015). https://arxiv.org/abs/1509.02971
+- `Paper` **Soft Actor-Critic (SAC)**. https://arxiv.org/abs/1801.01290
 
 ---
 
@@ -131,8 +131,8 @@ Aprender modelo do ambiente (\(P, R\)), planejar dentro dele.
 
 ### Métodos
 - **Dyna-Q**.
-- **MuZero** — planeja em modelo aprendido. 📄 https://arxiv.org/abs/1911.08265
-- **Dreamer V3** — model-based moderno. 📄 https://arxiv.org/abs/2301.04104
+- **MuZero** — planeja em modelo aprendido. `Paper` https://arxiv.org/abs/1911.08265
+- **Dreamer V3** — model-based moderno. `Paper` https://arxiv.org/abs/2301.04104
 
 ### Por que importa
 Eficiência de amostra (sample efficiency) é frequentemente 10–100× melhor.
@@ -141,10 +141,10 @@ Eficiência de amostra (sample efficiency) é frequentemente 10–100× melhor.
 
 ## 17.6 Marcos históricos: AlphaGo, AlphaZero, MuZero
 
-- 📄 **Mastering the game of Go with deep neural networks (AlphaGo)** — Silver et al. (2016). https://www.nature.com/articles/nature16961
-- 📄 **Mastering the game of Go without human knowledge (AlphaGo Zero)**. https://www.nature.com/articles/nature24270
-- 📄 **A general reinforcement learning algorithm (AlphaZero)** — Silver et al. (2017). https://arxiv.org/abs/1712.01815
-- 📄 **MuZero** — Schrittwieser et al. (2019). https://arxiv.org/abs/1911.08265
+- `Paper` **Mastering the game of Go with deep neural networks (AlphaGo)** — Silver et al. (2016). https://www.nature.com/articles/nature16961
+- `Paper` **Mastering the game of Go without human knowledge (AlphaGo Zero)**. https://www.nature.com/articles/nature24270
+- `Paper` **A general reinforcement learning algorithm (AlphaZero)** — Silver et al. (2017). https://arxiv.org/abs/1712.01815
+- `Paper` **MuZero** — Schrittwieser et al. (2019). https://arxiv.org/abs/1911.08265
 
 ### Lições
 - **MCTS (Monte Carlo Tree Search)** + DL é poderoso.
@@ -164,7 +164,7 @@ Eficiência de amostra (sample efficiency) é frequentemente 10–100× melhor.
 
 ## 17.8 RLHF, RLAIF e RL em LLMs
 
-Recapitular do mod. [09](09_treinamento_e_alinhamento.md) com base teórica agora consolidada.
+Recapitular do mod. [09](09_treinamento_e_alinhamento.mdx) com base teórica agora consolidada.
 
 ### Pipeline RLHF
 1. SFT base.
@@ -180,8 +180,8 @@ Recompensa **direta** em corretude (math, code) — sem reward model.
 - Emerge "chain-of-thought" longo organicamente.
 
 ### Referências
-- 📄 **InstructGPT** — Ouyang et al. (2022). https://arxiv.org/abs/2203.02155
-- 📄 **DPO**, **GRPO**, **KTO**, **ORPO** — revisar mod. [09](09_treinamento_e_alinhamento.md).
+- `Paper` **InstructGPT** — Ouyang et al. (2022). https://arxiv.org/abs/2203.02155
+- `Paper` **DPO**, **GRPO**, **KTO**, **ORPO** — revisar mod. [09](09_treinamento_e_alinhamento.mdx).
 
 ---
 
@@ -198,32 +198,32 @@ Aprender política de dataset fixo, sem interagir com ambiente.
 ### Métodos
 - **Conservative Q-Learning (CQL)**.
 - **BCQ**, **IQL**.
-- **Decision Transformer** — RL como modelagem de sequência. 📄 https://arxiv.org/abs/2106.01345
+- **Decision Transformer** — RL como modelagem de sequência. `Paper` https://arxiv.org/abs/2106.01345
 
 ---
 
 ## 17.10 Bibliotecas e ambientes
 
 ### Ambientes
-- 🛠 **Gymnasium** (sucessor do OpenAI Gym). https://gymnasium.farama.org/
-- 🛠 **PettingZoo** (multi-agente).
-- 🛠 **MuJoCo** (física continua, hoje free). https://mujoco.org/
-- 🛠 **Isaac Lab / Isaac Gym** (NVIDIA, robótica em GPU).
-- 🛠 **MineRL**, **Crafter**, **Procgen**, **Atari (ALE)**.
+- `Ferramenta` **Gymnasium** (sucessor do OpenAI Gym). https://gymnasium.farama.org/
+- `Ferramenta` **PettingZoo** (multi-agente).
+- `Ferramenta` **MuJoCo** (física continua, hoje free). https://mujoco.org/
+- `Ferramenta` **Isaac Lab / Isaac Gym** (NVIDIA, robótica em GPU).
+- `Ferramenta` **MineRL**, **Crafter**, **Procgen**, **Atari (ALE)**.
 
 ### Frameworks de algoritmos
-- 🛠 **Stable-Baselines3** — PPO, SAC, DQN, etc., em PyTorch. https://stable-baselines3.readthedocs.io/
-- 🛠 **CleanRL** — implementações single-file pedagógicas. https://docs.cleanrl.dev/
-- 🛠 **RLlib (Ray)** — produção, distributed. https://docs.ray.io/en/latest/rllib/
-- 🛠 **TorchRL** (PyTorch oficial). https://pytorch.org/rl/
-- 🛠 **TRL (Hugging Face)** — RL para LLMs. https://huggingface.co/docs/trl
+- `Ferramenta` **Stable-Baselines3** — PPO, SAC, DQN, etc., em PyTorch. https://stable-baselines3.readthedocs.io/
+- `Ferramenta` **CleanRL** — implementações single-file pedagógicas. https://docs.cleanrl.dev/
+- `Ferramenta` **RLlib (Ray)** — produção, distributed. https://docs.ray.io/en/latest/rllib/
+- `Ferramenta` **TorchRL** (PyTorch oficial). https://pytorch.org/rl/
+- `Ferramenta` **TRL (Hugging Face)** — RL para LLMs. https://huggingface.co/docs/trl
 
 ### Por que CleanRL é especial para aprender
 Cada algoritmo em **um único arquivo curto, sem abstrações ocultas**. Excelente didática.
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 17.1 — Q-learning tabular do zero
 - Em NumPy puro.
@@ -262,7 +262,7 @@ Cada algoritmo em **um único arquivo curto, sem abstrações ocultas**. Excelen
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Achar que policy = Q-function aprendida**: confunde value-based com policy-based.
 - **Não normalizar advantages** em PPO/A2C — instabilidade.
@@ -277,10 +277,10 @@ Cada algoritmo em **um único arquivo curto, sem abstrações ocultas**. Excelen
 
 | Conceito daqui | Aparece em |
 |---|---|
-| PPO, GRPO | RLHF, reasoning RL (mod. [09](09_treinamento_e_alinhamento.md)) |
+| PPO, GRPO | RLHF, reasoning RL (mod. [09](09_treinamento_e_alinhamento.mdx)) |
 | Reward shaping | Fine-tuning para tasks específicas |
 | MCTS + RL | Agentes com planejamento (mod. [13](13_agentes_tools_protocolos.md)) |
-| Offline RL / DPO | Alinhamento (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Offline RL / DPO | Alinhamento (mod. [09](09_treinamento_e_alinhamento.mdx)) |
 | Decision Transformer | Tópicos avançados (mod. [19](19_topicos_avancados.md)) |
 
 ---

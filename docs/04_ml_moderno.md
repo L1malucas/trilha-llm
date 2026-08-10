@@ -44,13 +44,13 @@ Exemplos canônicos:
 LLMs modernos são **modelos auto-supervisionados em escala massiva**. Entender SSL é entender o pretraining.
 
 ### Papers fundamentais
-- 📄 **A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)** — Chen et al. (2020). https://arxiv.org/abs/2002.05709
-- 📄 **Momentum Contrast for Unsupervised Visual Representation Learning (MoCo)** — He et al. (2019). https://arxiv.org/abs/1911.05722
-- 📄 **Self-Supervised Learning: Generative or Contrastive** — Liu et al. (2020). https://arxiv.org/abs/2006.08218 (survey)
-- 📄 **Bootstrap Your Own Latent (BYOL)** — Grill et al. (2020). https://arxiv.org/abs/2006.07733
+- `Paper` **A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)** — Chen et al. (2020). https://arxiv.org/abs/2002.05709
+- `Paper` **Momentum Contrast for Unsupervised Visual Representation Learning (MoCo)** — He et al. (2019). https://arxiv.org/abs/1911.05722
+- `Paper` **Self-Supervised Learning: Generative or Contrastive** — Liu et al. (2020). https://arxiv.org/abs/2006.08218 (survey)
+- `Paper` **Bootstrap Your Own Latent (BYOL)** — Grill et al. (2020). https://arxiv.org/abs/2006.07733
 
 ### Cursos
-- 🎓 **NYU Deep Learning (Yann LeCun & Alfredo Canziani)** — aulas dedicadas a SSL. https://atcold.github.io/NYU-DLSP21/
+- `Curso` **NYU Deep Learning (Yann LeCun & Alfredo Canziani)** — aulas dedicadas a SSL. https://atcold.github.io/NYU-DLSP21/
 
 ---
 
@@ -66,8 +66,8 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 - **Domain adaptation**: ajustar a distribuição-alvo.
 
 ### Referências
-- 📄 **A Survey on Transfer Learning** — Pan & Yang (2010). https://www.cse.ust.hk/~qyang/Docs/2009/tkde_transfer_learning.pdf
-- 📄 **Universal Language Model Fine-tuning (ULMFiT)** — Howard & Ruder (2018). https://arxiv.org/abs/1801.06146 (clássico em NLP)
+- `Paper` **A Survey on Transfer Learning** — Pan & Yang (2010). https://www.cse.ust.hk/~qyang/Docs/2009/tkde_transfer_learning.pdf
+- `Paper` **Universal Language Model Fine-tuning (ULMFiT)** — Howard & Ruder (2018). https://arxiv.org/abs/1801.06146 (clássico em NLP)
 
 ---
 
@@ -82,9 +82,9 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de few-shot learning sem gradient updates — comportamento "in-context" que aparece com escala.
 
 ### Papers
-- 📄 **Model-Agnostic Meta-Learning (MAML)** — Finn et al. (2017). https://arxiv.org/abs/1703.03400
-- 📄 **Matching Networks for One Shot Learning** — Vinyals et al. (2016). https://arxiv.org/abs/1606.04080
-- 📄 **Prototypical Networks for Few-shot Learning** — Snell et al. (2017). https://arxiv.org/abs/1703.05175
+- `Paper` **Model-Agnostic Meta-Learning (MAML)** — Finn et al. (2017). https://arxiv.org/abs/1703.03400
+- `Paper` **Matching Networks for One Shot Learning** — Vinyals et al. (2016). https://arxiv.org/abs/1606.04080
+- `Paper` **Prototypical Networks for Few-shot Learning** — Snell et al. (2017). https://arxiv.org/abs/1703.05175
 
 ---
 
@@ -97,8 +97,8 @@ Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de
 - **Snapshot Ensembles** (em DL).
 
 ### Referências
-- 📚 **Ensemble Methods: Foundations and Algorithms** — Zhou.
-- 📄 **Stacked Generalization** — Wolpert (1992). https://www.researchgate.net/publication/222467943_Stacked_Generalization
+- `Livro` **Ensemble Methods: Foundations and Algorithms** — Zhou.
+- `Paper` **Stacked Generalization** — Wolpert (1992). https://www.researchgate.net/publication/222467943_Stacked_Generalization
 
 ---
 
@@ -117,9 +117,9 @@ Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de
 NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, transferir uma arquitetura existente é melhor. Mas conhecer o conceito é importante.
 
 ### Referências
-- 📄 **Neural Architecture Search: A Survey** — Elsken et al. (2018). https://arxiv.org/abs/1808.05377
-- 📄 **DARTS: Differentiable Architecture Search** — Liu et al. (2018). https://arxiv.org/abs/1806.09055
-- 🛠 **Optuna**. https://optuna.org/
+- `Paper` **Neural Architecture Search: A Survey** — Elsken et al. (2018). https://arxiv.org/abs/1808.05377
+- `Paper` **DARTS: Differentiable Architecture Search** — Liu et al. (2018). https://arxiv.org/abs/1806.09055
+- `Ferramenta` **Optuna**. https://optuna.org/
 
 ---
 
@@ -133,8 +133,8 @@ NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, tran
 - **Data augmentation** como forma de "criar" supervisão.
 
 ### Referências
-- 📄 **Snorkel: Rapid Training Data Creation with Weak Supervision** — Ratner et al. (2017). https://arxiv.org/abs/1711.10160
-- 📚 **Active Learning** — Burr Settles. http://burrsettles.com/pub/settles.activelearning.pdf
+- `Paper` **Snorkel: Rapid Training Data Creation with Weak Supervision** — Ratner et al. (2017). https://arxiv.org/abs/1711.10160
+- `Livro` **Active Learning** — Burr Settles. http://burrsettles.com/pub/settles.activelearning.pdf
 
 ---
 
@@ -157,9 +157,9 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - Em RL: causalidade é fundamental.
 
 ### Referências
-- 📚 **Causal Inference: The Mixtape** — Cunningham (gratuito). https://mixtape.scunning.com/
-- 📚 **The Book of Why** — Judea Pearl (acessível).
-- 📚 **Causal Inference: What If** — Hernán & Robins (gratuito). https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/
+- `Livro` **Causal Inference: The Mixtape** — Cunningham (gratuito). https://mixtape.scunning.com/
+- `Livro` **The Book of Why** — Judea Pearl (acessível).
+- `Livro` **Causal Inference: What If** — Hernán & Robins (gratuito). https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/
 
 ---
 
@@ -176,12 +176,12 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - Uncertainty quantification é o que diferencia "modelo bom" de "modelo confiável".
 
 ### Referências
-- 📚 **Probabilistic Machine Learning (vol. 2: Advanced Topics)** — Murphy. https://probml.github.io/pml-book/
-- 📄 **Auto-Encoding Variational Bayes (VAE)** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
+- `Livro` **Probabilistic Machine Learning (vol. 2: Advanced Topics)** — Murphy. https://probml.github.io/pml-book/
+- `Paper` **Auto-Encoding Variational Bayes (VAE)** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 4.1 — Stacking em problema tabular real
 - Combine 5 modelos heterogêneos (XGBoost, LightGBM, CatBoost, Logistic Regression, KNN) com um meta-modelo.
@@ -212,7 +212,7 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Confundir SSL com unsupervised learning.** SSL gera supervisão sintética; unsupervised tradicional não.
 - **Achar que ensembles sempre ajudam.** Em modelos já bem ajustados, o ganho marginal pode não compensar a complexidade.
@@ -225,9 +225,9 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 
 | Conceito daqui | Aparece em |
 |---|---|
-| Self-supervised learning | Pretraining de LLMs (mod. [09](09_treinamento_e_alinhamento.md)) |
-| Transfer learning | Fine-tuning de LLMs (mod. [09](09_treinamento_e_alinhamento.md)) |
-| Contrastive learning | CLIP, embeddings (mod. [12](12_rag.md), [18](18_multimodal.md)) |
+| Self-supervised learning | Pretraining de LLMs (mod. [09](09_treinamento_e_alinhamento.mdx)) |
+| Transfer learning | Fine-tuning de LLMs (mod. [09](09_treinamento_e_alinhamento.mdx)) |
+| Contrastive learning | CLIP, embeddings (mod. [12](12_rag.mdx), [18](18_multimodal.mdx)) |
 | Few-shot | In-context learning (mod. [11](11_prompt_engineering.md)) |
 | Probabilistic models | Sampling em LLMs (mod. [11](11_prompt_engineering.md)) |
 | Uncertainty | Hallucination, calibração (mod. [14](14_avaliacao_e_seguranca.md)) |

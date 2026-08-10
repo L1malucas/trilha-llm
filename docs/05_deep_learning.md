@@ -6,7 +6,7 @@ sidebar_position: 5
 
 # Módulo 05 — Deep Learning (Fundamentos e Arquiteturas)
 
-> **Objetivo**: dominar redes neurais a ponto de implementar do zero, treinar com confiança, e entender CNNs, RNNs/LSTMs e suas limitações — preparando o terreno conceitual para Transformers (mod. [07](07_transformers.md)).
+> **Objetivo**: dominar redes neurais a ponto de implementar do zero, treinar com confiança, e entender CNNs, RNNs/LSTMs e suas limitações — preparando o terreno conceitual para Transformers (mod. [07](07_transformers.mdx)).
 >
 > **Pré-requisitos**: Módulos [01](01_matematica.md)–[04](04_ml_moderno.md).
 >
@@ -33,10 +33,10 @@ Pular DL e ir direto para LLMs é como tentar entender Relatividade sem Mecânic
 Implemente em NumPy puro: forward, backward, treinamento, validação.
 
 ### Referências
-- 📚 **Deep Learning** (Goodfellow et al.), cap. 6. https://www.deeplearningbook.org/
-- 🎓 **Karpathy — Neural Networks: Zero to Hero** (série completa, valor inestimável). https://karpathy.ai/zero-to-hero.html
-- 🎓 **3Blue1Brown — Neural Networks** (4 vídeos clássicos). https://www.3blue1brown.com/topics/neural-networks
-- 📄 **Learning representations by back-propagating errors** — Rumelhart, Hinton, Williams (1986). Paper histórico, vale ler para perspectiva.
+- `Livro` **Deep Learning** (Goodfellow et al.), cap. 6. https://www.deeplearningbook.org/
+- `Curso` **Karpathy — Neural Networks: Zero to Hero** (série completa, valor inestimável). https://karpathy.ai/zero-to-hero.html
+- `Curso` **3Blue1Brown — Neural Networks** (4 vídeos clássicos). https://www.3blue1brown.com/topics/neural-networks
+- `Paper` **Learning representations by back-propagating errors** — Rumelhart, Hinton, Williams (1986). Paper histórico, vale ler para perspectiva.
 
 ---
 
@@ -49,8 +49,8 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 - **Vanishing/exploding gradients** — o problema histórico de redes profundas.
 
 ### Referências
-- 📄 **Understanding the difficulty of training deep feedforward neural networks** — Glorot & Bengio (2010). https://proceedings.mlr.press/v9/glorot10a.html
-- 📄 **Delving Deep into Rectifiers (He init)** — He et al. (2015). https://arxiv.org/abs/1502.01852
+- `Paper` **Understanding the difficulty of training deep feedforward neural networks** — Glorot & Bengio (2010). https://proceedings.mlr.press/v9/glorot10a.html
+- `Paper` **Delving Deep into Rectifiers (He init)** — He et al. (2015). https://arxiv.org/abs/1502.01852
 
 ---
 
@@ -76,10 +76,10 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 - **Group Normalization**, **RMSNorm** (usado em LLaMA).
 
 ### Referências
-- 📄 **Dropout: A Simple Way to Prevent NN from Overfitting** — Srivastava et al. (2014). https://jmlr.org/papers/v15/srivastava14a.html
-- 📄 **Batch Normalization** — Ioffe & Szegedy (2015). https://arxiv.org/abs/1502.03167
-- 📄 **Layer Normalization** — Ba, Kiros, Hinton (2016). https://arxiv.org/abs/1607.06450
-- 📄 **Root Mean Square Layer Normalization (RMSNorm)** — Zhang & Sennrich (2019). https://arxiv.org/abs/1910.07467
+- `Paper` **Dropout: A Simple Way to Prevent NN from Overfitting** — Srivastava et al. (2014). https://jmlr.org/papers/v15/srivastava14a.html
+- `Paper` **Batch Normalization** — Ioffe & Szegedy (2015). https://arxiv.org/abs/1502.03167
+- `Paper` **Layer Normalization** — Ba, Kiros, Hinton (2016). https://arxiv.org/abs/1607.06450
+- `Paper` **Root Mean Square Layer Normalization (RMSNorm)** — Zhang & Sennrich (2019). https://arxiv.org/abs/1910.07467
 
 ---
 
@@ -103,9 +103,9 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 Transformers usam residual connections derivadas das ResNets. Entender o problema que ResNet resolve é entender por que Transformers profundos treinam.
 
 ### Referências
-- 📄 **ImageNet Classification with Deep CNN (AlexNet)** — Krizhevsky et al. (2012). https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
-- 📄 **Deep Residual Learning for Image Recognition (ResNet)** — He et al. (2015). https://arxiv.org/abs/1512.03385
-- 🎓 **Stanford CS231N**. http://cs231n.stanford.edu/
+- `Paper` **ImageNet Classification with Deep CNN (AlexNet)** — Krizhevsky et al. (2012). https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
+- `Paper` **Deep Residual Learning for Image Recognition (ResNet)** — He et al. (2015). https://arxiv.org/abs/1512.03385
+- `Curso` **Stanford CS231N**. http://cs231n.stanford.edu/
 
 ---
 
@@ -125,10 +125,10 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - **Attention sobre RNN** (Bahdanau, Luong) — antecessor direto do self-attention.
 
 ### Referências
-- 📄 **Long Short-Term Memory** — Hochreiter & Schmidhuber (1997). https://www.bioinf.jku.at/publications/older/2604.pdf
-- 📄 **Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau Attention)** — Bahdanau, Cho, Bengio (2014). https://arxiv.org/abs/1409.0473
-- 📄 **Sequence to Sequence Learning with Neural Networks** — Sutskever, Vinyals, Le (2014). https://arxiv.org/abs/1409.3215
-- 🎓 **Karpathy — The Unreasonable Effectiveness of RNNs** (post + repo `char-rnn`). https://karpathy.github.io/2015/05/21/rnn-effectiveness/
+- `Paper` **Long Short-Term Memory** — Hochreiter & Schmidhuber (1997). https://www.bioinf.jku.at/publications/older/2604.pdf
+- `Paper` **Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau Attention)** — Bahdanau, Cho, Bengio (2014). https://arxiv.org/abs/1409.0473
+- `Paper` **Sequence to Sequence Learning with Neural Networks** — Sutskever, Vinyals, Le (2014). https://arxiv.org/abs/1409.3215
+- `Curso` **Karpathy — The Unreasonable Effectiveness of RNNs** (post + repo `char-rnn`). https://karpathy.github.io/2015/05/21/rnn-effectiveness/
 
 ---
 
@@ -144,8 +144,8 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - Difusão (mod. [19](19_topicos_avancados.md)) é a evolução desses paradigmas.
 
 ### Referências
-- 📄 **Auto-Encoding Variational Bayes** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
-- 📄 **Generative Adversarial Networks** — Goodfellow et al. (2014). https://arxiv.org/abs/1406.2661
+- `Paper` **Auto-Encoding Variational Bayes** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
+- `Paper` **Generative Adversarial Networks** — Goodfellow et al. (2014). https://arxiv.org/abs/1406.2661
 
 ---
 
@@ -156,15 +156,15 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - `DataLoader`, `Dataset`, custom datasets.
 - Training loop manual: forward → loss → backward → optimizer.step().
 - **`torch.compile`** (PyTorch 2.x, JIT).
-- **`torch.distributed`**: DDP, FSDP (preview do mod. [09](09_treinamento_e_alinhamento.md)).
+- **`torch.distributed`**: DDP, FSDP (preview do mod. [09](09_treinamento_e_alinhamento.mdx)).
 - **PyTorch Lightning** (abstração sobre PyTorch para cortar boilerplate).
 - **Hugging Face Accelerate** (alternativa).
 
 ### Referências
-- 🎓 **Deep Learning with PyTorch** (livro oficial gratuito). https://pytorch.org/assets/deep-learning/Deep-Learning-with-PyTorch.pdf
-- 🛠 **PyTorch Tutorials**. https://pytorch.org/tutorials/
-- 🛠 **PyTorch Lightning**. https://lightning.ai/docs/pytorch/stable/
-- 📚 **Dive into Deep Learning (D2L)** — todo em PyTorch. https://d2l.ai/
+- `Curso` **Deep Learning with PyTorch** (livro oficial gratuito). https://pytorch.org/assets/deep-learning/Deep-Learning-with-PyTorch.pdf
+- `Ferramenta` **PyTorch Tutorials**. https://pytorch.org/tutorials/
+- `Ferramenta` **PyTorch Lightning**. https://lightning.ai/docs/pytorch/stable/
+- `Livro` **Dive into Deep Learning (D2L)** — todo em PyTorch. https://d2l.ai/
 
 ---
 
@@ -176,11 +176,11 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - **Verificações de sanidade**: overfitar um único batch, gradient checking numérico.
 
 ### Referências
-- 📄 **A Recipe for Training Neural Networks** — Karpathy (post). http://karpathy.github.io/2019/04/25/recipe/
+- `Paper` **A Recipe for Training Neural Networks** — Karpathy (post). http://karpathy.github.io/2019/04/25/recipe/
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 5.1 — MLP from scratch em NumPy
 - Forward, backward, SGD, tudo manual.
@@ -202,7 +202,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 ### Projeto 5.4 — char-RNN (gerador de texto caractere a caractere)
 - Implemente LSTM em PyTorch.
 - Treine em corpus de texto à sua escolha (Shakespeare, código, letras de música).
-- Gere texto novo. Compare com versão GPT mínima (preview de mod. [07](07_transformers.md)).
+- Gere texto novo. Compare com versão GPT mínima (preview de mod. [07](07_transformers.mdx)).
 
 ### Projeto 5.5 — VAE no MNIST
 - Implemente encoder, decoder, reparameterization trick.
@@ -216,7 +216,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Não fazer o "overfitar 1 batch"** — primeira sanity check de qualquer treinamento.
 - **Misturar `model.train()` e `model.eval()`** — BatchNorm e Dropout dependem disso.
@@ -232,11 +232,11 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 | Conceito daqui | Aparece em |
 |---|---|
 | Backpropagation | Treinamento de Transformers |
-| Skip connections | Transformers (mod. [07](07_transformers.md)) |
-| Layer Normalization | Transformers (mod. [07](07_transformers.md)) |
-| Adam, warmup | Treinamento de LLMs (mod. [09](09_treinamento_e_alinhamento.md)) |
+| Skip connections | Transformers (mod. [07](07_transformers.mdx)) |
+| Layer Normalization | Transformers (mod. [07](07_transformers.mdx)) |
+| Adam, warmup | Treinamento de LLMs (mod. [09](09_treinamento_e_alinhamento.mdx)) |
 | RNN encoder-decoder | Conceito que Transformers substituem |
-| Attention (Bahdanau) | Self-attention (mod. [07](07_transformers.md)) |
+| Attention (Bahdanau) | Self-attention (mod. [07](07_transformers.mdx)) |
 | Embeddings em autoencoders | Word embeddings (mod. [06](06_nlp_classico.md)) |
 
 ---

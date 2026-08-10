@@ -8,7 +8,7 @@ sidebar_position: 19
 
 > **Objetivo**: cobrir frentes de pesquisa ativas em 2024–2025 — Mixture of Experts, State Space Models (Mamba), modelos de difusão, world models, neuro-symbolic, interpretability profundo, e fronteiras emergentes.
 >
-> **Pré-requisitos**: Módulos [07](07_transformers.md), [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.md). Conforto com leitura de papers.
+> **Pré-requisitos**: Módulos [07](07_transformers.mdx), [08](08_llms_arquiteturas.md), [09](09_treinamento_e_alinhamento.mdx). Conforto com leitura de papers.
 >
 > **Tempo de referência**: 6–10 semanas (não-linear; escolha sub-tópicos).
 
@@ -26,11 +26,11 @@ Aqui você sai de "engenheiro que aplica" para "engenheiro que acompanha pesquis
 Em vez de FFN denso, ter N FFNs (experts). Um **router** escolhe top-k experts por token. Compute por token cresce sublinearmente em parâmetros totais.
 
 ### Papers fundamentais
-- 📄 **Outrageously Large Neural Networks (Sparse MoE)** — Shazeer et al. (2017). https://arxiv.org/abs/1701.06538
-- 📄 **Switch Transformers** — Fedus et al. (2021). https://arxiv.org/abs/2101.03961
-- 📄 **GShard** — Lepikhin et al. (2020). https://arxiv.org/abs/2006.16668
-- 📄 **Mixtral of Experts** — Jiang et al. (2024). https://arxiv.org/abs/2401.04088
-- 📄 **DeepSeek-V3 Technical Report** — MoE em escala extrema. https://arxiv.org/abs/2412.19437
+- `Paper` **Outrageously Large Neural Networks (Sparse MoE)** — Shazeer et al. (2017). https://arxiv.org/abs/1701.06538
+- `Paper` **Switch Transformers** — Fedus et al. (2021). https://arxiv.org/abs/2101.03961
+- `Paper` **GShard** — Lepikhin et al. (2020). https://arxiv.org/abs/2006.16668
+- `Paper` **Mixtral of Experts** — Jiang et al. (2024). https://arxiv.org/abs/2401.04088
+- `Paper` **DeepSeek-V3 Technical Report** — MoE em escala extrema. https://arxiv.org/abs/2412.19437
 
 ### Desafios
 - **Load balancing** entre experts (auxiliary loss).
@@ -50,11 +50,11 @@ Em vez de FFN denso, ter N FFNs (experts). Um **router** escolhe top-k experts p
 Transformers têm complexidade O(n²) em attention. RNNs são O(n) mas têm gradientes problemáticos. SSMs prometem o melhor dos dois mundos.
 
 ### Papers
-- 📄 **HiPPO: Recurrent Memory with Optimal Polynomial Projections** — Gu et al. (2020). https://arxiv.org/abs/2008.07669
-- 📄 **Efficiently Modeling Long Sequences with Structured State Spaces (S4)** — Gu et al. (2021). https://arxiv.org/abs/2111.00396
-- 📄 **Mamba: Linear-Time Sequence Modeling with Selective State Spaces** — Gu & Dao (2023). https://arxiv.org/abs/2312.00752
-- 📄 **Mamba-2: Transformers are SSMs** — Dao & Gu (2024). https://arxiv.org/abs/2405.21060
-- 📄 **Jamba** — modelo híbrido Transformer + Mamba (AI21). https://arxiv.org/abs/2403.19887
+- `Paper` **HiPPO: Recurrent Memory with Optimal Polynomial Projections** — Gu et al. (2020). https://arxiv.org/abs/2008.07669
+- `Paper` **Efficiently Modeling Long Sequences with Structured State Spaces (S4)** — Gu et al. (2021). https://arxiv.org/abs/2111.00396
+- `Paper` **Mamba: Linear-Time Sequence Modeling with Selective State Spaces** — Gu & Dao (2023). https://arxiv.org/abs/2312.00752
+- `Paper` **Mamba-2: Transformers are SSMs** — Dao & Gu (2024). https://arxiv.org/abs/2405.21060
+- `Paper` **Jamba** — modelo híbrido Transformer + Mamba (AI21). https://arxiv.org/abs/2403.19887
 
 ### Por que importa
 - **Linear scaling** em comprimento.
@@ -76,13 +76,13 @@ Transformers têm complexidade O(n²) em attention. RNNs são O(n) mas têm grad
 A revolução pós-GAN. Aprendem a "des-ruidar" passo a passo.
 
 ### Papers fundamentais
-- 📄 **Denoising Diffusion Probabilistic Models (DDPM)** — Ho et al. (2020). https://arxiv.org/abs/2006.11239
-- 📄 **Score-Based Generative Modeling through SDEs** — Song et al. (2020). https://arxiv.org/abs/2011.13456
-- 📄 **High-Resolution Image Synthesis with Latent Diffusion Models (Stable Diffusion)** — Rombach et al. (2021). https://arxiv.org/abs/2112.10752
-- 📄 **Classifier-Free Guidance** — Ho & Salimans (2021). https://arxiv.org/abs/2207.12598
-- 📄 **DiT: Diffusion Transformers** — Peebles & Xie (2022). https://arxiv.org/abs/2212.09748
-- 📄 **Flow Matching for Generative Modeling** — Lipman et al. (2022). https://arxiv.org/abs/2210.02747
-- 📄 **Rectified Flow** — Liu et al. (2022). https://arxiv.org/abs/2209.03003 (base do FLUX e SD3).
+- `Paper` **Denoising Diffusion Probabilistic Models (DDPM)** — Ho et al. (2020). https://arxiv.org/abs/2006.11239
+- `Paper` **Score-Based Generative Modeling through SDEs** — Song et al. (2020). https://arxiv.org/abs/2011.13456
+- `Paper` **High-Resolution Image Synthesis with Latent Diffusion Models (Stable Diffusion)** — Rombach et al. (2021). https://arxiv.org/abs/2112.10752
+- `Paper` **Classifier-Free Guidance** — Ho & Salimans (2021). https://arxiv.org/abs/2207.12598
+- `Paper` **DiT: Diffusion Transformers** — Peebles & Xie (2022). https://arxiv.org/abs/2212.09748
+- `Paper` **Flow Matching for Generative Modeling** — Lipman et al. (2022). https://arxiv.org/abs/2210.02747
+- `Paper` **Rectified Flow** — Liu et al. (2022). https://arxiv.org/abs/2209.03003 (base do FLUX e SD3).
 
 ### Modelos atuais (open)
 - **Stable Diffusion 3 / 3.5** (Stability AI).
@@ -93,11 +93,11 @@ A revolução pós-GAN. Aprendem a "des-ruidar" passo a passo.
 
 ### Difusão para texto?
 Pesquisa ativa, ainda longe de competir com autoregressivo.
-- 📄 **Score-Based Continuous-Time Discrete Diffusion**.
-- 📄 **DiffuSeq**, **SEDD**.
+- `Paper` **Score-Based Continuous-Time Discrete Diffusion**.
+- `Paper` **DiffuSeq**, **SEDD**.
 
 ### Difusão para vídeo
-Mod. [18](18_multimodal.md) cobre. SDEs em alta dimensão, condicionamento temporal.
+Mod. [18](18_multimodal.mdx) cobre. SDEs em alta dimensão, condicionamento temporal.
 
 ### Aplicações além de imagem
 - Música (Stable Audio).
@@ -106,8 +106,8 @@ Mod. [18](18_multimodal.md) cobre. SDEs em alta dimensão, condicionamento tempo
 - Robótica (diffusion policy).
 
 ### Cursos
-- 🎓 **Hugging Face Diffusion Course**. https://huggingface.co/learn/diffusion-course
-- 🎓 **fast.ai — Stable Diffusion Deep Dive**.
+- `Curso` **Hugging Face Diffusion Course**. https://huggingface.co/learn/diffusion-course
+- `Curso` **fast.ai — Stable Diffusion Deep Dive**.
 
 ---
 
@@ -117,10 +117,10 @@ Mod. [18](18_multimodal.md) cobre. SDEs em alta dimensão, condicionamento tempo
 Aprender modelo do mundo (\(P(s' | s, a)\)) com rede neural; usar para planejamento, exploração, avaliação contrafactual.
 
 ### Papers
-- 📄 **World Models** — Ha & Schmidhuber (2018). https://arxiv.org/abs/1803.10122
-- 📄 **Dreamer V3** — Hafner et al. (2023). https://arxiv.org/abs/2301.04104
-- 📄 **GameNGen** — DOOM rodando em modelo de difusão. https://arxiv.org/abs/2408.14837
-- 📄 **Genie** (DeepMind, 2024) — gerar ambientes jogáveis a partir de imagens. https://arxiv.org/abs/2402.15391
+- `Paper` **World Models** — Ha & Schmidhuber (2018). https://arxiv.org/abs/1803.10122
+- `Paper` **Dreamer V3** — Hafner et al. (2023). https://arxiv.org/abs/2301.04104
+- `Paper` **GameNGen** — DOOM rodando em modelo de difusão. https://arxiv.org/abs/2408.14837
+- `Paper` **Genie** (DeepMind, 2024) — gerar ambientes jogáveis a partir de imagens. https://arxiv.org/abs/2402.15391
 
 ---
 
@@ -142,27 +142,27 @@ Aprender modelo do mundo (\(P(s' | s, a)\)) com rede neural; usar para planejame
 - **Titans: Learning to Memorize at Test Time** (Google, 2024). https://arxiv.org/abs/2501.00663
 
 ### Trade-off "Lost in the Middle"
-- 📄 **Lost in the Middle: How Language Models Use Long Contexts** — Liu et al. (2023). https://arxiv.org/abs/2307.03172
+- `Paper` **Lost in the Middle: How Language Models Use Long Contexts** — Liu et al. (2023). https://arxiv.org/abs/2307.03172
 - Long context não resolve tudo: modelos atendem mais ao início e fim do contexto.
 
 ---
 
 ## 19.6 Reasoning models a fundo
 
-Mod. [09](09_treinamento_e_alinhamento.md) introduziu; aqui aprofundamos.
+Mod. [09](09_treinamento_e_alinhamento.mdx) introduziu; aqui aprofundamos.
 
 ### Linhas de pesquisa
 - **CoT supervisionado** (treina em traces).
 - **Process Reward Models** — recompensa em passos intermediários.
 - **Outcome-only RL** (R1-style).
 - **Search augmented** — tree search durante geração.
-- **Test-time compute scaling** — gastar mais compute na inferência. 📄 https://arxiv.org/abs/2408.03314
+- **Test-time compute scaling** — gastar mais compute na inferência. `Paper` https://arxiv.org/abs/2408.03314
 
 ### Papers
-- 📄 **Let's Verify Step by Step** (PRM). https://arxiv.org/abs/2305.20050
-- 📄 **DeepSeek-R1** — RL puro, comportamento emergente. https://arxiv.org/abs/2501.12948
-- 📄 **Scaling LLM Test-Time Compute Optimally** — Snell et al. (2024). https://arxiv.org/abs/2408.03314
-- 📄 **rStar-Math** — pequenos modelos com self-evolution. https://arxiv.org/abs/2501.04519
+- `Paper` **Let's Verify Step by Step** (PRM). https://arxiv.org/abs/2305.20050
+- `Paper` **DeepSeek-R1** — RL puro, comportamento emergente. https://arxiv.org/abs/2501.12948
+- `Paper` **Scaling LLM Test-Time Compute Optimally** — Snell et al. (2024). https://arxiv.org/abs/2408.03314
+- `Paper` **rStar-Math** — pequenos modelos com self-evolution. https://arxiv.org/abs/2501.04519
 
 ### Implicações
 - Modelos pequenos + reasoning RL podem bater modelos grandes em tarefas verificáveis.
@@ -177,7 +177,7 @@ Combinar redes neurais com raciocínio simbólico/lógico.
 - **DeepProbLog**, **Logical Neural Networks**.
 - **Neuro-Symbolic Concept Learner** (MIT). https://arxiv.org/abs/1904.12584
 - **Tool-augmented LLMs** (mod. [13](13_agentes_tools_protocolos.md)) é, em parte, neuro-symbolic na prática.
-- **Theorem proving** com LLMs: AlphaProof, AlphaGeometry (DeepMind). 📄 https://www.nature.com/articles/s41586-023-06747-5
+- **Theorem proving** com LLMs: AlphaProof, AlphaGeometry (DeepMind). `Paper` https://www.nature.com/articles/s41586-023-06747-5
 
 ---
 
@@ -191,8 +191,8 @@ Mod. [14](14_avaliacao_e_seguranca.md) introduziu. Aqui, frentes ativas:
 - **Concept-based explanations**.
 
 ### Cursos / programas
-- 🎓 **ARENA** (intensivo de alignment + interp). https://www.arena.education/
-- 🎓 **Neel Nanda — TransformerLens tutorials**. https://www.neelnanda.io/
+- `Curso` **ARENA** (intensivo de alignment + interp). https://www.arena.education/
+- `Curso` **Neel Nanda — TransformerLens tutorials**. https://www.neelnanda.io/
 
 ### Why this matters
 Interpretability é ferramenta para:
@@ -201,8 +201,8 @@ Interpretability é ferramenta para:
 - **Edição**: corrigir comportamentos sem retreino caro (model editing — ROME, MEMIT).
 
 ### Papers
-- 📄 **Locating and Editing Factual Associations in GPT (ROME)** — Meng et al. (2022). https://arxiv.org/abs/2202.05262
-- 📄 **Mass-Editing Memory in a Transformer (MEMIT)**. https://arxiv.org/abs/2210.07229
+- `Paper` **Locating and Editing Factual Associations in GPT (ROME)** — Meng et al. (2022). https://arxiv.org/abs/2202.05262
+- `Paper` **Mass-Editing Memory in a Transformer (MEMIT)**. https://arxiv.org/abs/2210.07229
 
 ---
 
@@ -218,7 +218,7 @@ Interpretability é ferramenta para:
 Healthcare, finance, on-device personalization.
 
 ### Referências
-- 📄 **Communication-Efficient Learning of Deep Networks (FedAvg)** — McMahan et al. (2016). https://arxiv.org/abs/1602.05629
+- `Paper` **Communication-Efficient Learning of Deep Networks (FedAvg)** — McMahan et al. (2016). https://arxiv.org/abs/1602.05629
 
 ---
 
@@ -233,11 +233,11 @@ Aprender sequencialmente sem esquecer (catastrophic forgetting).
 - **Adapter-based** (relacionado a LoRA).
 
 ### Conexão com LLMs
-- **Continued pretraining** (mod. [09](09_treinamento_e_alinhamento.md)) é uma instância prática.
+- **Continued pretraining** (mod. [09](09_treinamento_e_alinhamento.mdx)) é uma instância prática.
 - **Model merging** (TIES, DARE, MoE-merge) — combinar modelos sem retreino.
-- 📄 **TIES-Merging**. https://arxiv.org/abs/2306.01708
-- 📄 **Model Soups** — Wortsman et al. (2022). https://arxiv.org/abs/2203.05482
-- 🛠 **mergekit** — kit prático. https://github.com/arcee-ai/mergekit
+- `Paper` **TIES-Merging**. https://arxiv.org/abs/2306.01708
+- `Paper` **Model Soups** — Wortsman et al. (2022). https://arxiv.org/abs/2203.05482
+- `Ferramenta` **mergekit** — kit prático. https://github.com/arcee-ai/mergekit
 
 ---
 
@@ -245,10 +245,10 @@ Aprender sequencialmente sem esquecer (catastrophic forgetting).
 
 Para dados estruturados como grafos: redes sociais, moléculas, recommender systems.
 
-- 📄 **Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges** — Bronstein et al. (2021). https://arxiv.org/abs/2104.13478
-- 📚 **Graph Representation Learning Book** — Hamilton. https://www.cs.mcgill.ca/~wlh/grl_book/
+- `Paper` **Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges** — Bronstein et al. (2021). https://arxiv.org/abs/2104.13478
+- `Livro` **Graph Representation Learning Book** — Hamilton. https://www.cs.mcgill.ca/~wlh/grl_book/
 - **GNNs**: GCN, GraphSAGE, GAT, MPNN, Graph Transformer.
-- **AlphaFold 2 & 3** — proteínas. 📄 https://www.nature.com/articles/s41586-021-03819-2
+- **AlphaFold 2 & 3** — proteínas. `Paper` https://www.nature.com/articles/s41586-021-03819-2
 
 ---
 
@@ -271,18 +271,18 @@ Talvez a aplicação mais impactante de ML moderno fora de tech.
 - **Deceptive alignment**.
 - **Power-seeking**.
 - **Scalable oversight** (debate, recursive reward modeling).
-- **Weak-to-strong generalization**. 📄 https://arxiv.org/abs/2312.09390 (OpenAI).
+- **Weak-to-strong generalization**. `Paper` https://arxiv.org/abs/2312.09390 (OpenAI).
 - **Constitutional AI v2** evolution.
 - **AISI evaluations** (UK/US AI Safety Institutes).
 
 ### Leituras
-- 📚 **Anthropic — Core Views on AI Safety**. https://www.anthropic.com/news/core-views-on-ai-safety
-- 📚 **DeepMind — AGI Safety blog series**.
-- 📚 **MIRI — Embedded Agency**.
+- `Livro` **Anthropic — Core Views on AI Safety**. https://www.anthropic.com/news/core-views-on-ai-safety
+- `Livro` **DeepMind — AGI Safety blog series**.
+- `Livro` **MIRI — Embedded Agency**.
 
 ---
 
-## 🧪 Projetos práticos (escolha 2–3)
+## Projetos práticos (escolha 2–3)
 
 ### Projeto 19.1 — MoE pequeno do zero
 - Modifique nanoGPT/llama2.c para ter MoE no FFN.
@@ -306,7 +306,7 @@ Talvez a aplicação mais impactante de ML moderno fora de tech.
 - Compare estilos (DreamBooth-style vs LoRA-style).
 
 ### Projeto 19.5 — Reasoning RL pequeno
-- Já antecipado em mod. [09](09_treinamento_e_alinhamento.md) e [17](17_aprendizado_reforco.md).
+- Já antecipado em mod. [09](09_treinamento_e_alinhamento.mdx) e [17](17_aprendizado_reforco.md).
 - Aqui: aprofunde com process reward model.
 - Compare outcome-only vs PRM.
 
@@ -326,11 +326,11 @@ Talvez a aplicação mais impactante de ML moderno fora de tech.
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Tratar tudo aqui como "vai dominar logo"** — muitas dessas frentes são especulativas; mantenha ceticismo.
 - **Confundir performance em paper com resultado em produção** — papers reportam o melhor caso.
-- **Pular fundamentos** porque "é mais legal" — sem mod. [7](07_transformers.md)–[9](09_treinamento_e_alinhamento.md), este módulo é mágica.
+- **Pular fundamentos** porque "é mais legal" — sem mod. [7](07_transformers.mdx)–[9](09_treinamento_e_alinhamento.mdx), este módulo é mágica.
 - **Treinar difusão sem GPU adequada** — é caro e lento; comece com modelos pequenos.
 
 ---

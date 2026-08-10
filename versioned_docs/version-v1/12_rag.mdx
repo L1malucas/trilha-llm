@@ -8,7 +8,7 @@ sidebar_position: 12
 
 > **Objetivo**: dominar a arquitetura RAG do paper original às variantes modernas (hybrid, graph, agentic). Embeddings, chunking, vector DBs, retrievers, rerankers, avaliação.
 >
-> **Pré-requisitos**: Módulos [06](06_nlp_classico.md), [07](07_transformers.md), [08](08_llms_arquiteturas.md), [11](11_prompt_engineering.md).
+> **Pré-requisitos**: Módulos [06](06_nlp_classico.md), [07](07_transformers.mdx), [08](08_llms_arquiteturas.md), [11](11_prompt_engineering.md).
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -28,13 +28,13 @@ Mas RAG mal-feito é pior que LLM puro: documentos errados → respostas erradas
 
 ## 12.1 Paper fundador e conceito
 
-📄 **Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks** — Lewis et al. (2020). https://arxiv.org/abs/2005.11401
+`Paper` **Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks** — Lewis et al. (2020). https://arxiv.org/abs/2005.11401
 
 ### Pipeline canônico
-```
-Query → Embed → Vector Search → Top-K docs
-                                    ↓
-                    Prompt(query + docs) → LLM → Resposta
+```mermaid
+flowchart LR
+    Q["Query"] --> E["Embed"] --> V["Vector Search"] --> K["Top-K docs"]
+    K --> P["Prompt(query + docs)"] --> L["LLM"] --> R["Resposta"]
 ```
 
 ### Variações modernas
@@ -54,11 +54,11 @@ Embeddings = vetores densos que codificam significado. Documentos próximos em s
 - **OpenAI text-embedding-3-large/small** (proprietário).
 - **Cohere Embed v3**.
 - **Voyage AI**.
-- ✅ **E5** (Microsoft, multilingual). https://huggingface.co/intfloat/multilingual-e5-large
-- ✅ **BGE-M3** (BAAI, multifuncional). https://huggingface.co/BAAI/bge-m3
-- ✅ **Nomic Embed**. https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
-- ✅ **Jina Embeddings v3**. https://huggingface.co/jinaai/jina-embeddings-v3
-- ✅ **Stella, GTE, Snowflake Arctic**, todos competitivos.
+- `Gratuito` **E5** (Microsoft, multilingual). https://huggingface.co/intfloat/multilingual-e5-large
+- `Gratuito` **BGE-M3** (BAAI, multifuncional). https://huggingface.co/BAAI/bge-m3
+- `Gratuito` **Nomic Embed**. https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+- `Gratuito` **Jina Embeddings v3**. https://huggingface.co/jinaai/jina-embeddings-v3
+- `Gratuito` **Stella, GTE, Snowflake Arctic**, todos competitivos.
 
 ### Como escolher
 Consulte **MTEB** (Massive Text Embedding Benchmark): https://huggingface.co/spaces/mteb/leaderboard
@@ -72,7 +72,7 @@ Consulte **MTEB** (Massive Text Embedding Benchmark): https://huggingface.co/spa
 
 ### Matryoshka Representation Learning
 Embeddings que permitem truncar dimensão sem retreino — economia de armazenamento.
-- 📄 **Matryoshka Representation Learning** — Kusupati et al. (2022). https://arxiv.org/abs/2205.13147
+- `Paper` **Matryoshka Representation Learning** — Kusupati et al. (2022). https://arxiv.org/abs/2205.13147
 
 ---
 
@@ -97,9 +97,9 @@ Embeddings que permitem truncar dimensão sem retreino — economia de armazenam
 - **Parent-Child Chunking** — embedar trechos pequenos, retornar trecho-pai grande na recuperação.
 
 ### Ferramentas
-- 🛠 **LangChain Text Splitters** (Python e TS).
-- 🛠 **LlamaIndex NodeParsers**.
-- 🛠 **Unstructured.io** — parsers ricos para PDF, HTML, DOCX. https://unstructured.io/
+- `Ferramenta` **LangChain Text Splitters** (Python e TS).
+- `Ferramenta` **LlamaIndex NodeParsers**.
+- `Ferramenta` **Unstructured.io** — parsers ricos para PDF, HTML, DOCX. https://unstructured.io/
 
 ---
 
@@ -112,9 +112,9 @@ Embeddings que permitem truncar dimensão sem retreino — economia de armazenam
 - **Multi-modal/full-text**: Vespa, Elasticsearch (com kNN search), OpenSearch.
 
 ### Algoritmos de busca aproximada (ANN)
-- **HNSW** (Hierarchical Navigable Small World) — padrão moderno. 📄 https://arxiv.org/abs/1603.09320
+- **HNSW** (Hierarchical Navigable Small World) — padrão moderno. `Paper` https://arxiv.org/abs/1603.09320
 - **IVF + PQ** (Inverted File + Product Quantization) — usado em FAISS para escalar bilhões.
-- **DiskANN** — disco em vez de RAM, para datasets gigantes. 📄 (Microsoft Research)
+- **DiskANN** — disco em vez de RAM, para datasets gigantes. `Paper` (Microsoft Research)
 
 ### Critérios de escolha
 | Necessidade | Sugestão |
@@ -131,9 +131,9 @@ Embeddings que permitem truncar dimensão sem retreino — economia de armazenam
 - **LanceDB** (TS-friendly, embedded). https://lancedb.com/
 
 ### Referências
-- 📚 **FAISS Documentation**. https://faiss.ai/
-- 📚 **Qdrant Documentation**. https://qdrant.tech/documentation/
-- 🛠 **pgvector**. https://github.com/pgvector/pgvector
+- `Livro` **FAISS Documentation**. https://faiss.ai/
+- `Livro` **Qdrant Documentation**. https://qdrant.tech/documentation/
+- `Ferramenta` **pgvector**. https://github.com/pgvector/pgvector
 
 ---
 
@@ -141,7 +141,7 @@ Embeddings que permitem truncar dimensão sem retreino — economia de armazenam
 
 ### Sparse retrieval (não é "antigo", é complementar)
 - **BM25** — variante clássica de TF-IDF, ainda excelente baseline.
-- **SPLADE** — sparse aprendido. 📄 https://arxiv.org/abs/2107.05720
+- **SPLADE** — sparse aprendido. `Paper` https://arxiv.org/abs/2107.05720
 - **uniCOIL**, **TILDE**.
 
 ### Hybrid retrieval
@@ -151,23 +151,23 @@ Combinar dense + sparse via:
 - **Learned fusion**.
 
 ### Multi-vector / Late interaction
-- **ColBERT** — embedda cada token, combina por max-sim. 📄 https://arxiv.org/abs/2004.12832
+- **ColBERT** — embedda cada token, combina por max-sim. `Paper` https://arxiv.org/abs/2004.12832
 - **ColBERTv2** — eficiente. https://arxiv.org/abs/2112.01488
 
 ### Query transformation
-- **HyDE (Hypothetical Document Embeddings)** — gerar resposta hipotética, embeddá-la, buscar. 📄 https://arxiv.org/abs/2212.10496
+- **HyDE (Hypothetical Document Embeddings)** — gerar resposta hipotética, embeddá-la, buscar. `Paper` https://arxiv.org/abs/2212.10496
 - **Query rewriting** com LLM.
 - **Multi-query retrieval** — gerar variações da query e fundir.
 - **Step-back prompting** — abstrair antes de buscar.
 
 ### Multi-hop retrieval
 Para perguntas que exigem combinar múltiplos documentos.
-- 📄 **MuSiQue**, **HotpotQA** (datasets).
+- `Paper` **MuSiQue**, **HotpotQA** (datasets).
 - **IRCoT** — interleaving retrieval com CoT.
 
 ### Referências
-- 📄 **Dense Passage Retrieval (DPR)** — Karpukhin et al. (2020). https://arxiv.org/abs/2004.04906
-- 📄 **REALM** — Guu et al. (2020). https://arxiv.org/abs/2002.08909
+- `Paper` **Dense Passage Retrieval (DPR)** — Karpukhin et al. (2020). https://arxiv.org/abs/2004.04906
+- `Paper` **REALM** — Guu et al. (2020). https://arxiv.org/abs/2002.08909
 
 ---
 
@@ -204,7 +204,7 @@ Reranker tipicamente é 10–100× mais caro que retrieval inicial. Use só no t
 
 ### Long context vs RAG
 "Contextos de 1M tokens" não eliminam RAG. Trade-offs:
-- **Long context**: mais simples, mais caro por chamada, performance degrada no meio do contexto ("lost in the middle"). 📄 https://arxiv.org/abs/2307.03172
+- **Long context**: mais simples, mais caro por chamada, performance degrada no meio do contexto ("lost in the middle"). `Paper` https://arxiv.org/abs/2307.03172
 - **RAG**: mais infraestrutura, mais barato, melhor para corpora dinâmicos.
 
 ---
@@ -219,7 +219,7 @@ Para perguntas que exigem **conexões** entre entidades.
 - Recuperar subgrafos relevantes em vez de chunks isolados.
 
 ### Implementações
-- **Microsoft GraphRAG**. https://github.com/microsoft/graphrag (📄 https://arxiv.org/abs/2404.16130)
+- **Microsoft GraphRAG**. https://github.com/microsoft/graphrag (`Paper` https://arxiv.org/abs/2404.16130)
 - **LightRAG**, **HippoRAG**.
 - **LlamaIndex Property Graph Index**.
 
@@ -236,9 +236,9 @@ Em vez de pipeline fixo, agente decide:
 Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 
 ### Referências
-- 📄 **Self-RAG: Learning to Retrieve, Generate, and Critique** — Asai et al. (2023). https://arxiv.org/abs/2310.11511
-- 📄 **CRAG: Corrective Retrieval Augmented Generation** — Yan et al. (2024). https://arxiv.org/abs/2401.15884
-- 📄 **Agentic RAG: A Survey** (2025). https://arxiv.org/abs/2501.09136
+- `Paper` **Self-RAG: Learning to Retrieve, Generate, and Critique** — Asai et al. (2023). https://arxiv.org/abs/2310.11511
+- `Paper` **CRAG: Corrective Retrieval Augmented Generation** — Yan et al. (2024). https://arxiv.org/abs/2401.15884
+- `Paper` **Agentic RAG: A Survey** (2025). https://arxiv.org/abs/2501.09136
 
 ---
 
@@ -249,17 +249,17 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 - **Generation**: faithfulness (resposta apoia-se nos docs?), answer relevance, context relevance.
 
 ### Frameworks
-- 🛠 **RAGAS** — toolkit de eval, com LLM-as-judge. https://github.com/explodinggradients/ragas
-- 🛠 **TruLens**. https://github.com/truera/trulens
-- 🛠 **DeepEval**. https://github.com/confident-ai/deepeval
-- 🛠 **LangSmith**, **Langfuse** (mod. [15](15_engenharia_producao.md)).
+- `Ferramenta` **RAGAS** — toolkit de eval, com LLM-as-judge. https://github.com/explodinggradients/ragas
+- `Ferramenta` **TruLens**. https://github.com/truera/trulens
+- `Ferramenta` **DeepEval**. https://github.com/confident-ai/deepeval
+- `Ferramenta` **LangSmith**, **Langfuse** (mod. [15](15_engenharia_producao.mdx)).
 
 ### Datasets canônicos
 - **Natural Questions**, **TriviaQA**, **HotpotQA**, **MS MARCO**.
 - **BEIR** — benchmark heterogêneo de retrieval. https://github.com/beir-cellar/beir
 
 ### Referências
-- 📄 **RAGAS: Automated Evaluation of Retrieval Augmented Generation** — Es et al. (2023). https://arxiv.org/abs/2309.15217
+- `Paper` **RAGAS: Automated Evaluation of Retrieval Augmented Generation** — Es et al. (2023). https://arxiv.org/abs/2309.15217
 
 ---
 
@@ -283,7 +283,7 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 12.1 — RAG mínimo do zero
 - Sem framework. Apenas: embeddings + FAISS + LLM local.
@@ -320,7 +320,7 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Avaliar só "vibe"** — sem dataset, sem métricas, qualquer mudança parece melhoria.
 - **Embedding model + LLM model em idiomas diferentes** — degradação em PT-BR clássica.
@@ -339,7 +339,7 @@ Cross-link com módulo [13](13_agentes_tools_protocolos.md) (Agentes).
 | Embeddings + retrieval | Agentes (mod. [13](13_agentes_tools_protocolos.md)) — RAG como tool |
 | Reranker | Avaliação (mod. [14](14_avaliacao_e_seguranca.md)) |
 | Citações e grounding | Segurança (mod. [14](14_avaliacao_e_seguranca.md)) |
-| Vector DB ops | Produção (mod. [15](15_engenharia_producao.md)) |
+| Vector DB ops | Produção (mod. [15](15_engenharia_producao.mdx)) |
 
 ---
 

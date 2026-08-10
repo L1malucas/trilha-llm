@@ -41,10 +41,10 @@ sidebar_position: 3
 - **Pipeline de ML**: ingestão → limpeza → features → modelo → avaliação → deploy.
 
 ### Referências
-- 🎓 **Stanford CS229** — vídeos + notas. https://cs229.stanford.edu/
-- 📚 **The Elements of Statistical Learning** — Hastie, Tibshirani, Friedman. https://hastie.su.domains/ElemStatLearn/
-- 📚 **An Introduction to Statistical Learning** (versão mais acessível do anterior). https://www.statlearning.com/
-- 📚 **Pattern Recognition and Machine Learning** — Bishop.
+- `Curso` **Stanford CS229** — vídeos + notas. https://cs229.stanford.edu/
+- `Livro` **The Elements of Statistical Learning** — Hastie, Tibshirani, Friedman. https://hastie.su.domains/ElemStatLearn/
+- `Livro` **An Introduction to Statistical Learning** (versão mais acessível do anterior). https://www.statlearning.com/
+- `Livro` **Pattern Recognition and Machine Learning** — Bishop.
 
 ---
 
@@ -68,10 +68,10 @@ sidebar_position: 3
 - **Linear/Quadratic Discriminant Analysis (LDA/QDA)**.
 
 ### Referências (papers fundadores)
-- 📄 **Random Forests** — Breiman (2001). https://link.springer.com/article/10.1023/A:1010933404324
-- 📄 **XGBoost: A Scalable Tree Boosting System** — Chen & Guestrin (2016). https://arxiv.org/abs/1603.02754
-- 📄 **LightGBM** — Ke et al. (2017). https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree
-- 📄 **A Tutorial on Support Vector Machines for Pattern Recognition** — Burges (1998). https://www.cs.cmu.edu/~cga/ai-course/svmtutorial.pdf
+- `Paper` **Random Forests** — Breiman (2001). https://link.springer.com/article/10.1023/A:1010933404324
+- `Paper` **XGBoost: A Scalable Tree Boosting System** — Chen & Guestrin (2016). https://arxiv.org/abs/1603.02754
+- `Paper` **LightGBM** — Ke et al. (2017). https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree
+- `Paper` **A Tutorial on Support Vector Machines for Pattern Recognition** — Burges (1998). https://www.cs.cmu.edu/~cga/ai-course/svmtutorial.pdf
 
 ---
 
@@ -95,9 +95,9 @@ sidebar_position: 3
 - **Autoencoders** (cross-link com DL — módulo [05](05_deep_learning.md)).
 
 ### Referências
-- 📄 **t-SNE** — van der Maaten & Hinton (2008). https://www.jmlr.org/papers/v9/vandermaaten08a.html
-- 📄 **UMAP** — McInnes et al. (2018). https://arxiv.org/abs/1802.03426
-- 📄 **A Density-Based Algorithm (DBSCAN)** — Ester et al. (1996). https://www.dbs.ifi.lmu.de/Publikationen/Papers/KDD-96.final.frame.pdf
+- `Paper` **t-SNE** — van der Maaten & Hinton (2008). https://www.jmlr.org/papers/v9/vandermaaten08a.html
+- `Paper` **UMAP** — McInnes et al. (2018). https://arxiv.org/abs/1802.03426
+- `Paper` **A Density-Based Algorithm (DBSCAN)** — Ester et al. (1996). https://www.dbs.ifi.lmu.de/Publikationen/Papers/KDD-96.final.frame.pdf
 
 ---
 
@@ -110,8 +110,8 @@ sidebar_position: 3
 - **Feature selection**: filter (correlação, mútua informação), wrapper (RFE), embedded (Lasso).
 
 ### Referências
-- 📚 **Feature Engineering for Machine Learning** — Zheng & Casari.
-- 🛠 **scikit-learn — Preprocessing**. https://scikit-learn.org/stable/modules/preprocessing.html
+- `Livro` **Feature Engineering for Machine Learning** — Zheng & Casari.
+- `Ferramenta` **scikit-learn — Preprocessing**. https://scikit-learn.org/stable/modules/preprocessing.html
 
 ---
 
@@ -125,11 +125,11 @@ sidebar_position: 3
 - **Análise de erro**: matriz de confusão, residual plots.
 
 ### Referências
-- 📄 **A Survey of Cross-Validation Procedures for Model Selection** — Arlot & Celisse (2010). https://arxiv.org/abs/0907.4728
+- `Paper` **A Survey of Cross-Validation Procedures for Model Selection** — Arlot & Celisse (2010). https://arxiv.org/abs/0907.4728
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 3.1 — Implementar k-Means do zero
 **O que prova**: que você entende clustering e otimização iterativa.
@@ -158,7 +158,7 @@ sidebar_position: 3
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Comparar modelos com hiperparâmetros default.** Default ≠ ótimo.
 - **Vazamento de dados** (data leakage) — uma feature do futuro entra no treino.
@@ -178,7 +178,7 @@ sidebar_position: 3
 | One-hot encoding | Tokenização (módulo [06](06_nlp_classico.md)) |
 | Embeddings (target encoding) | Word embeddings (módulo [06](06_nlp_classico.md)) |
 | Métricas | Avaliação de LLMs (módulo [14](14_avaliacao_e_seguranca.md)) |
-| Pipelines | MLOps (módulo [15](15_engenharia_producao.md)) |
+| Pipelines | MLOps (módulo [15](15_engenharia_producao.mdx)) |
 
 ---
 

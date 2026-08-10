@@ -47,10 +47,10 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - `pip-tools` ou `uv` para lockfiles.
 
 ### Referências
-- 📚 **Fluent Python (2nd ed.)** — Luciano Ramalho.
-- 🎓 **NumPy Documentation — User Guide** (oficial). https://numpy.org/doc/stable/user/
-- 🎓 **PyTorch Tutorials** (oficial). https://pytorch.org/tutorials/
-- 🛠 **uv** (gerenciador de pacotes/ambientes). https://docs.astral.sh/uv/
+- `Livro` **Fluent Python (2nd ed.)** — Luciano Ramalho.
+- `Curso` **NumPy Documentation — User Guide** (oficial). https://numpy.org/doc/stable/user/
+- `Curso` **PyTorch Tutorials** (oficial). https://pytorch.org/tutorials/
+- `Ferramenta` **uv** (gerenciador de pacotes/ambientes). https://docs.astral.sh/uv/
 
 ---
 
@@ -89,10 +89,10 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 **Equivalência prática**: para qualquer pipeline de RAG ou agente em produção, existe uma versão TS razoável. Para qualquer coisa que envolva treinar pesos, vá de Python.
 
 ### Referências
-- 📚 **Effective TypeScript** — Dan Vanderkam.
-- 🛠 **Vercel AI SDK Documentation**. https://ai-sdk.dev/
-- 🛠 **transformers.js**. https://huggingface.co/docs/transformers.js
-- 🛠 **MCP TypeScript SDK**. https://github.com/modelcontextprotocol/typescript-sdk
+- `Livro` **Effective TypeScript** — Dan Vanderkam.
+- `Ferramenta` **Vercel AI SDK Documentation**. https://ai-sdk.dev/
+- `Ferramenta` **transformers.js**. https://huggingface.co/docs/transformers.js
+- `Ferramenta` **MCP TypeScript SDK**. https://github.com/modelcontextprotocol/typescript-sdk
 
 ---
 
@@ -115,9 +115,9 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - Documentação de versões de CUDA, drivers, bibliotecas.
 
 ### Referências
-- 📚 **Designing Machine Learning Systems** — Chip Huyen.
-- 🎓 **Made With ML — MLOps Course**. https://madewithml.com/
-- 🛠 **MLflow Documentation**. https://mlflow.org/
+- `Livro` **Designing Machine Learning Systems** — Chip Huyen.
+- `Curso` **Made With ML — MLOps Course**. https://madewithml.com/
+- `Ferramenta` **MLflow Documentation**. https://mlflow.org/
 
 ---
 
@@ -147,13 +147,13 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - Hugging Face Spaces (deploy gratuito de demos).
 
 ### Referências
-- 🎓 **NVIDIA Deep Learning Institute** (cursos gratuitos sobre CUDA, otimização). https://www.nvidia.com/en-us/training/online/
-- 📄 **Mixed Precision Training** — Micikevicius et al. (2017). https://arxiv.org/abs/1710.03740
-- 📚 **Programming Massively Parallel Processors** — Kirk & Hwu (CUDA, opcional, profundidade).
+- `Curso` **NVIDIA Deep Learning Institute** (cursos gratuitos sobre CUDA, otimização). https://www.nvidia.com/en-us/training/online/
+- `Paper` **Mixed Precision Training** — Micikevicius et al. (2017). https://arxiv.org/abs/1710.03740
+- `Livro` **Programming Massively Parallel Processors** — Kirk & Hwu (CUDA, opcional, profundidade).
 
 ---
 
-## 🧪 Projetos práticos
+## Projetos práticos
 
 ### Projeto 2.1 — Setup completo reprodutível
 - Crie um repo com: `pyproject.toml`, lockfile (`uv` ou `pip-tools`), Dockerfile, `Makefile`.
@@ -180,7 +180,7 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 
 ---
 
-## ⚠️ Erros comuns
+## Erros comuns
 
 - **Misturar `pip` e `conda` no mesmo ambiente.** Caos garantido.
 - **Ignorar versões de CUDA.** PyTorch + CUDA + driver têm matriz de compatibilidade restrita.
