@@ -12,6 +12,16 @@ sidebar_position: 18
 >
 > **Tempo de referência**: 4–6 semanas.
 
+## Objetivos de aprendizagem
+
+Ao final deste módulo você deve ser capaz de:
+
+- Explicar os 3 padrões arquiteturais multimodais (encoder+projetor, cross-attention, nativo) e o trade-off entre eles.
+- Explicar o que um Q-Former faz e por que "comprimir" tokens visuais importa.
+- Descrever o recipe do LLaVA e por que ele é tão barato de treinar comparado a um VLM do zero.
+- Explicar por que ColPali pula OCR e embeda a página inteira como imagem.
+- Escolher entre pipeline de VC clássico (OCR) e VLM end-to-end para uma tarefa de documento.
+
 ---
 
 ## Por que isso importa
@@ -46,6 +56,10 @@ Modelo treinado from scratch com tokens unificados (texto + imagem patches + áu
 ### Mixture of Modality Experts
 MoE onde experts se especializam por modalidade.
 
+> **Intuição**: os três padrões trocam custo de treino por flexibilidade. Encoder+projetor (o diagrama acima) é o mais barato: pegue um LLM já pronto e um vision encoder já pronto (ambos congelados, mod. [04](04_ml_moderno.md#42-transfer-learning) — transfer learning puro), treine só uma pequena "ponte" (o projetor) que traduz features visuais para o espaço de embedding que o LLM já entende — é literalmente ensinar dois especialistas que já existem a se comunicar, sem retreinar nenhum dos dois. Cross-attention (Flamingo) dá ao LLM acesso mais rico às features visuais (consulta ativamente, camada por camada, em vez de só receber tokens visuais concatenados no início) — mais caro de treinar, mas lida melhor com sequências visuais longas (vídeo) onde "concatenar tudo no início" ficaria proibitivo. Nativo multimodal é o mais caro (treina tudo junto, do zero, sem aproveitar um LLM pré-existente) mas potencialmente o mais capaz, porque o modelo aprende a processar as modalidades de forma verdadeiramente integrada desde o início, em vez de "encaixar" visão num modelo que só conhecia texto.
+>
+> **Checkpoint**: sem olhar o texto, explique por que o padrão LLaVA-style (encoder+projetor) é tão mais barato de treinar que um modelo nativo multimodal.
+
 ### Referências
 - `Paper` **Flamingo: a Visual Language Model for Few-Shot Learning** — Alayrac et al. (DeepMind, 2022). https://arxiv.org/abs/2204.14198
 - `Paper` **A Survey on Multimodal Large Language Models**. https://arxiv.org/abs/2306.13549
@@ -58,6 +72,8 @@ MoE onde experts se especializam por modalidade.
 Treina encoder visual + encoder textual com **contrastive loss**: pares (imagem, caption) próximos no espaço; não-pares afastados.
 
 `Paper` **Learning Transferable Visual Models From Natural Language Supervision (CLIP)** — Radford et al. (2021). https://arxiv.org/abs/2103.00020
+
+> A intuição de CLIP (contrastive learning entre modalidades, criando um espaço de embedding compartilhado) já foi construída no mod. [16](16_visao_computacional.md#166-modelos-visão-linguagem-preview-do-mod-18) — aqui o foco é no papel de CLIP como *peça de infraestrutura* de praticamente todo VLM listado neste módulo, não só como classificador zero-shot.
 
 ### Por que CLIP foi um marco
 - **Zero-shot classification**: classifique sem treinar — só descreva as classes em texto.
@@ -86,6 +102,8 @@ Treina encoder visual + encoder textual com **contrastive loss**: pares (imagem,
 
 ### Q-Former
 Módulo aprendível que extrai número fixo de "query tokens" do encoder visual, comprimindo informação para o LLM. Padrão em vários VLMs.
+
+> **Intuição**: uma imagem em alta resolução processada por um vision encoder pode gerar centenas de tokens visuais (um por patch) — caro em termos de contexto do LLM, especialmente com múltiplas imagens ou vídeo. Q-Former resolve isso com um pequeno conjunto de "queries" aprendidas (ex.: 32) que fazem cross-attention sobre todos os tokens visuais e produzem uma representação comprimida de tamanho fixo — não importa se a imagem gerou 200 ou 2000 tokens visuais brutos, o Q-Former sempre entrega o mesmo número fixo e compacto de tokens ao LLM. É uma forma de compressão aprendida, análoga em espírito ao gargalo de um autoencoder (mod. [05](05_deep_learning.md#56-autoencoders-e-modelos-generativos-clássicos)) — forçar uma representação menor obriga o modelo a reter só a informação mais relevante.
 
 ---
 
@@ -227,6 +245,8 @@ Para robótica e agentes embodied.
 - **Hugging Face TRL** suporta SFT e DPO multimodal.
 - **PaliGemma** é referência educacional (recipe completa pública).
 
+> Esses três estágios espelham diretamente o pipeline de LLM do mod. [09](09_treinamento_e_alinhamento.mdx#91-pipeline-completo-de-uma-llm-moderna) (pré-treino → SFT → alinhamento por preferência) — só que o "pré-treino" aqui é focado especificamente em ensinar o projetor a traduzir entre espaços visual e textual, já que o LLM em si já vem pré-treinado.
+
 ### Datasets visuais úteis
 - **LAION-2B / LAION-COCO**.
 - **COYO-700M**.
@@ -269,6 +289,10 @@ Para robótica e agentes embodied.
 ### Document RAG moderno
 ColPali e variantes pulam OCR: embeddam **imagem da página** diretamente. Excelente para layouts complexos (finance, science, legal).
 
+> **Intuição**: RAG tradicional sobre PDFs (mod. [12](12_rag.mdx)) depende de OCR extrair texto corretamente antes de fazer qualquer coisa — e OCR falha silenciosamente em layouts complexos (tabelas multi-coluna, gráficos com legendas, diagramas com texto embutido), perdendo estrutura que carrega significado. ColPali contorna isso tratando a página inteira como uma *imagem* e usando um modelo tipo ViT (mod. [16](16_visao_computacional.md#163-vision-transformer-vit-e-variantes)) para embeddar diretamente — preservando layout, posição relativa de elementos, e informação visual que uma etapa de OCR teria descartado. O trade-off: embeddings de imagem de página são mais pesados que embeddings de texto puro, mas a fidelidade em documentos visualmente complexos compensa.
+>
+> **Checkpoint**: sem olhar o texto, explique por que RAG tradicional (OCR + texto) pode falhar num documento com uma tabela complexa, e o que ColPali faz de diferente.
+
 ---
 
 ## Projetos práticos
@@ -287,6 +311,8 @@ ColPali e variantes pulam OCR: embeddam **imagem da página** diretamente. Excel
 - Corpus: PDFs com diagramas (papers, relatórios).
 - Use ColPali ou pipeline com VLM + embeddings de página.
 - Compare com pipeline tradicional (OCR + texto-only RAG).
+
+> **Variante guiada**: escolha deliberadamente alguns PDFs com tabelas ou diagramas complexos para o conjunto de teste — é onde a diferença entre os dois pipelines (OCR vs ColPali) deve aparecer mais claramente, validando a intuição da seção 18.11.
 
 ### Projeto 18.4 — Fine-tune mini-VLM
 - Use PaliGemma-3B ou MiniCPM-V.
