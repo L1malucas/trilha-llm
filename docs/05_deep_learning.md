@@ -12,32 +12,18 @@ sidebar_position: 5
 >
 > **Tempo de referência**: 6–10 semanas.
 
-> **Tempo por caminho**: **Clássico** ~8–10 semanas (teoria completa + prática, nessa ordem) · **Acelerado** ~2–3 semanas (só prática guiada, com código, sem derivação teórica).
-
 ## Objetivos de aprendizagem
 
 Ao final deste módulo você deve ser capaz de:
 
-- Implementar forward e backward pass de um MLP em NumPy puro, sem framework.
+- Explicar por que um neurônio precisa de não-linearidade, e derivar isso a partir da definição de combinação linear.
 - Explicar por que uma rede mal inicializada não treina (vanishing/exploding), não só citar o termo.
-- Treinar uma CNN competitiva no CIFAR-10 e justificar cada escolha de regularização usada.
+- Justificar cada escolha de regularização (dropout, batchnorm, augmentation) numa CNN, não só aplicá-las por hábito.
 - Explicar, com uma frase, por que skip connections permitem redes muito mais profundas — e por que isso importa para Transformers.
 - Diagnosticar (e não só nomear) overfitting, gradientes explodindo e loss virando NaN durante um treino real.
 - Navegar o ciclo completo dataset → DataLoader → modelo → loss → optimizer → log → checkpoint sem copiar um template.
 
-## Diagnóstico rápido
-
-Responda sim/não pra cada afirmação — te ajuda a decidir o ritmo, não é teste eliminatório:
-
-- Já implementei backpropagation à mão (com papel ou código), sem usar `autograd`.
-- Sei explicar, sem consultar nada, por que ReLU tem "vanishing gradient" menor que sigmoid.
-- Já treinei uma rede que divergiu (loss virou NaN) e sei ao menos 2 causas prováveis.
-- Sei a diferença prática entre Batch Norm e Layer Norm — não só a fórmula, o *quando usar cada uma*.
-- Já usei `torch.distributed` ou `DataParallel` em algum treino, mesmo que pequeno.
-
-Poucos "sim" → siga o caminho **Clássico** (teoria completa e depois prática). Maioria "sim" → vá direto pelos blocos **Prática guiada — Acelerado**, que assumem que você já manja da teoria e só quer construir — mas ainda te dão código, não só uma lista de tarefas.
-
-Este módulo tem dois trilhos em paralelo: um de teoria (intuição, exemplo resolvido com código, aplicação real, checkpoint) pra quem está construindo a base, e um de prática guiada — passos com esqueleto de código pronto pra rodar, faltando só as linhas-chave que forçam você a aplicar o conceito — pra quem já tem bagagem e quer ir direto pro código sem reler teoria.
+Este módulo constrói cada ideia nova a partir de uma analogia ou de um exemplo numérico pequeno, antes de qualquer notação formal — e fecha cada seção com um checkpoint pra você verificar se realmente entendeu, não só leu.
 
 ---
 
@@ -56,77 +42,16 @@ Pular DL e ir direto para LLMs é como tentar entender Relatividade sem Mecânic
 - **Loss functions**: MSE (regressão), Cross-Entropy (classificação), BCE (binária), Hinge (SVM-like).
 - **Backpropagation** como aplicação da regra da cadeia.
 
-> **Intuição**: um neurônio artificial é um "juiz" que pesa evidências e decide se "ativa" ou não. Cada entrada é uma evidência, cada peso é o quanto aquela evidência importa pra esse juiz específico, e o bias é o quão fácil ou difícil é convencê-lo. A não-linearidade (ReLU, sigmoid...) é o que faz o juiz efetivamente *decidir* algo em vez de só somar números — sem ela, empilhar camadas equivaleria a uma única camada linear, por mais profunda que a rede pareça.
+> **Intuição**: um neurônio artificial é um "juiz" que pesa evidências e decide se "ativa" ou não. Cada entrada é uma evidência, cada peso é o quanto aquela evidência importa pra esse juiz específico, e o bias é o quão fácil ou difícil é convencê-lo. A não-linearidade (ReLU, sigmoid...) é o que faz o juiz efetivamente *decidir* algo em vez de só somar números — sem ela, empilhar camadas equivaleria a uma única camada linear, por mais profunda que a rede pareça: a composição de duas transformações lineares ainda é uma transformação linear, então sem não-linearidade no meio, 100 camadas colapsam matematicamente em 1.
 >
 > **Exemplo resolvido**: entradas `x = [2, 3]`, pesos `w = [1, -0.5]`, bias `b = 0`.
 > `z = (2×1) + (3×-0.5) + 0 = 2 - 1.5 = 0.5`
 > Aplicando ReLU: `ReLU(0.5) = max(0, 0.5) = 0.5` → o neurônio "ativa" com força 0.5.
->
-> Em código (você pode rodar isso exatamente como está):
->
-> ```python
-> def relu(z):
->     return max(0, z)
->
-> def neuron(x, w, b, activation=relu):
->     z = sum(xi * wi for xi, wi in zip(x, w)) + b
->     return activation(z)
->
-> x = [2, 3]
-> w = [1, -0.5]
-> b = 0
->
-> print(neuron(x, w, b))        # 0.5
-> print(neuron([1, 5], w, b))   # 0  (a segunda entrada "não ativa" o neurônio)
-> ```
->
-> Backprop, mais adiante, é só a regra da cadeia aplicada repetidamente pra descobrir *quanto cada peso contribuiu pro erro final* — nada além disso.
+> Se a segunda entrada fosse `x = [1, 5]` com os mesmos pesos: `z = 1 - 2.5 = -1.5` → `ReLU(-1.5) = 0` → o neurônio não ativa. Backprop, mais adiante, é só a regra da cadeia aplicada repetidamente pra descobrir *quanto cada peso contribuiu pro erro final* — nada além disso. A escolha da função de ativação também molda o comportamento do gradiente: sigmoid e tanh "saturam" (derivada perto de zero) para `|z|` grande, o que é a raiz do vanishing gradient discutido na seção 5.2; ReLU tem derivada constante (1) para `z > 0`, por isso é o padrão em redes profundas.
 >
 > **Aplicação real**: toda camada de todo Transformer (inclusive os LLMs que você vai estudar a partir do mod. [07](07_transformers.mdx)) é, no fundo, essa mesma combinação linear + não-linearidade, repetida em escala. Entender isso aqui, pequeno, é entender o átomo de tudo que vem depois.
 >
-> **Checkpoint**: sem olhar o texto acima, explique em duas frases por que uma rede *sem* função de ativação não-linear, não importa quantas camadas tenha, equivale a uma única camada linear.
-
-> **Prática guiada — Acelerado**
->
-> Rode o código do bloco de teoria acima primeiro (`neuron`), depois generalize:
->
-> ```python
-> import math
->
-> def sigmoid(z):
->     return 1 / (1 + math.exp(-z))
->
-> def tanh(z):
->     return math.tanh(z)
->
-> def relu(z):
->     return max(0, z)
->
-> def neuron(x, w, b, activation):
->     z = sum(xi * wi for xi, wi in zip(x, w)) + b
->     return activation(z)
->
-> x = [1, 5]
-> w = [1, -0.5]
-> b = 0
->
-> for act in (sigmoid, tanh, relu):
->     print(act.__name__, neuron(x, w, b, act))
-> ```
->
-> 1. Rode o código acima e confira que as três ativações dão saídas diferentes para o mesmo `z`.
-> 2. Usando `matplotlib`, plote as três funções (`sigmoid`, `tanh`, `relu`) para `z` de -5 a 5 num mesmo gráfico:
->    ```python
->    import matplotlib.pyplot as plt
->
->    zs = [z / 10 for z in range(-50, 51)]
->    plt.plot(zs, [sigmoid(z) for z in zs], label="sigmoid")
->    plt.plot(zs, [tanh(z) for z in zs], label="tanh")
->    plt.plot(zs, [relu(z) for z in zs], label="relu")
->    plt.legend()
->    plt.show()
->    ```
-> 3. Observe no gráfico: onde sigmoid e tanh "achatam" (derivada perto de zero) — é ali que o vanishing gradient começa.
+> **Checkpoint**: sem olhar o texto acima, explique em duas frases por que uma rede *sem* função de ativação não-linear, não importa quantas camadas tenha, equivale a uma única camada linear. Depois, explique por que sigmoid tende a ter gradientes menores que ReLU.
 
 ### Implementação from scratch
 Implemente em NumPy puro: forward, backward, treinamento, validação.
@@ -149,52 +74,11 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 
 > **Intuição**: o Universal Approximation Theorem garante que um MLP largo o suficiente pode aproximar qualquer função contínua — mas "pode aproximar" é diferente de "vai aprender a aproximar" com gradient descent em tempo razoável. É como dizer que qualquer texto pode ser escrito com 26 letras: verdade, mas não te ensina a escrever um romance. A inicialização de pesos é o que decide se o treino sequer sai do lugar.
 >
-> **Exemplo (código real)**: o snippet abaixo empilha 30 camadas lineares sem ativação e mostra a norma do sinal explodindo, murchando, ou ficando estável, dependendo só da escala inicial dos pesos.
+> **Exemplo (ilustrativo)**: imagine uma rede de 50 camadas onde cada camada, por causa da inicialização, multiplica a variância do sinal por ~1.5 ao passar adiante. Depois de 50 camadas, isso é `1.5^50` — um número absurdamente grande, ativações explodindo. Se em vez disso cada camada multiplicasse por ~0.7, seria `0.7^50` — praticamente zero, sinal morto antes de chegar à saída. É exatamente esse efeito multiplicativo, camada após camada, que Xavier/He init tentam neutralizar, escolhendo a escala inicial dos pesos (proporcional a `1/√fan_in` no caso de Xavier, `√(2/fan_in)` no caso de He) para manter a variância do sinal ~estável ao longo da rede, em vez de deixá-la ao acaso.
 >
-> ```python
-> import numpy as np
+> **Aplicação real**: má inicialização é uma das causas mais comuns de "meu modelo não aprende nada e eu não sei por quê" — antes de suspeitar de bug complexo, verifique a inicialização. É também por isso que frameworks modernos (PyTorch, JAX) já usam He/Kaiming init por padrão em camadas com ReLU — a comunidade aprendeu a lição.
 >
-> def run_stack(std, n_layers=30, dim=100, seed=0):
->     rng = np.random.default_rng(seed)
->     x = rng.standard_normal(dim)
->     norms = [np.linalg.norm(x)]
->     for _ in range(n_layers):
->         W = rng.standard_normal((dim, dim)) * std
->         x = W @ x
->         norms.append(np.linalg.norm(x))
->     return norms
->
-> print("std=2.0 (grande):", run_stack(std=2.0)[-1])
-> print("std=0.01 (pequeno):", run_stack(std=0.01)[-1])
-> print("He init (sqrt(2/dim)):", run_stack(std=np.sqrt(2 / 100))[-1])
-> ```
->
-> Rode e compare os três números finais: o primeiro deve ser um número gigante, o segundo praticamente zero, e o terceiro (He init) deve ficar numa faixa razoável — é exatamente esse efeito multiplicativo, camada após camada, que Xavier/He init tentam neutralizar.
->
-> **Aplicação real**: má inicialização é uma das causas mais comuns de "meu modelo não aprende nada e eu não sei por quê" — antes de suspeitar de bug complexo, verifique a inicialização.
->
-> **Checkpoint**: sem consultar o texto, explique por que "a rede pode teoricamente aproximar qualquer função" (Universal Approximation) não é a mesma coisa que "a rede vai aprender essa função na prática".
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> import numpy as np
->
-> def run_stack(std, n_layers=30, dim=100, seed=0):
->     rng = np.random.default_rng(seed)
->     x = rng.standard_normal(dim)
->     norms = [np.linalg.norm(x)]
->     for _ in range(n_layers):
->         W = rng.standard_normal((dim, dim)) * std
->         # TODO: aplique a transformação linear desta camada (x = W @ x)
->         x = ...
->         norms.append(np.linalg.norm(x))
->     return norms
-> ```
->
-> 1. Complete o `TODO` acima e rode com `std=2.0`, `std=0.01` e `std=np.sqrt(2/100)`.
-> 2. Plote as três listas de normas (`norms`) num gráfico de linha (eixo x = camada, eixo y = norma) — visualize a explosão/vanish acontecendo camada a camada, não só no valor final.
-> 3. Repita substituindo a multiplicação pura `W @ x` por `np.maximum(0, W @ x)` (ReLU) em cada camada e compare se o padrão muda.
+> **Checkpoint**: sem consultar o texto, explique por que "a rede pode teoricamente aproximar qualquer função" (Universal Approximation) não é a mesma coisa que "a rede vai aprender essa função na prática". Depois, explique por que He init usa uma escala diferente de Xavier init (dica: tem a ver com o que ReLU faz com metade dos valores).
 
 ### Referências
 - `Paper` **Understanding the difficulty of training deep feedforward neural networks** — Glorot & Bengio (2010). https://proceedings.mlr.press/v9/glorot10a.html
@@ -223,64 +107,16 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 - **Layer Normalization** (padrão em Transformers).
 - **Group Normalization**, **RMSNorm** (usado em LLaMA).
 
-> **Intuição**: pense em minimizar a loss como descer uma montanha no escuro, só sentindo a inclinação sob os pés. SGD puro dá um passo na direção da descida mais íngreme e reavalia — pode ficar "zigue-zagueando" em vales estreitos. Momentum é como ter inércia: se você vem descendo numa direção, tende a continuar nela mesmo que o terreno local sugira um desvio pequeno, o que suaviza o zigue-zague. Adam vai além: mantém uma "velocidade média" (momentum) *e* ajusta o tamanho do passo por parâmetro.
+> **Intuição**: pense em minimizar a loss como descer uma montanha no escuro, só sentindo a inclinação sob os pés. SGD puro dá um passo na direção da descida mais íngreme e reavalia — pode ficar "zigue-zagueando" em vales estreitos. Momentum é como ter inércia: se você vem descendo numa direção, tende a continuar nela mesmo que o terreno local sugira um desvio pequeno, o que suaviza o zigue-zague. Adam vai além: mantém uma "velocidade média" (momentum) *e* ajusta o tamanho do passo por parâmetro, dando passos maiores em direções onde o gradiente tem sido consistentemente pequeno e menores onde ele oscila muito.
 >
-> **Exemplo resolvido (código)**: loss `L(w) = (w - 3)²`, mínimo em `w = 3`. Derivada: `dL/dw = 2(w - 3)`.
+> **Exemplo resolvido**: loss `L(w) = (w - 3)²`, mínimo em `w = 3`. Derivada: `dL/dw = 2(w - 3)`.
+> Começando em `w = 0`, gradiente = `2×(0-3) = -6`. Com learning rate `0.1`: `w_novo = 0 - 0.1×(-6) = 0.6`.
+> Próximo passo: gradiente em `w=0.6` é `2×(0.6-3) = -4.8`, `w_novo = 0.6 - 0.1×(-4.8) = 1.08`.
+> Note que o passo fica menor conforme `w` se aproxima de 3 (gradiente encolhe) — é assim, mecanicamente, que gradient descent converge. Momentum acumularia parte desses `-6, -4.8, ...` numa média móvel, acelerando a convergência ao longo dessa mesma direção consistente. Regularização (dropout, weight decay, augmentation) ataca um problema diferente: não é sobre convergir mais rápido, é sobre convergir para uma solução que generalize — dropout força a rede a não depender de nenhum neurônio específico (desligando aleatoriamente uma fração deles a cada passo), weight decay penaliza pesos grandes (soluções "mais simples" tendem a generalizar melhor), augmentation multiplica artificialmente a variedade de exemplos vistos.
 >
-> ```python
-> def loss_grad(w):
->     return 2 * (w - 3)
+> **Aplicação real**: o pré-treinamento de qualquer LLM moderno (mod. [09](09_treinamento_e_alinhamento.mdx)) usa AdamW com warmup + cosine decay — exatamente os itens desta lista, só que rodando em milhares de GPUs por semanas. Se você entende por que warmup existe aqui (evitar um passo grande demais antes do otimizador "aquecer" suas estimativas de momento), você entende por que ele é não-negociável em treino de LLM.
 >
-> def sgd_step(w, grad, lr):
->     return w - lr * grad
->
-> w = 0.0
-> for step in range(10):
->     g = loss_grad(w)
->     w = sgd_step(w, g, lr=0.1)
->     print(f"passo {step}: w={w:.4f}, gradiente={g:.4f}")
-> ```
->
-> Rode e observe: o gradiente encolhe conforme `w` se aproxima de 3, e o passo encolhe junto — é assim, mecanicamente, que gradient descent converge.
->
-> **Aplicação real**: o pré-treinamento de qualquer LLM moderno (mod. [09](09_treinamento_e_alinhamento.mdx)) usa AdamW com warmup + cosine decay — exatamente os itens desta lista, só que rodando em milhares de GPUs por semanas.
->
-> **Checkpoint**: sem olhar o texto, explique a diferença entre Batch Normalization e Layer Normalization em uma frase cada — e diga qual delas os Transformers usam.
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> def loss_grad(w):
->     return 2 * (w - 3)
->
-> def momentum_step(w, grad_val, v, lr=0.1, beta=0.9):
->     v = beta * v + (1 - beta) * grad_val
->     # TODO: atualize w usando 'v' (a média móvel do gradiente) em vez do gradiente cru
->     w_new = ...
->     return w_new, v
->
-> w, v = 0.0, 0.0
-> for step in range(10):
->     g = loss_grad(w)
->     w, v = momentum_step(w, g, v)
->     print(f"passo {step}: w={w:.4f}")
-> ```
->
-> 1. Complete o `TODO` e rode — compare quantos passos o Momentum leva até `|w - 3| < 0.01`, versus o SGD puro do bloco de teoria (rode os dois e conte).
-> 2. Confirme com PyTorch, resolvendo o mesmo problema com o otimizador pronto:
->    ```python
->    import torch
->
->    w = torch.tensor(0.0, requires_grad=True)
->    optimizer = torch.optim.SGD([w], lr=0.1)
->    for step in range(10):
->        optimizer.zero_grad()
->        loss = (w - 3) ** 2
->        loss.backward()
->        optimizer.step()
->    print(w.item())  # deve bater com o resultado da sua implementação manual
->    ```
-> 3. Troque `torch.optim.SGD` por `torch.optim.Adam` no mesmo código e compare a velocidade de convergência.
+> **Checkpoint**: sem olhar o texto, explique a diferença entre Batch Normalization e Layer Normalization em uma frase cada — e diga qual delas os Transformers usam. Depois, explique em uma frase por que dropout e weight decay resolvem problemas diferentes (velocidade de convergência vs. generalização) mesmo sendo os dois chamados de "regularização".
 
 ### Referências
 - `Paper` **Dropout: A Simple Way to Prevent NN from Overfitting** — Srivastava et al. (2014). https://jmlr.org/papers/v15/srivastava14a.html
@@ -306,124 +142,16 @@ Implemente em NumPy puro: forward, backward, treinamento, validação.
 - **DenseNet**, **EfficientNet**.
 - **Vision Transformer (ViT)** — preview do mod. [16](16_visao_computacional.md).
 
-> **Intuição**: um kernel de convolução é um "detector de padrão" pequeno (tipo, uma bordinha diagonal) que desliza pela imagem inteira procurando aquele padrão em qualquer posição — é por isso que se chama *parameter sharing*: o mesmo detector é reusado em toda a imagem. Isso é o que dá à CNN a propriedade de *translation invariance*: um gato no canto superior esquerdo ativa o mesmo detector que um gato no centro.
->
-> **Exemplo resolvido (código)**: convolução 2D manual, aplicando um kernel de detecção de borda vertical numa imagem pequena e sintética (metade escura, metade clara — uma borda no meio):
->
-> ```python
-> import numpy as np
->
-> def conv2d(image, kernel):
->     kh, kw = kernel.shape
->     ih, iw = image.shape
->     oh, ow = ih - kh + 1, iw - kw + 1
->     output = np.zeros((oh, ow))
->     for i in range(oh):
->         for j in range(ow):
->             region = image[i:i + kh, j:j + kw]
->             output[i, j] = np.sum(region * kernel)
->     return output
->
-> edge_kernel = np.array([
->     [-1, 0, 1],
->     [-1, 0, 1],
->     [-1, 0, 1],
-> ])
->
-> image = np.zeros((8, 8))
-> image[:, 4:] = 1  # metade direita "clara", esquerda "escura" -> borda vertical no meio
->
-> result = conv2d(image, edge_kernel)
-> print(result)
-> ```
->
-> Rode e observe: a coluna onde fica a borda (no meio da imagem) tem valores bem diferentes de zero — o kernel "detectou" a transição escuro→claro. Nas colunas uniformes (totalmente escuras ou totalmente claras), o resultado é ~0.
+> **Intuição**: um kernel de convolução é um "detector de padrão" pequeno (tipo, uma bordinha diagonal) que desliza pela imagem inteira procurando aquele padrão em qualquer posição — é por isso que se chama *parameter sharing*: o mesmo detector é reusado em toda a imagem, em vez de aprender um detector diferente para cada posição de pixel. Isso é o que dá à CNN a propriedade de *translation invariance*: um gato no canto superior esquerdo ativa o mesmo detector que um gato no centro. `stride` controla de quanto em quanto o detector "pula" pela imagem (stride maior = saída menor, menos overlap); `padding` controla o que acontece nas bordas (sem padding, a imagem encolhe a cada convolução); `receptive field` é quanto da imagem original uma unidade da saída "enxerga" — cresce a cada camada empilhada, o que é parte de por que empilhar convoluções ajuda a capturar padrões cada vez mais globais.
 
 ### Por que skip connections importam para LLMs
 Transformers usam residual connections derivadas das ResNets. Entender o problema que ResNet resolve é entender por que Transformers profundos treinam.
 
-> **Intuição**: sem skip connection, o gradiente que volta da última camada até a primeira precisa passar, multiplicando, por *todos* os pesos intermediários — o mesmo efeito multiplicativo da seção 5.2. A skip connection (`output = F(x) + x`) cria um "atalho" onde o gradiente pode voltar direto pela soma, sem precisar sobreviver a todas as multiplicações.
+> **Intuição**: sem skip connection, o gradiente que volta da última camada até a primeira precisa passar, multiplicando, por *todos* os pesos intermediários — exatamente o mesmo efeito multiplicativo do exemplo de inicialização da seção 5.2, só que agora acontecendo durante o treino inteiro, não só no início. Com poucas dezenas de camadas isso já é suficiente pra o gradiente vanishing antes de chegar às primeiras camadas. A skip connection (`output = F(x) + x`) cria um "atalho" onde o gradiente pode voltar direto pela soma, sem precisar sobreviver a todas as multiplicações — é literalmente uma rota alternativa que ignora o gargalo.
 >
-> **Aplicação real**: ResNet vs uma CNN "plain" com o mesmo número de parâmetros é o experimento clássico que prova isso — a plain, a partir de certa profundidade, treina *pior* que uma versão mais rasa dela mesma (não é overfitting, é dificuldade de otimização). É exatamente o resultado do Projeto 5.3, abaixo.
->
-> ```python
-> import torch
-> import torch.nn as nn
->
-> class ResBlock(nn.Module):
->     def __init__(self, channels):
->         super().__init__()
->         self.conv1 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
->         self.conv2 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
->
->     def forward(self, x):
->         out = torch.relu(self.conv1(x))
->         out = self.conv2(out)
->         return torch.relu(out + x)  # <- a skip connection: soma 'x' antes do relu final
->
-> block = ResBlock(channels=16)
-> x = torch.randn(1, 16, 8, 8)
-> print(block(x).shape)  # torch.Size([1, 16, 8, 8]) — mesma forma da entrada
-> ```
+> **Aplicação real**: ResNet vs uma CNN "plain" com o mesmo número de parâmetros é o experimento clássico que prova isso — a plain, a partir de certa profundidade, treina *pior* que uma versão mais rasa dela mesma (não é overfitting, é dificuldade de otimização). Esse é exatamente o resultado que você vai reproduzir no Projeto 5.3, abaixo. Skip connections viraram tão fundamentais que hoje são parte do bloco básico de praticamente toda arquitetura profunda moderna — inclusive o bloco Transformer inteiro (mod. [07](07_transformers.mdx)) tem duas skip connections por camada, uma ao redor da attention e outra ao redor do feed-forward.
 >
 > **Checkpoint**: sem olhar o texto, explique por que uma CNN "plain" de 100 camadas costuma treinar pior que uma de 20 camadas — e por que isso não é overfitting.
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> import numpy as np
->
-> def conv2d(image, kernel):
->     kh, kw = kernel.shape
->     ih, iw = image.shape
->     oh, ow = ih - kh + 1, iw - kw + 1
->     output = np.zeros((oh, ow))
->     for i in range(oh):
->         for j in range(ow):
->             region = image[i:i + kh, j:j + kw]
->             # TODO: multiplique 'region' pelo 'kernel' elemento-a-elemento e some tudo
->             output[i, j] = ...
->     return output
-> ```
->
-> 1. Complete o `TODO` acima e rode com o `edge_kernel` e a `image` do bloco de teoria — confirme que a saída bate com a do exemplo (borda destacada no meio).
-> 2. Em PyTorch, implemente as duas versões do bloco:
->    ```python
->    import torch
->    import torch.nn as nn
->
->    class ResBlock(nn.Module):
->        def __init__(self, channels):
->            super().__init__()
->            self.conv1 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
->            self.conv2 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
->
->        def forward(self, x):
->            out = torch.relu(self.conv1(x))
->            out = self.conv2(out)
->            # TODO: some a entrada original 'x' (o skip) antes do relu final
->            return torch.relu(...)
->
->    class PlainBlock(nn.Module):
->        def __init__(self, channels):
->            super().__init__()
->            self.conv1 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
->            self.conv2 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
->
->        def forward(self, x):
->            out = torch.relu(self.conv1(x))
->            out = self.conv2(out)
->            return torch.relu(out)  # sem skip, de propósito
->    ```
-> 3. Complete o `TODO` do `ResBlock`, depois empilhe 20 de cada e confirme que ambos rodam sem erro de dimensão:
->    ```python
->    res_stack = nn.Sequential(*[ResBlock(16) for _ in range(20)])
->    plain_stack = nn.Sequential(*[PlainBlock(16) for _ in range(20)])
->
->    x = torch.randn(1, 16, 8, 8)
->    print(res_stack(x).shape, plain_stack(x).shape)
->    ```
-> 4. Isso te deixa pronto pro Projeto 5.3 — treinar as duas versões de verdade e ver o gap.
 
 ### Referências
 - `Paper` **ImageNet Classification with Deep CNN (AlexNet)** — Krizhevsky et al. (2012). https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks
@@ -447,64 +175,13 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - **Encoder-decoder com RNN** (precursor de Seq2Seq).
 - **Attention sobre RNN** (Bahdanau, Luong) — antecessor direto do self-attention.
 
-> **Intuição**: uma RNN é como ler uma frase palavra por palavra enquanto anota tudo num único caderninho (o hidden state) — cada palavra nova atualiza o caderninho, mas o que foi anotado há 50 palavras já foi bastante reescrito por cima. LSTM/GRU adicionam "portões" que decidem o que manter, o que esquecer e o que escrever no caderninho — mas o gargalo estrutural continua: informação de uma palavra distante ainda precisa sobreviver passando sequencialmente por *todas* as palavras entre ela e a atual.
+> **Intuição**: uma RNN é como ler uma frase palavra por palavra enquanto anota tudo num único caderninho (o hidden state) — cada palavra nova atualiza o caderninho, mas o que foi anotado há 50 palavras já foi bastante reescrito por cima. LSTM/GRU adicionam "portões" (gates) que decidem o que manter, o que esquecer e o que escrever no caderninho, dando mais controle sobre o que sobrevive por muitas palavras — mas o gargalo estrutural continua: informação de uma palavra distante ainda precisa sobreviver passando sequencialmente por *todas* as palavras entre ela e a atual. O "forget gate" do LSTM, por exemplo, aprende quando é seguro "esquecer" parte do cell state; sem ele (RNN vanilla), tudo se mistura sempre.
 >
-> **Exemplo (código)**: uma célula RNN vanilla, rodada em 5 passos, mostrando a norma do estado oculto ao longo do tempo:
+> **Exemplo (ilustrativo)**: em BPTT, o gradiente numa RNN vanilla é multiplicado repetidamente pela mesma matriz de pesos recorrente a cada passo de tempo — o mesmo mecanismo multiplicativo das seções 5.2 e 5.4, agora ao longo do *tempo* em vez das *camadas*. Numa sequência de 100 tokens, isso significa ~100 multiplicações em cadeia: se cada uma encolhe o gradiente um pouco, depois de 100 passos ele já pode ter praticamente zerado. É por isso que RNN vanilla "esquece" contexto distante — e por que mesmo LSTM, que mitiga bastante o problema, ainda degrada em sequências muito longas (centenas ou milhares de tokens).
 >
-> ```python
-> import torch
->
-> def rnn_cell(x_t, h_prev, Wx, Wh, b):
->     return torch.tanh(Wx @ x_t + Wh @ h_prev + b)
->
-> dim = 4
-> torch.manual_seed(0)
-> Wx = torch.randn(dim, dim) * 0.5
-> Wh = torch.randn(dim, dim) * 0.5
-> b = torch.zeros(dim)
->
-> h = torch.zeros(dim)
-> for t in range(5):
->     x_t = torch.randn(dim)
->     h = rnn_cell(x_t, h, Wx, Wh, b)
->     print(f"t={t}: norma(h)={h.norm().item():.4f}")
-> ```
->
-> **Aplicação real**: self-attention (mod. [07](07_transformers.mdx)) resolve o gargalo sequencial de um jeito direto — qualquer token pode "olhar" pra qualquer outro token em um único passo. Attention sobre RNN (Bahdanau, Luong) foi o primeiro passo nessa direção e é o antecessor conceitual do self-attention.
+> **Aplicação real**: self-attention (mod. [07](07_transformers.mdx)) resolve esse gargalo de um jeito direto: qualquer token pode "olhar" pra qualquer outro token em um único passo, sem depender de uma cadeia sequencial de estados intermediários. Attention sobre RNN (Bahdanau, Luong) foi o primeiro passo nessa direção — deixava o decoder "espiar" diretamente os estados do encoder em vez de confiar só no último hidden state — e é literalmente o antecessor conceitual do self-attention.
 >
 > **Checkpoint**: sem olhar o texto, explique em uma frase por que um LSTM ainda tem dificuldade com dependências muito longas, mesmo tendo "portões" para controlar memória.
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> import torch
->
-> def rnn_cell(x_t, h_prev, Wx, Wh, b):
->     # TODO: combine x_t e h_prev (via Wx e Wh) e aplique tanh
->     return torch.tanh(...)
->
-> dim = 4
-> torch.manual_seed(0)
-> Wx = torch.randn(dim, dim) * 1.5  # pesos "grandes" de propósito
-> Wh = torch.randn(dim, dim) * 1.5
-> b = torch.zeros(dim)
->
-> h = torch.zeros(dim)
-> for t in range(5):
->     x_t = torch.randn(dim)
->     h = rnn_cell(x_t, h, Wx, Wh, b)
->     print(f"t={t}: norma(h)={h.norm().item():.4f}")
-> ```
->
-> 1. Complete o `TODO` e rode — com pesos "grandes" (`*1.5`), observe se a norma cresce ou satura ao longo dos passos (dica: `tanh` satura em ±1, então a explosão vai aparecer mais em redes profundas/sequências mais longas do que aqui; troque `torch.tanh` por identidade — sem ativação — pra ver a explosão de forma mais clara).
-> 2. Rode a mesma sequência com `nn.LSTM` do PyTorch e compare a estabilidade:
->    ```python
->    lstm = torch.nn.LSTM(input_size=dim, hidden_size=dim, batch_first=True)
->    seq = torch.randn(1, 5, dim)
->    out, (hn, cn) = lstm(seq)
->    print(out.norm(dim=-1))
->    ```
-> 3. Siga pro Projeto 5.4 pra ver esse efeito em escala real, num corpus de texto.
 
 ### Referências
 - `Paper` **Long Short-Term Memory** — Hochreiter & Schmidhuber (1997). https://www.bioinf.jku.at/publications/older/2604.pdf
@@ -521,59 +198,13 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - **Variational Autoencoder (VAE)**: introdução ao learning variacional.
 - **Generative Adversarial Networks (GANs)**: gerador + discriminador.
 
-> **Intuição**: um autoencoder aprende comprimindo e depois reconstruindo — o "gargalo" (bottleneck) no meio da rede é menor que a entrada, então a única forma de reconstruir bem é aprender uma representação compacta que capture o que é essencial. É o mesmo princípio de fazer um resumo de um livro: se o resumo cabe em uma página e ainda permite recontar a história, ele capturou a estrutura essencial.
->
-> **Exemplo (código)**:
->
-> ```python
-> import torch
-> import torch.nn as nn
->
-> class Autoencoder(nn.Module):
->     def __init__(self, input_dim=784, latent_dim=32):
->         super().__init__()
->         self.encoder = nn.Linear(input_dim, latent_dim)
->         self.decoder = nn.Linear(latent_dim, input_dim)
->
->     def forward(self, x):
->         z = self.encoder(x)
->         reconstruction = self.decoder(z)
->         return reconstruction, z
->
-> model = Autoencoder()
-> x = torch.randn(1, 784)  # imagem "achatada" tipo MNIST (28x28=784)
-> reconstruction, z = model(x)
-> print(z.shape, reconstruction.shape)  # torch.Size([1, 32]) torch.Size([1, 784])
-> ```
+> **Intuição**: um autoencoder aprende comprimindo e depois reconstruindo — o "gargalo" (bottleneck) no meio da rede é menor que a entrada, então a única forma de reconstruir bem é aprender uma representação compacta que capture o que é essencial e descarte o que é ruído/redundância. É o mesmo princípio de fazer um resumo de um livro: se o resumo cabe em uma página e ainda permite recontar a história, ele capturou a estrutura essencial. Um VAE vai além do autoencoder vanilla ao forçar essa representação compacta a seguir uma distribuição conhecida (normalmente gaussiana) — é isso que permite *gerar* amostras novas depois: basta amostrar um ponto aleatório dessa distribuição e passar pelo decoder. Uma GAN ataca o mesmo problema de geração de outro jeito: um gerador tenta produzir amostras convincentes, um discriminador tenta distinguir real de gerado, e os dois treinam um contra o outro até o gerador ficar bom o suficiente para enganar o discriminador.
 
 ### Por que importa
 - Embeddings em LLMs são, conceitualmente, "encoders" treinados.
 - Difusão (mod. [19](19_topicos_avancados.md)) é a evolução desses paradigmas.
 
 > **Checkpoint**: sem olhar o texto, explique por que forçar um "gargalo" (bottleneck menor que a entrada) no meio da rede é o que faz o autoencoder aprender algo útil, em vez de só copiar a entrada para a saída.
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> import torch
-> import torch.nn as nn
->
-> class Autoencoder(nn.Module):
->     def __init__(self, input_dim=784, latent_dim=32):
->         super().__init__()
->         self.encoder = nn.Linear(input_dim, latent_dim)
->         self.decoder = nn.Linear(latent_dim, input_dim)
->
->     def forward(self, x):
->         z = self.encoder(x)
->         # TODO: reconstrua a partir de 'z' usando self.decoder
->         reconstruction = ...
->         return reconstruction, z
-> ```
->
-> 1. Complete o `TODO` e treine no MNIST por poucas épocas (loss = `nn.MSELoss()` entre `reconstruction` e `x`).
-> 2. Compare visualmente uma imagem original com sua reconstrução (`plt.imshow`).
-> 3. Reduza `latent_dim` para 2, treine de novo, e plote o espaço latente (`z[:, 0]` vs `z[:, 1]`) colorido por dígito.
 
 ### Referências
 - `Paper` **Auto-Encoding Variational Bayes** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
@@ -592,39 +223,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - **PyTorch Lightning** (abstração sobre PyTorch para cortar boilerplate).
 - **Hugging Face Accelerate** (alternativa).
 
-> **Visão de mercado**: `autograd` é um dos temas mais comuns em entrevista técnica de ML — saber explicar que `.backward()` percorre o grafo computacional construído dinamicamente durante o forward, acumulando gradientes em `.grad`, e por que `optimizer.zero_grad()` é necessário (porque gradientes *acumulam* por padrão, não substituem) é o tipo de pergunta que separa quem só usou PyTorch de quem entende o que está fazendo.
->
-> **Exemplo (código)**: o esqueleto de um training loop completo, o padrão que você vai reusar em praticamente todo projeto daqui em diante:
->
-> ```python
-> for epoch in range(num_epochs):
->     for x_batch, y_batch in dataloader:
->         optimizer.zero_grad()
->         preds = model(x_batch)
->         loss = loss_fn(preds, y_batch)
->         loss.backward()
->         optimizer.step()
->     print(f"epoch {epoch}: loss={loss.item():.4f}")
-> ```
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> for epoch in range(num_epochs):
->     for x_batch, y_batch in dataloader:
->         # TODO: zere os gradientes acumulados do passo anterior
->         ...
->         preds = model(x_batch)
->         loss = loss_fn(preds, y_batch)
->         # TODO: calcule os gradientes (backward) e dê um passo do otimizador
->         ...
->     print(f"epoch {epoch}: loss={loss.item():.4f}")
-> ```
->
-> 1. Complete os dois `TODO`s acima com um modelo/dataset simples seus (pode ser sintético).
-> 2. Comente a linha do `zero_grad()` de propósito, rode por algumas épocas, e observe a loss se comportar de forma anômala — depois descomente e confirme que volta ao normal.
-> 3. Escreva um `Dataset` e `DataLoader` customizados (`torch.utils.data.Dataset`, implementando `__len__` e `__getitem__`) para seus dados.
-> 4. Rode a mesma arquitetura com e sem `torch.compile(model)` e compare o tempo de uma época.
+> **Visão de mercado**: `autograd` é um dos temas mais comuns em entrevista técnica de ML — saber explicar que `.backward()` percorre o grafo computacional construído dinamicamente durante o forward, acumulando gradientes em `.grad`, e por que `optimizer.zero_grad()` é necessário (porque gradientes *acumulam* por padrão, não substituem) é o tipo de pergunta que separa quem só usou PyTorch de quem entende o que está fazendo. DDP replica o modelo inteiro em cada GPU e sincroniza gradientes; FSDP (preview do mod. [09](09_treinamento_e_alinhamento.mdx)) particiona o próprio modelo entre GPUs — a diferença entre os dois é exatamente o tipo de trade-off que aparece em decisões reais de infraestrutura de treino. Para a implementação passo a passo de um training loop completo, use o `Curso` de PyTorch listado nas referências abaixo — é o material certo para acompanhar linha a linha.
 
 ### Referências
 - `Curso` **Deep Learning with PyTorch** (livro oficial gratuito). https://pytorch.org/assets/deep-learning/Deep-Learning-with-PyTorch.pdf
@@ -641,40 +240,11 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - **Hooks** em PyTorch para inspecionar ativações.
 - **Verificações de sanidade**: overfitar um único batch, gradient checking numérico.
 
-> **Intuição**: depurar uma rede neural é mais parecido com diagnóstico médico do que com debugging de software tradicional — não dá pra colocar um breakpoint na "razão pela qual o modelo não aprende". Você observa sintomas e isola causas prováveis por eliminação.
+> **Intuição**: depurar uma rede neural é mais parecido com diagnóstico médico do que com debugging de software tradicional — não dá pra colocar um breakpoint na "razão pela qual o modelo não aprende". Em vez disso, você observa sintomas (loss não desce, loss vira NaN, accuracy de treino boa mas validação ruim) e isola causas prováveis por eliminação. `Hooks` em PyTorch são a ferramenta que te dá visibilidade *dentro* da rede durante o forward/backward — sem eles, você só vê a loss final, um sintoma agregado que esconde onde o problema realmente está.
 >
-> **Cenário hipotético**: imagine que você está treinando e, depois de algumas centenas de passos, a loss vira `NaN`. Causas prováveis, em ordem de frequência: learning rate alto demais (gradiente explode), divisão por zero numa loss customizada, `log(0)` numa cross-entropy sem estabilização numérica, ou overflow em precisão mista (`fp16`).
->
-> **Exemplo (código)**: hooks pra inspecionar a norma da ativação de cada camada, a ferramenta que você usaria pra achar *onde* uma explosão de ativação começa:
->
-> ```python
-> def make_hook(name):
->     def hook(module, input, output):
->         print(f"{name}: norma={output.norm().item():.4f}")
->     return hook
->
-> for name, layer in model.named_modules():
->     layer.register_forward_hook(make_hook(name))
-> ```
+> **Cenário hipotético**: imagine que você está treinando e, depois de algumas centenas de passos, a loss vira `NaN`. Causas prováveis, em ordem de frequência: learning rate alto demais (gradiente explode), divisão por zero em alguma loss customizada, `log(0)` numa cross-entropy sem estabilização numérica, ou overflow em precisão mista (`fp16`) sem `loss scaling`. O primeiro passo de diagnóstico costuma ser reduzir o learning rate em 10× e ver se o problema some — se sim, era isso. Para implementar hooks e visualizações concretas (Grad-CAM, saliency maps), consulte os tutoriais oficiais do PyTorch e do W&B listados nas referências da seção 5.7 — a mecânica de registrar um hook (`module.register_forward_hook`) é simples, o valor está em saber *o que* observar.
 >
 > **Checkpoint**: sem olhar o texto, liste 2 causas prováveis de um loss virar `NaN` durante o treino.
-
-> **Prática guiada — Acelerado**
->
-> ```python
-> def make_hook(name):
->     def hook(module, input, output):
->         # TODO: imprima o nome da camada e a norma da saída (output.norm())
->         ...
->     return hook
->
-> for name, layer in model.named_modules():
->     layer.register_forward_hook(make_hook(name))
-> ```
->
-> 1. Complete o `TODO` e registre os hooks no modelo de um projeto anterior (ex.: o MLP do Projeto 5.1 ou a CNN do 5.2).
-> 2. Force um `NaN` de propósito (aumente o learning rate em 100×) e identifique, pelos prints dos hooks, em qual camada a norma explode primeiro.
-> 3. Implemente a verificação "overfitar 1 batch": treine só em 8 exemplos por 200 passos e confirme que a loss cai para perto de 0 — se não cair, tem bug antes de escalar pro dataset todo.
 
 ### Referências
 - `Paper` **A Recipe for Training Neural Networks** — Karpathy (post). http://karpathy.github.io/2019/04/25/recipe/
@@ -688,41 +258,7 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - Treine no MNIST. Atinja >97% accuracy.
 - Compare velocidade vs PyTorch.
 
-> **Clássico — variante guiada**: implemente em 3 checkpoints intermediários — (1) só forward pass, verifique que as dimensões batem e que a saída é uma distribuição de probabilidade válida (soma 1); (2) backward pass, verifique com gradient checking numérico antes de treinar; (3) loop de treino completo. Não avance pro próximo checkpoint sem o anterior funcionando.
-
-> **Acelerado — checklist de implementação**
->
-> Esqueleto para começar (arquitetura `784 → 128 (ReLU) → 10 (softmax)`):
->
-> ```python
-> import numpy as np
->
-> def init_params(input_dim=784, hidden_dim=128, output_dim=10, seed=0):
->     rng = np.random.default_rng(seed)
->     W1 = rng.standard_normal((input_dim, hidden_dim)) * np.sqrt(2 / input_dim)
->     b1 = np.zeros(hidden_dim)
->     W2 = rng.standard_normal((hidden_dim, output_dim)) * np.sqrt(2 / hidden_dim)
->     b2 = np.zeros(output_dim)
->     return W1, b1, W2, b2
->
-> def softmax(logits):
->     exp = np.exp(logits - logits.max(axis=-1, keepdims=True))
->     return exp / exp.sum(axis=-1, keepdims=True)
->
-> def forward(x, W1, b1, W2, b2):
->     z1 = x @ W1 + b1
->     a1 = np.maximum(0, z1)  # ReLU
->     z2 = a1 @ W2 + b2
->     # TODO: aplique softmax em z2 para obter as probabilidades finais
->     probs = ...
->     return probs, (z1, a1, z2)
-> ```
->
-> 1. Complete o `TODO` e confirme que `probs.sum(axis=-1)` dá `1.0` para qualquer entrada.
-> 2. Implemente o backward pass camada por camada (comece pela última: gradiente de cross-entropy + softmax combinado é `probs - one_hot(y)`).
-> 3. Rode um passo de treino num único batch pequeno e confirme que a loss cai.
-> 4. Escale para o MNIST completo e meça a accuracy de validação.
-> 5. Cronometre 1 época e compare com a mesma arquitetura implementada em PyTorch.
+> **Variante guiada**: implemente em 3 checkpoints intermediários — (1) só forward pass, verifique que as dimensões batem e que a saída é uma distribuição de probabilidade válida (soma 1); (2) backward pass, verifique com gradient checking numérico antes de treinar; (3) loop de treino completo. Não avance pro próximo checkpoint sem o anterior funcionando. Para a implementação passo a passo, siga o `Curso` de Karpathy (Zero to Hero) listado nas referências da seção 5.1 — ele constrói exatamente isso, do zero, explicando cada linha.
 
 ### Projeto 5.2 — CNN no CIFAR-10
 - Em PyTorch.
@@ -731,80 +267,35 @@ Transformers usam residual connections derivadas das ResNets. Entender o problem
 - Acompanhe com W&B ou TensorBoard.
 - **Meta**: >85% accuracy.
 
-> **Clássico — variante guiada**: adicione cada técnica (BatchNorm, Dropout, augmentation, schedule) uma de cada vez, registrando o ganho de accuracy isolado de cada uma antes de adicionar a próxima.
-
-> **Acelerado — checklist de implementação**
-> 1. Defina uma CNN simples (3 blocos conv+pool) e treine um baseline sem regularização.
-> 2. Adicione BatchNorm + Dropout + augmentation de uma vez.
-> 3. Adicione cosine schedule + warmup (`torch.optim.lr_scheduler.CosineAnnealingLR`).
-> 4. Ajuste hiperparâmetros até bater a meta de 85%.
+> **Variante guiada**: adicione cada técnica (BatchNorm, Dropout, augmentation, schedule) uma de cada vez, registrando o ganho de accuracy isolado de cada uma antes de adicionar a próxima — isso te dá intuição real de quanto cada peça contribui, em vez de uma "sopa" de técnicas cujo efeito individual você não sabe medir.
 
 ### Projeto 5.3 — Implementar ResNet pequena
 - Implemente blocos residuais à mão (não use `torchvision.models.resnet`).
 - Treine no CIFAR-10.
 - Compare com CNN sem skip connections (com mesmo nº de parâmetros): observe o gap.
 
-> **Clássico — variante guiada**: antes de treinar a versão funda, treine as duas versões (com e sem skip connection) numa profundidade rasa onde ambas devem treinar bem — confirme que o gap só aparece quando você aumenta a profundidade. Isso isola a variável certa.
-
-> **Acelerado — checklist de implementação**
-> 1. Reuse o `ResBlock`/`PlainBlock` implementados na seção 5.4.
-> 2. Empilhe blocos até uma profundidade alta (20+ blocos), com uma camada final `nn.Linear` para classificação.
-> 3. Treine as duas versões no CIFAR-10 com o mesmo orçamento de épocas.
-> 4. Plote as duas curvas de loss de treino no mesmo gráfico.
-> 5. Anote a diferença observada em 1 linha.
+> **Variante guiada**: antes de treinar a versão funda, treine as duas versões (com e sem skip connection) numa profundidade rasa onde ambas devem treinar bem — confirme que o gap só aparece quando você aumenta a profundidade. Isso isola a variável certa e evita concluir errado (ex.: achar que é overfitting quando na verdade é dificuldade de otimização).
 
 ### Projeto 5.4 — char-RNN (gerador de texto caractere a caractere)
 - Implemente LSTM em PyTorch.
 - Treine em corpus de texto à sua escolha (Shakespeare, código, letras de música).
 - Gere texto novo. Compare com versão GPT mínima (preview de mod. [07](07_transformers.mdx)).
 
-> **Clássico — variante guiada**: treine e valide o LSTM sozinho, com checkpoints de geração intermediários (a cada X épocas, gere uma amostra e leia), antes de comparar com a versão GPT mínima.
-
-> **Acelerado — checklist de implementação**
-> 1. Prepare o corpus: tokenização por caractere, vocabulário (`set` dos caracteres únicos), encoding para índices inteiros.
-> 2. Implemente `nn.LSTM(input_size=vocab_size, hidden_size=256, batch_first=True)` + `nn.Linear(256, vocab_size)` de saída.
-> 3. Treine com teacher forcing (a sequência de entrada é o texto, a de saída é o texto deslocado 1 caractere).
-> 4. Implemente geração autoregressiva: a cada passo, amostre o próximo caractere da distribuição de saída e realimente o modelo.
-> 5. Repita com o GPT mínimo do mod. [07](07_transformers.mdx) no mesmo corpus e compare velocidade de treino e qualidade do texto gerado.
+> **Variante guiada**: treine e valide o LSTM sozinho, com checkpoints de geração intermediários (a cada X épocas, gere uma amostra e leia), antes de comparar com a versão GPT mínima do mod. 07. O repositório `char-rnn` do Karpathy (referências da seção 5.5) é a implementação de referência pra seguir.
 
 ### Projeto 5.5 — VAE no MNIST
 - Implemente encoder, decoder, reparameterization trick.
 - Visualize espaço latente em 2D.
 - Gere amostras interpolando no espaço latente.
 
-> **Clássico — variante guiada**: antes de implementar, derive por que o reparameterization trick é necessário (gradiente não passa por uma amostragem estocástica direta) — só depois implemente.
-
-> **Acelerado — checklist de implementação**
->
-> ```python
-> import torch
->
-> def reparameterize(mu, log_var):
->     std = torch.exp(0.5 * log_var)
->     eps = torch.randn_like(std)
->     # TODO: combine mu, std e eps para amostrar z (a fórmula do reparameterization trick)
->     z = ...
->     return z
-> ```
->
-> 1. Implemente o encoder (saída: `mu` e `log_var`, dois vetores) e o decoder.
-> 2. Complete o `TODO` acima.
-> 3. Treine com loss = reconstrução (MSE ou BCE) + KL divergence (`-0.5 * sum(1 + log_var - mu**2 - log_var.exp())`).
-> 4. Reduza a dimensão latente para 2 e plote o espaço latente.
-> 5. Gere amostras interpolando linearmente entre dois pontos do espaço latente.
+> **Variante guiada**: antes de implementar, derive por que o reparameterization trick é necessário (gradiente não passa por uma amostragem estocástica direta — sem o trick, não dá pra fazer backprop através de "amostrar de uma distribuição") — só depois implemente. O paper original (Kingma & Welling, referências da seção 5.6) explica essa motivação na íntegra.
 
 ### Projeto 5.6 (cross-link com mod. [14](14_avaliacao_e_seguranca.md)) — Pipeline de experimentação completo
 - Use W&B para log.
 - Faça grid de experimentos: 3 arquiteturas × 3 learning rates × 2 batch sizes.
 - Analise a tabela de resultados.
 
-> **Clássico — variante guiada**: rode o grid completo (18 combinações) e documente, para cada resultado, uma hipótese de por que ele saiu melhor ou pior antes de olhar a tabela final.
-
-> **Acelerado — checklist de implementação**
-> 1. Escreva um script que recebe arquitetura/learning rate/batch size como argumentos de linha de comando (`argparse`).
-> 2. Rode o grid completo via loop (ou `wandb sweep`, se já usa W&B).
-> 3. Puxe os resultados numa tabela via API do W&B.
-> 4. Identifique a melhor combinação e justifique em 1 linha.
+> **Variante guiada**: rode o grid completo (18 combinações) e documente, para cada resultado, uma hipótese de por que ele saiu melhor ou pior antes de olhar a tabela final — comparar sua hipótese com o resultado real é o que constrói intuição de hiperparâmetro mais rápido do que só rodar e olhar.
 
 ---
 
