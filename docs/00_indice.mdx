@@ -1,6 +1,6 @@
 ---
 id: 00_indice
-title: "Trilha de Estudo — LLM, IA e Engenharia de Sistemas Inteligentes"
+title: "Trilha de Estudo — LLM, IA e Engenharia de Sistemas Inteligentes (Acelerado)"
 sidebar_position: 0
 slug: /
 sidebar_label: "Início"
@@ -8,89 +8,47 @@ sidebar_label: "Início"
 
 # Trilha de Estudo — LLM, IA e Engenharia de Sistemas Inteligentes
 
-> Currículo acadêmico + engenharia real, sem viés de fornecedor, com referências canônicas.
+> Versão **Acelerado**: prática primeiro, teoria sob demanda. Currículo de engenharia real, sem viés de fornecedor.
 > Linguagens: **Python** (núcleo) e **TypeScript** (onde há ecossistema maduro).
-> Saída: arquivos `.md` por módulo, este arquivo é o índice e o mapa.
+> Saída: um arquivo `.md`/`.mdx` por módulo, este arquivo é o índice e o mapa.
 
 ---
 
-## Filosofia da trilha
+## Como esta versão funciona
 
-Esta trilha tem formato **T/Y**:
+Aqui você não começa pela matemática — começa implementando um LLM do zero no módulo 08, e só desce aos fundamentos (Transformers, NLP clássico, Deep Learning, ML moderno, ML clássico, programação, matemática) depois de já ter construído, com as próprias mãos, praticamente tudo que existe entre um transformer decoder-only e um sistema de IA em produção completo. A teoria não desaparece — cada módulo mantém a mesma profundidade conceitual da versão Clássico desta trilha — mas a ordem se inverte, e a seção "Projetos práticos" de cada módulo deixa de ser uma lista de bullets e vira implementação completa, com pré-requisitos explícitos e código que você realmente roda.
 
-- **Base larga** (módulos [1](01_matematica.md)–[7](07_transformers.mdx)): matemática, programação, ML clássico/moderno, DL, NLP clássico. Sem essa base, tudo o que vier depois é uso de caixa-preta.
-- **Tronco profundo em LLMs** (módulos [8](08_llms_arquiteturas.md)–[15](15_engenharia_producao.mdx)): Transformers, arquiteturas, treinamento, alinhamento, eficiência, prompting, RAG, agentes, avaliação, produção.
-- **Galhos de especialização** (módulos [16](16_visao_computacional.md)–[19](19_topicos_avancados.md)): Visão Computacional, RL, Multimodal, Tópicos Avançados.
-- **Síntese** (módulo [20](20_projetos_integradores.md)): projetos integradores.
-
-**Regra de ouro**: cada conceito teórico deve "virar código" pelo menos uma vez. Implementar do zero (mesmo que mal) é o que separa quem entende de quem reconhece.
+**A regra que torna isso possível**: nenhum módulo pode cobrar, num projeto prático, uma habilidade que um módulo anterior *nesta ordem* não tenha ensinado. Quando um projeto precisa de algo que só a versão Clássico cobre a fundo mais tarde (por exemplo, o Projeto 8.4 precisa que você saiba plotar um gráfico e rodar um loop de treino, antes do módulo formal de Deep Learning), o texto ensina isso ali mesmo, de forma direta — e aponta para onde aprofundar depois, não como pré-requisito disfarçado.
 
 ---
 
-## Como estudar: Clássico vs Acelerado
-
-Esta trilha existe (ou vai existir) em duas versões, trocáveis pelo seletor de versão no topo do site — não são seções dentro da mesma página, são dois jeitos inteiros de percorrer o material, para dois perfis de estudo diferentes.
-
-### Versão Clássico (esta que você está lendo agora)
-
-O caminho normal de aplicação: siga a numeração 01→20 na ordem. Cada módulo traz teoria completa — intuição, analogia, exemplo resolvido, aplicação real, checkpoint de autoverificação — **antes** da prática. É construção de baixo pra cima: você só chega no módulo 07 (Transformers) depois de já ter internalizado matemática, programação e deep learning o suficiente para que a arquitetura faça sentido, não só "funcione quando copiada". Recomendado para quem está construindo a base pela primeira vez, ou quer entender *por que* as coisas funcionam, não só *como* usá-las.
-
-### Versão Acelerado (futura, ainda não publicada)
-
-Pensada para quem já tem bagagem técnica e quer ir direto para implementação e projetos, buscando fundamentos teóricos só quando um projeto específico exigir — a ordem de navegação se inverte: começa pelos projetos práticos (mod. [20](20_projetos_integradores.md)) ou por uma implementação concreta, e volta aos módulos de base sob demanda, como referência pontual em vez de leitura sequencial obrigatória. Vai ser fortemente orientada a código (Python e TypeScript, seguindo a mesma convenção descrita mais abaixo) e vai referenciar a versão Clássico para explicações teóricas em vez de reexplicá-las — os dois materiais são complementares, não duplicados. Quando publicada, ela aparece como uma opção adicional no seletor de versão do site.
-
----
-
-## Mapa dos módulos
+## Mapa dos módulos, na ordem real desta versão
 
 ```mermaid
 flowchart TD
-    IDX["00 · Índice"] --> M01
+    IDX["00 · Índice"] --> M08
 
-    subgraph BASE["Base larga (T/Y horizontal)"]
-        direction LR
-        M01["01<br/>Matemática"] --> M02["02<br/>Programação e Ferramentas"]
-        M02 --> M03["03<br/>ML Clássico"] --> M04["04<br/>ML Moderno"]
-        M04 --> M05["05<br/>Deep Learning"] --> M06["06<br/>NLP Clássico"]
-        M06 --> M07["07<br/>Transformers"]
-    end
-
-    M07 --> M08
-
-    subgraph TRONCO["Tronco LLM (profundidade)"]
+    subgraph TRONCO["Tronco LLM, especializações e síntese (constrói primeiro)"]
         direction LR
         M08["08<br/>Arquiteturas de LLMs"] --> M09["09<br/>Treinamento e Alinhamento"]
         M09 --> M10["10<br/>Eficiência e Inferência Local"] --> M11["11<br/>Prompt Engineering"]
         M11 --> M12["12<br/>RAG"] --> M13["13<br/>Agentes, Tools e Protocolos"]
         M13 --> M14["14<br/>Avaliação e Segurança"] --> M15["15<br/>Engenharia de Produção"]
+        M15 --> M16["16<br/>Visão Computacional"] --> M17["17<br/>Aprendizado por Reforço"]
+        M17 --> M18["18<br/>Multimodal"] --> M19["19<br/>Tópicos Avançados"]
+        M19 --> M20["20<br/>Projetos Integradores"]
     end
 
-    M15 --> M16
-    M15 --> M17
-    M15 --> M18
-    M15 --> M19
+    M20 --> M07
 
-    subgraph GALHOS["Galhos de especialização"]
+    subgraph FUNDAMENTOS["Fundamentos, do mais próximo ao mais básico (formaliza depois)"]
         direction LR
-        M16["16<br/>Visão Computacional"]
-        M17["17<br/>Aprendizado por Reforço"]
-        M18["18<br/>Multimodal"]
-        M19["19<br/>Tópicos Avançados"]
+        M07["07<br/>Transformers"] --> M06["06<br/>NLP Clássico"]
+        M06 --> M05["05<br/>Deep Learning"] --> M04["04<br/>ML Moderno"]
+        M04 --> M03["03<br/>ML Clássico"] --> M02["02<br/>Programação e Ferramentas"]
+        M02 --> M01["01<br/>Matemática"]
     end
 
-    M16 --> M20
-    M17 --> M20
-    M18 --> M20
-    M19 --> M20
-    M20["20<br/>Projetos Integradores"]
-
-    click M01 "01_matematica" "Módulo 01"
-    click M02 "02_programacao_ferramentas" "Módulo 02"
-    click M03 "03_ml_classico" "Módulo 03"
-    click M04 "04_ml_moderno" "Módulo 04"
-    click M05 "05_deep_learning" "Módulo 05"
-    click M06 "06_nlp_classico" "Módulo 06"
-    click M07 "07_transformers" "Módulo 07"
     click M08 "08_llms_arquiteturas" "Módulo 08"
     click M09 "09_treinamento_e_alinhamento" "Módulo 09"
     click M10 "10_eficiencia_e_inferencia_local" "Módulo 10"
@@ -104,20 +62,43 @@ flowchart TD
     click M18 "18_multimodal" "Módulo 18"
     click M19 "19_topicos_avancados" "Módulo 19"
     click M20 "20_projetos_integradores" "Módulo 20"
+    click M07 "07_transformers" "Módulo 07"
+    click M06 "06_nlp_classico" "Módulo 06"
+    click M05 "05_deep_learning" "Módulo 05"
+    click M04 "04_ml_moderno" "Módulo 04"
+    click M03 "03_ml_classico" "Módulo 03"
+    click M02 "02_programacao_ferramentas" "Módulo 02"
+    click M01 "01_matematica" "Módulo 01"
 ```
+
+### O que você constrói em cada módulo
+
+1. **[08 — Arquiteturas de LLMs](08_llms_arquiteturas.md)**: implementa um Transformer decoder-only do zero (RMSNorm, SwiGLU, RoPE, GQA), treina até gerar texto coerente, e roda um comparativo real entre modelos abertos.
+2. **[09 — Treinamento e Alinhamento](09_treinamento_e_alinhamento.mdx)**: leva esse modelo de base a instruct — SFT com LoRA, DPO, RLHF completo com reward model, continued pretraining, e reasoning RL com GRPO.
+3. **[10 — Eficiência e Inferência Local](10_eficiencia_e_inferencia_local.md)**: quantiza, serve e otimiza inferência (Ollama, vLLM, speculative decoding implementado à mão) — primeiro projeto em TypeScript da trilha.
+4. **[11 — Prompt Engineering](11_prompt_engineering.md)**: Chain-of-Thought, ReAct implementado sem framework, structured output, e um ataque de prompt injection funcionando de verdade, com mitigações testadas.
+5. **[12 — RAG](12_rag.mdx)**: pipeline de busca e geração do zero, em Python e TypeScript, hybrid retrieval, reranking, RAGAS, e Graph RAG.
+6. **[13 — Agentes, Tools e Protocolos](13_agentes_tools_protocolos.md)**: loop de agente completo, um servidor MCP real (dois SDKs), frameworks (LangGraph, CrewAI), code execution sandboxed.
+7. **[14 — Avaliação e Segurança](14_avaliacao_e_seguranca.md)**: benchmarks reprodutíveis, LLM-as-judge com bias medido, red-team estruturado, primeiro contato com mechanistic interpretability.
+8. **[15 — Engenharia de Produção](15_engenharia_producao.mdx)**: observability, cache semântico, deploy comparado em 3 ambientes, CI/CD com eval bloqueando merge, circuit breaker testado sob falha.
+9. **[16 — Visão Computacional](16_visao_computacional.md)**: CNN vs ViT, YOLO, SAM 2, DINOv2, CLIP — visão como parte do tronco, não um anexo.
+10. **[17 — Aprendizado por Reforço](17_aprendizado_reforco.md)**: Q-learning, DQN, PPO, RLHF completo revisitado com o formalismo de MDP, MCTS, Decision Transformer.
+11. **[18 — Multimodal](18_multimodal.mdx)**: VLMs comparados sistematicamente, RAG multimodal com ColPali, pipeline de voz completo, agente que vê a tela de verdade.
+12. **[19 — Tópicos Avançados](19_topicos_avancados.md)**: MoE, Mamba, difusão, reasoning RL com process reward models, SAE, model merging — pesquisa de fronteira, escolha 2-3 sub-tópicos.
+13. **[20 — Projetos Integradores](20_projetos_integradores.md)**: 5 projetos-portfólio que somam tudo — RAG profissional, mini-LLM do zero, agente autônomo, fine-tuning especialista, sistema em produção real.
+14. **[07 — Transformers](07_transformers.mdx)**: o paper original e as arquiteturas que faltavam depois do módulo 08 — encoder-only (BERT-style), encoder-decoder, cross-attention.
+15. **[06 — NLP Clássico](06_nlp_classico.md)**: BPE implementado em Python puro, Word2Vec treinado do zero, TF-IDF — a origem do que você já usou como caixa-preta.
+16. **[05 — Deep Learning](05_deep_learning.md)**: backprop manual sem autograd, CNN, ResNet (provando por que skip connections importam), LSTM, VAE.
+17. **[04 — ML Moderno](04_ml_moderno.md)**: self-supervised learning formalizado (SimCLR do zero), transfer learning, active learning, causal inference.
+18. **[03 — ML Clássico](03_ml_classico.md)**: k-Means e gradient boosting implementados do zero — o que estava por trás do XGBoost usado como caixa-preta.
+19. **[02 — Programação e Ferramentas](02_programacao_ferramentas.md)**: setup reprodutível, hardware e VRAM, Python vs TypeScript formalizado.
+20. **[01 — Matemática](01_matematica.md)**: a base de tudo — álgebra linear, cálculo, probabilidade, otimização — cada conceito conectado ao código que você já escreveu.
 
 ---
 
-## Como usar
+## Prefere entender antes de construir?
 
-1. **Leia o `Objetivos` e `Pré-requisitos`** de cada módulo antes de começar. Se o pré-requisito não está consolidado, volte.
-2. **Não pule a matemática.** Os módulos [1](01_matematica.md)–[2](02_programacao_ferramentas.md) não são opcionais.
-3. **Cada módulo tem três partes**:
-   - **Obrigatório**: o mínimo para dominar o tópico.
-   - **Opcional/Aprofundamento**: para quem quer ir além.
-   - **Projeto prático**: curto, focado, valida a teoria.
-4. **Referências são curadas**: papers originais, livros canônicos, cursos universitários públicos. Sem blogposts genéricos, sem fórum.
-5. **Sem prazo.** Avance quando o módulo atual estiver consolidado, não pelo calendário.
+Esta é a versão Acelerado. Se você prefere teoria completa antes de qualquer prática — intuição, exemplo resolvido, aplicação real, checkpoint, em cada módulo, na ordem 01→20 — a versão **Clássico** desta trilha cobre exatamente o mesmo território, na ordem inversa. Troque de versão pelo seletor no topo do site, ou acesse diretamente a [raiz da versão Clássico](/trilha-llm/v2/).
 
 ---
 
@@ -125,12 +106,6 @@ flowchart TD
 
 - **Python**: ferramenta principal para pesquisa, treinamento, fine-tuning.
 - **TypeScript**: ferramenta principal para aplicações, agentes em produção, integrações web.
-- **Paper**: artigo acadêmico (com link arXiv ou venue).
-- **Livro**: livro canônico, geralmente com versão pública gratuita.
-- **Curso**: curso universitário público (Stanford, MIT, CMU, Berkeley, etc.).
-- **Ferramenta**: framework ou biblioteca relevante.
-- **Projeto**: projeto prático curto.
-- **Crítico**: ponto onde a maioria erra.
 
 ---
 
@@ -190,4 +165,4 @@ flowchart TD
 
 ## Próximo passo
 
-Comece pelo [`01_matematica.md`](01_matematica.md). Não pule, mesmo que ache que sabe.
+Comece pelo [`08_llms_arquiteturas.md`](08_llms_arquiteturas.md). Você vai estar escrevendo código de LLM do zero antes de qualquer teoria formal — é assim que esta versão funciona.
