@@ -46,11 +46,85 @@ Este módulo constrói cada conceito a partir de uma intuição geométrica ou d
 
 > **Intuição**: pense num vetor como uma seta partindo da origem, e numa matriz como uma "máquina" que pega essa seta e a empurra pra uma nova direção — é isso que **transformação linear** significa na prática, e é exatamente o que `self.q_proj(x)` fez em `GQACausalSelfAttention` no Projeto 8.3: pegou o vetor de cada token e o empurrou para um novo espaço (o espaço de Queries). Produto interno mede o quanto dois vetores "apontam para o mesmo lugar" (alto quando alinhados, zero quando perpendiculares — ortogonais) — é literalmente o `Q·Kᵀ` da attention, e é a mesma operação por trás de toda similaridade de cosseno que você calculou desde o Projeto 8.5. Rank é quantas direções *independentes* a matriz realmente usa: uma matriz de rank baixo colapsa o espaço numa "sombra" de menor dimensão — exatamente a hipótese por trás de LoRA (mod. 09): a *atualização* de pesos durante fine-tuning tem rank intrinsecamente baixo, por isso `A` e `B` (duas matrizes bem menores) conseguem aproximá-la.
 >
-> **Exemplo resolvido — autovalores e autovetores**: a maioria dos vetores muda de direção ao passar por uma matriz — exceto alguns "eixos especiais", que só esticam ou encolhem, sem virar. Esses são os **autovetores**; o quanto eles esticam é o **autovalor**. Para `A = [[2,0],[0,3]]`, o vetor `(1,0)` vira `(2,0)` — mesma direção, só esticado por 2. É autovetor com autovalor 2. Já um vetor como `(1,1)` viraria `(2,3)` — mudou de direção, não é autovetor dessa matriz. **SVD** generaliza essa ideia para matrizes não-quadradas, decompondo qualquer transformação em rotação → escala → rotação; **PCA** usa os autovetores da matriz de covariância dos dados para achar as direções de maior variância — é assim que os 784 pixels do MNIST viram 50 dimensões sem perder muita informação (Projeto 1.1, abaixo) — o mesmo tipo de compressão de informação, em espírito, que o bottleneck do VAE (Projeto 5.5) faz de forma aprendida em vez de fechada algebricamente.
+> **Exemplo resolvido — autovalores e autovetores**: a maioria dos vetores muda de direção ao passar por uma matriz — exceto alguns "eixos especiais", que só esticam ou encolhem, sem virar. Esses são os **autovetores**; o quanto eles esticam é o **autovalor**. Para `A = [[2,0],[0,3]]`, o vetor `(1,0)` vira `(2,0)` — mesma direção, só esticado por 2. É autovetor com autovalor 2. Já um vetor como `(1,1)` viraria `(2,3)` — mudou de direção, não é autovetor dessa matriz. **SVD** generaliza essa ideia para matrizes não-quadradas, decompondo qualquer transformação em rotação → escala → rotação; **PCA** (Principal Component Analysis, "análise de componentes principais") usa os autovetores da matriz de covariância dos dados para achar as direções de maior variância — é assim que os 784 pixels do MNIST viram 50 dimensões sem perder muita informação (Projeto 1.1, abaixo) — o mesmo tipo de compressão de informação, em espírito, que o bottleneck do VAE (Variational Autoencoder, Projeto 5.5) faz de forma aprendida em vez de fechada algebricamente.
 >
 > **Aplicação real**: todo forward pass de toda rede neural que você já treinou nesta trilha é, mecanicamente, uma sequência de produtos matriciais. Entender "matriz = transformação" é entender o que uma camada de rede neural literalmente faz com sua entrada — não como analogia, mas como descrição exata.
 >
 > **Checkpoint**: sem olhar o texto, explique em duas frases o que um autovetor representa geometricamente. Depois, explique por que uma matriz de rank baixo pode ser usada para comprimir informação — e cite onde você já viu essa ideia aplicada nesta trilha.
+
+### Da álgebra ao código
+
+Duas coisas que a intuição acima só descreveu em palavras — a diferença de custo entre multiplicar matrizes "na mão" e multiplicar com uma biblioteca vetorizada, e o que um autovetor parece quando desenhado — ficam muito mais concretas vendo o código rodar.
+
+**Produto matricial: Python puro vs. NumPy.** A definição de produto matricial é três loops aninhados (linha × coluna, somando produto a produto). É assim que qualquer curso de álgebra ensina a mecânica, e é exatamente essa mecânica que o `@`/`np.matmul` do NumPy também executa por baixo — a diferença é que o NumPy delega para BLAS, uma biblioteca compilada em C/Fortran, vetorizada e otimizada para o cache do processador, em vez de rodar o loop na máquina virtual do Python.
+
+```python
+import time
+import numpy as np
+
+def matmul_puro(A, B):
+    n, m, p = len(A), len(B), len(B[0])
+    C = [[0.0] * p for _ in range(n)]
+    for i in range(n):
+        for k in range(m):
+            a_ik = A[i][k]
+            for j in range(p):
+                C[i][j] += a_ik * B[k][j]
+    return C
+
+n = 150
+A_np = np.random.randn(n, n)
+B_np = np.random.randn(n, n)
+A_lista, B_lista = A_np.tolist(), B_np.tolist()
+
+inicio = time.perf_counter()
+C_puro = matmul_puro(A_lista, B_lista)
+tempo_puro = time.perf_counter() - inicio
+
+inicio = time.perf_counter()
+C_numpy = A_np @ B_np
+tempo_numpy = time.perf_counter() - inicio
+
+print(f"Python puro: {tempo_puro:.3f}s")
+print(f"NumPy:       {tempo_numpy:.5f}s")
+print(f"Speedup:     {tempo_puro / tempo_numpy:.0f}x")
+```
+
+Para `n = 150` (150×150 = 3.375.000 multiplicações-e-somas), espere algo na faixa de 100×–1000× de diferença — e essa razão só cresce com `n`, porque o loop em Python paga o custo do interpretador a cada uma das `n³` operações escalares, enquanto o BLAS paga um custo fixo baixo por operação e ainda pode usar múltiplos núcleos. É por isso que "vetorizar" (reescrever loops como operações de array inteiras) é a primeira otimização que vale a pena em qualquer código numérico — a mesma razão pela qual `self.q_proj(x)` no `MiniLlama` do Projeto 8.3 nunca foi escrito como um loop Python sobre cada elemento.
+
+**Visualizar autovetores como direções preservadas.** Uma forma de "ver" a definição de autovetor (a maioria dos vetores muda de direção ao passar por uma matriz, exceto alguns eixos especiais) é aplicar a matriz a um círculo inteiro de vetores unitários e observar o que vira elipse — e onde ficam os dois eixos que só esticam.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+A = np.array([[2, 1],
+              [1, 2]])
+
+autovalores, autovetores = np.linalg.eig(A)
+
+angulos = np.linspace(0, 2 * np.pi, 100)
+circulo = np.array([np.cos(angulos), np.sin(angulos)])
+circulo_transformado = A @ circulo
+
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.plot(circulo[0], circulo[1], "--", color="gray", label="círculo unitário (antes)")
+ax.plot(circulo_transformado[0], circulo_transformado[1], color="tab:blue", label="A aplicada ao círculo (elipse)")
+
+for i in range(2):
+    v = autovetores[:, i]
+    lam = autovalores[i]
+    ax.quiver(0, 0, v[0], v[1], angles="xy", scale_units="xy", scale=1, color="tab:red", label="autovetor" if i == 0 else None)
+    ax.quiver(0, 0, lam * v[0], lam * v[1], angles="xy", scale_units="xy", scale=1, color="tab:green", label="autovetor × autovalor" if i == 0 else None)
+
+ax.set_aspect("equal")
+ax.legend()
+plt.savefig("autovetores.png")
+```
+
+`A @ circulo` empurra cada ponto do círculo unitário para uma nova posição, formando a elipse azul. As setas vermelhas marcam os dois autovetores de `A` (na escala original); as verdes marcam onde `A` os leva — na mesma direção da vermelha, só mais compridas pelo fator `autovalor`. Todo outro ponto do círculo gira para algum lugar da elipse; só essas duas direções não giram, exatamente a definição usada na Intuição acima, agora visível.
+
+> A dedução formal de por que essas duas direções são exatamente os autovetores (via `det(A - λI) = 0`), o exemplo resolvido passo a passo, e as explicações de produto matricial/transposição/inversa/traço/determinante/espaço nulo/QR/Cholesky que este módulo pressupõe já sabidas — tudo isso está desenvolvido por extenso na versão Clássico, seção [1.1 — Álgebra Linear](/trilha-llm/v2/01_matematica#11-álgebra-linear).
 
 ---
 
@@ -73,6 +147,54 @@ Este módulo constrói cada conceito a partir de uma intuição geométrica ou d
 >
 > **Checkpoint**: sem olhar o texto, explique por que o gradiente aponta na direção de *maior crescimento*, e não na de maior decrescimento. Depois, aplique a regra da cadeia você mesmo em `f(x) = (3x - 2)³` e confira expandindo o cubo.
 
+### Do cálculo ao código
+
+**Derivada numérica vs. analítica.** A derivada é definida como um limite; um jeito de aproximar esse limite sem fazer nenhuma álgebra é a diferença finita central: mover `x` um pouquinho `h` para cada lado e medir a inclinação da reta secante entre os dois pontos.
+
+```python
+def derivada_numerica(f, x, h=1e-5):
+    return (f(x + h) - f(x - h)) / (2 * h)
+
+def f(x):
+    return x**3 - 2 * x
+
+def df_analitica(x):
+    return 3 * x**2 - 2
+
+for x in [-2.0, 0.0, 1.5, 3.0]:
+    numerica = derivada_numerica(f, x)
+    analitica = df_analitica(x)
+    print(f"x={x:5.1f}  numérica={numerica:.6f}  analítica={analitica:.6f}  erro={abs(numerica - analitica):.2e}")
+```
+
+O erro deve ficar na casa de `1e-10` ou menor: a diferença central erra por um termo proporcional a `h²`, contra `h` de uma diferença "para frente" (`(f(x+h)-f(x))/h`) — por isso ela é a escolha padrão para checar uma derivada calculada à mão. `h` não pode ser arbitrariamente pequeno: abaixo de ~`1e-8` o cancelamento de ponto flutuante (subtrair dois números quase iguais) começa a dominar o erro, então `1e-5` é o meio-termo de que a maioria das implementações usa.
+
+**Gradiente como campo vetorial.** O gradiente de `f(x, y) = x² + y²` num ponto qualquer é o vetor `(2x, 2y)` — sempre apontando para fora da origem, tanto mais comprido quanto mais longe do mínimo o ponto estiver.
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x, y):
+    return x**2 + y**2
+
+def grad_f(x, y):
+    return np.array([2 * x, 2 * y])
+
+xs, ys = np.meshgrid(np.linspace(-3, 3, 15), np.linspace(-3, 3, 15))
+dx, dy = grad_f(xs, ys)
+
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.contour(xs, ys, f(xs, ys), levels=10, cmap="Greys")
+ax.quiver(xs, ys, dx, dy, color="tab:red")
+ax.set_aspect("equal")
+plt.savefig("gradiente_campo.png")
+```
+
+As setas vermelhas (o campo de gradientes) ficam sempre perpendiculares às curvas de nível cinzas e sempre apontando para fora do centro — a direção de maior crescimento, exatamente a Intuição desta seção. Gradient descent caminha na direção oposta a cada seta; como as setas encolhem perto do mínimo, os passos de gradient descent encolhem sozinhos também, sem precisar de nenhuma lógica extra para isso.
+
+> A dedução da regra da cadeia usada aqui, e a versão totalmente escrita à mão de backprop numa rede de verdade (não só numa função escalar), estão na versão Clássico, seção [1.2 — Cálculo](/trilha-llm/v2/01_matematica#12-cálculo) e no [Módulo 05](/trilha-llm/v2/05_deep_learning), respectivamente.
+
 ---
 
 ## 1.3 Probabilidade e Estatística
@@ -90,11 +212,88 @@ Este módulo constrói cada conceito a partir de uma intuição geométrica ou d
 
 > **Intuição — Teorema de Bayes**: é a fórmula matemática de "atualizar sua crença diante de nova evidência". Exemplo clássico: um teste médico para uma doença rara (1% da população) tem 95% de acerto (tanto para detectar quem tem quanto pra descartar quem não tem). Você testou positivo — qual a chance de você realmente ter a doença? A intuição ingênua diz "95%", mas Bayes mostra que é bem menor: como a doença é rara, a maioria dos positivos vem de falsos positivos entre a enorme população saudável, não de verdadeiros positivos entre a pequena população doente. Formalmente: `P(doença|positivo) = P(positivo|doença) × P(doença) / P(positivo)` — o "prior" (1% de prevalência) pesa muito no resultado final. Esse mesmo raciocínio (quão surpreendente uma evidência é, dado quão raro o evento já era) é o espírito por trás de calibração de modelo (mod. 14): um classificador bem calibrado "sabe" que um sinal positivo, num contexto de baixa prevalência, não deveria virar confiança de 95%.
 >
-> **Intuição — MLE e cross-entropy**: MLE pergunta "quais parâmetros tornam os dados que eu observei mais prováveis?". Para classificação, minimizar cross-entropy loss é *matematicamente equivalente* a maximizar a verossimilhança dos rótulos corretos sob a distribuição prevista pelo modelo — são a mesma otimização, só escrita de formas diferentes (cross-entropy é o negativo do log-likelihood). KL-divergência mede o quanto duas distribuições diferem; cross-entropy é KL-divergência mais um termo constante (a entropia da distribuição real) — por isso minimizar uma equivale a minimizar a outra na prática de treino. Essa é a mesma KL-divergência que aparece no `beta` do `DPOTrainer` (Projeto 9.2), controlando o quanto a política pode se afastar da referência.
+> **Intuição — MLE e cross-entropy**: MLE pergunta "quais parâmetros tornam os dados que eu observei mais prováveis?". Para classificação, minimizar cross-entropy loss é *matematicamente equivalente* a maximizar a verossimilhança dos rótulos corretos sob a distribuição prevista pelo modelo — são a mesma otimização, só escrita de formas diferentes (cross-entropy é o negativo do log-likelihood). KL-divergência mede o quanto duas distribuições diferem; cross-entropy é KL-divergência mais um termo constante (a entropia da distribuição real) — por isso minimizar uma equivale a minimizar a outra na prática de treino. Essa é a mesma KL-divergência (Kullback-Leibler) que aparece no `beta` do `DPOTrainer` (Direct Preference Optimization, Projeto 9.2), controlando o quanto a política pode se afastar da referência.
 >
 > **Aplicação real**: todo treinamento de LLM por next-token prediction que você já fez (`F.cross_entropy` desde o Projeto 8.3) é MLE disfarçado de cross-entropy loss — o modelo está literalmente aprendendo os parâmetros que tornam o texto de treino mais provável sob a distribuição que ele produz. Sampling com temperature e top-k (mod. 10) manipula diretamente essa distribuição de probabilidade aprendida — o mesmo `F.softmax(logits / T, dim=-1)` que você já escreveu.
 >
 > **Checkpoint**: sem olhar o texto, explique por que testar positivo num exame raro não significa necessariamente que você tem a doença — o que o prior tem a ver com isso? Depois, explique em uma frase por que "minimizar cross-entropy" e "maximizar verossimilhança" são a mesma coisa.
+
+### Da probabilidade ao código
+
+**Simular o Teorema de Bayes.** Em vez de confiar só na fórmula fechada, dá para *ver* o resultado do problema do teste médico simulando uma população inteira: gerar quem tem a doença segundo o prior, aplicar o teste (com sua sensibilidade/especificidade conhecidas) em todo mundo, e olhar só para quem testou positivo.
+
+```python
+import numpy as np
+
+np.random.seed(0)
+
+prevalencia = 0.01        # P(doença) = 1% — o prior
+sensibilidade = 0.95      # P(positivo | doença)
+especificidade = 0.95     # P(negativo | não doença)
+
+n = 1_000_000
+tem_doenca = np.random.rand(n) < prevalencia
+
+positivo = np.where(
+    tem_doenca,
+    np.random.rand(n) < sensibilidade,        # doente: positivo com prob. = sensibilidade
+    np.random.rand(n) < (1 - especificidade), # saudável: "falso positivo" com prob. = 1 - especificidade
+)
+
+p_doenca_dado_positivo_simulado = tem_doenca[positivo].mean()
+
+# fórmula fechada de Bayes, para comparar
+p_positivo = sensibilidade * prevalencia + (1 - especificidade) * (1 - prevalencia)
+p_doenca_dado_positivo_analitico = (sensibilidade * prevalencia) / p_positivo
+
+print(f"Simulado (Monte Carlo): {p_doenca_dado_positivo_simulado:.4f}")
+print(f"Analítico (Bayes):      {p_doenca_dado_positivo_analitico:.4f}")
+```
+
+As duas linhas devem bater em torno de `0.16` — de um milhão de pessoas, só 1% tem a doença, mas os 95% de falsos positivos entre a enorme maioria saudável acabam superando os verdadeiros positivos, exatamente a Intuição da seção. **Exercício**: adapte o mesmo código para o "problema do táxi" (troque prevalência/sensibilidade/especificidade pelas probabilidades análogas — taxa de táxis azuis na cidade e confiabilidade da testemunha) e confira se a intuição continua enganando antes de calcular.
+
+**MLE de uma Gaussiana.** Maximizar a verossimilhança de uma amostra assumida Gaussiana, derivando e igualando a zero, dá uma resposta fechada simples: a média MLE é a média amostral, e a variância MLE é a variância amostral dividida por `n` (não por `n-1`, o estimador "não-enviesado" que a estatística introdutória costuma ensinar).
+
+```python
+import numpy as np
+
+np.random.seed(0)
+mu_verdadeiro, sigma_verdadeiro = 5.0, 2.0
+amostras = np.random.normal(mu_verdadeiro, sigma_verdadeiro, size=1000)
+
+mu_mle = amostras.mean()
+sigma_mle = amostras.std()  # ddof=0 por padrão: divide por n, o estimador de MLE
+
+print(f"mu real={mu_verdadeiro}, mu MLE={mu_mle:.3f}")
+print(f"sigma real={sigma_verdadeiro}, sigma MLE={sigma_mle:.3f}")
+```
+
+Os dois valores MLE devem ficar próximos dos parâmetros verdadeiros usados para gerar a amostra — é a definição de MLE funcionando: os parâmetros que tornam os dados observados mais prováveis são, em expectativa, os parâmetros reais.
+
+**Cross-entropy à mão.** A cross-entropy de um exemplo é só menos o log da probabilidade que o modelo deu à classe correta; a média disso sobre um batch é a loss inteira.
+
+```python
+import torch
+import torch.nn.functional as F
+
+logits = torch.randn(4, 5)   # 4 exemplos, 5 classes
+rotulos = torch.tensor([1, 0, 4, 2])
+
+def cross_entropy_manual(logits, rotulos):
+    log_probs = logits - torch.logsumexp(logits, dim=1, keepdim=True)  # log-softmax numericamente estável
+    log_prob_do_rotulo = log_probs[torch.arange(len(rotulos)), rotulos]
+    return -log_prob_do_rotulo.mean()
+
+perda_manual = cross_entropy_manual(logits, rotulos)
+perda_torch = F.cross_entropy(logits, rotulos)
+
+print(f"Manual:  {perda_manual.item():.6f}")
+print(f"PyTorch: {perda_torch.item():.6f}")
+```
+
+Os dois números devem bater exatamente. `torch.logsumexp` implementa log-softmax de forma numericamente estável (subtraindo o maior logit antes de exponenciar, evitando overflow) — o mesmo truque usado por dentro de todo `F.softmax`/`F.cross_entropy` do PyTorch, incluindo o que você já chamou desde o Projeto 8.3.
+
+> A derivação de por que cross-entropy e MLE são matematicamente a mesma otimização, e a intuição completa de KL-divergência, estão na versão Clássico, seção [1.3 — Probabilidade e Estatística](/trilha-llm/v2/01_matematica#13-probabilidade-e-estatística).
 
 ---
 
@@ -115,6 +314,10 @@ Este módulo constrói cada conceito a partir de uma intuição geométrica ou d
 > Você já viu, no mod. 05, um exemplo numérico resolvido passo a passo de gradient descent convergindo (`L(w) = (w-3)²`) e a intuição completa de Momentum/Adam como "inércia" e "passo adaptativo" — essa é a mesma matemática, e este módulo é onde ela nasce formalmente, não onde ela é revisada.
 >
 > **Checkpoint**: sem olhar o texto, explique a diferença entre mínimo local e mínimo global — e por que essa diferença preocupa menos na prática de deep learning do que a definição sugere à primeira vista.
+
+O código comparando SGD, Momentum e Adam do zero está no Projeto 1.4, logo abaixo — nenhuma seção "Da otimização ao código" separada aqui porque o projeto já cobre exatamente isso.
+
+> A progressão histórica AdaGrad → RMSProp → Adam (cada um resolvendo um problema específico do anterior) e a explicação de warmup/cosine/linear decay estão detalhadas na versão Clássico, seção [1.4 — Otimização](/trilha-llm/v2/01_matematica#14-otimização).
 
 ---
 
@@ -341,6 +544,22 @@ def adam(ponto_inicial, n_passos=1000, lr=0.01, beta1=0.9, beta2=0.999, eps=1e-8
 | Gradient descent, Adam, warmup | Todo `optimizer.step()` desde o Projeto 8.3 |
 | Distribuições, softmax | Sampling em LLMs (temperature, top-k — mod. 10) |
 | KL-divergência | O `beta` do DPO (Projeto 9.2) |
+
+---
+
+## Saiba mais
+
+Alguns tópicos citados nos "Conceitos obrigatórios" acima são grandes demais para caber neste módulo sem virar um livro à parte. Você não precisa deles para acompanhar o resto da trilha, mas se quiser aprofundar:
+
+- **Espaços de Hilbert** — a generalização de espaço vetorial com produto interno para dimensão infinita; aparece quando kernels em SVMs (mod. 04) projetam dados implicitamente num espaço de features de dimensão muito alta. `Livro` *Mathematics for Machine Learning*, cap. 12 (kernels). https://mml-book.github.io/
+- **Tensores** como generalização de matrizes (matriz = tensor de ordem 2; ativações de uma CNN são tensores de ordem 4: batch × canal × altura × largura). `Curso` MIT 18.06, aula sobre tensores. https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/
+- **Decomposição de matrizes esparsas** — versões de SVD/Cholesky otimizadas para matrizes com maioria de zeros, comuns em grafos e sistemas de recomendação em escala. `Ferramenta` `scipy.sparse.linalg`.
+- **Cadeias de Markov** — processos onde o próximo estado só depende do atual, base matemática de RL (mod. 17) e de MCMC (amostragem de distribuições complexas). `Livro` *Pattern Recognition and Machine Learning* — Bishop, cap. 11.
+- **Processos Gaussianos** — distribuições sobre funções, usados em otimização bayesiana de hiperparâmetros. `Livro` *Gaussian Processes for Machine Learning* — Rasmussen & Williams (gratuito). http://gaussianprocess.org/gpml/
+- **Inferência variacional** — a técnica por trás do treino de VAEs (Projeto 5.5): aproximar uma distribuição posterior impossível de calcular exatamente por uma mais simples, otimizável por gradiente. `Paper` *Auto-Encoding Variational Bayes* — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
+- **KKT** (Karush-Kuhn-Tucker) e Lagrangianos — condições que caracterizam o ótimo de um problema com restrições; aparecem na formulação dual de SVMs (mod. 04). `Livro` *Convex Optimization* — Boyd & Vandenberghe, cap. 5 (gratuito). https://web.stanford.edu/~boyd/cvxbook/
+- **Métodos de segunda ordem** (Newton, **L-BFGS** — Limited-memory BFGS) — usam a Hessiana (ou uma aproximação dela) para dar passos mais informados que gradient descent puro; caros demais para redes com milhões de parâmetros, mas padrão em otimização clássica de menor escala.
+- **CMA-ES** (Covariance Matrix Adaptation Evolution Strategy) — otimização sem gradiente, útil quando a função não é diferenciável (RL, mod. 17; busca de hiperparâmetros).
 
 ---
 

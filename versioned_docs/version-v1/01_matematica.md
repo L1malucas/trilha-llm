@@ -34,7 +34,7 @@ Sem isso, você não consegue ler papers, não entende por que algo falha, e fic
 - Espaços vetoriais: base, dimensão, posto (rank), espaço nulo.
 - Transformações lineares: matrizes como funções; rotação, escala, projeção.
 - Autovalores e autovetores; diagonalização.
-- Decomposições: **SVD** (Singular Value Decomposition), **PCA** (como aplicação de SVD), QR, Cholesky.
+- Decomposições: **SVD** (Singular Value Decomposition), **PCA** (Principal Component Analysis, como aplicação de SVD), QR, Cholesky.
 
 ### Conceitos opcionais (aprofundamento)
 
@@ -47,6 +47,8 @@ Sem isso, você não consegue ler papers, não entende por que algo falha, e fic
 - Implementar produto matricial em Python puro, depois NumPy. Comparar tempo.
 - Implementar PCA via SVD a partir do zero (sem `sklearn`).
 - Visualizar autovetores como direções preservadas por uma matriz.
+
+> Aprofundar: teoria completa em [v2 — 1.1 Álgebra Linear](/trilha-llm/v2/01_matematica#11-álgebra-linear); código completo em [v3 — 1.1 Álgebra Linear](/trilha-llm/01_matematica#11-álgebra-linear).
 
 ### Referências
 
@@ -74,6 +76,8 @@ Sem isso, você não consegue ler papers, não entende por que algo falha, e fic
 - Visualizar gradiente como campo vetorial em superfícies 2D.
 - Implementar **autograd** simplificado (forward + backward em uma rede de 1 camada).
 
+> Aprofundar: teoria completa em [v2 — 1.2 Cálculo](/trilha-llm/v2/01_matematica#12-cálculo); código completo em [v3 — 1.2 Cálculo](/trilha-llm/01_matematica#12-cálculo).
+
 ### Por que regra da cadeia é o coração do DL
 
 Backpropagation é, literalmente, regra da cadeia aplicada a uma composição muito longa de funções. Quando você entende isso, "treinar uma rede neural" deixa de ser mágica.
@@ -98,7 +102,7 @@ Backpropagation é, literalmente, regra da cadeia aplicada a uma composição mu
 - Distribuições importantes: Bernoulli, Binomial, Categórica, Gaussiana (Normal), Poisson, Exponencial.
 - Esperança, variância, covariância, correlação.
 - **Estimador de Máxima Verossimilhança (MLE)** — base do treinamento de quase todo modelo.
-- Cross-entropy e KL-divergência (loss functions).
+- Cross-entropy e KL-divergência (Kullback-Leibler; loss functions).
 - Inferência Bayesiana (prior, posterior, likelihood).
 
 ### Conceitos opcionais
@@ -112,6 +116,8 @@ Backpropagation é, literalmente, regra da cadeia aplicada a uma composição mu
 - Simular o teorema de Bayes em um problema clássico (teste médico, problema do táxi).
 - Calcular MLE para uma Gaussiana a partir de amostras.
 - Implementar cross-entropy loss à mão e comparar com `torch.nn.CrossEntropyLoss`.
+
+> Aprofundar: teoria completa em [v2 — 1.3 Probabilidade e Estatística](/trilha-llm/v2/01_matematica#13-probabilidade-e-estatística); código completo em [v3 — 1.3 Probabilidade e Estatística](/trilha-llm/01_matematica#13-probabilidade-e-estatística).
 
 ### Referências
 
@@ -136,15 +142,17 @@ Backpropagation é, literalmente, regra da cadeia aplicada a uma composição mu
 
 ### Conceitos opcionais
 
-- Otimização restrita (Lagrangianos, KKT).
-- Métodos de segunda ordem (Newton, L-BFGS).
-- Otimização sem gradiente (CMA-ES) — aparece em RL e busca de hiperparâmetros.
+- Otimização restrita (Lagrangianos, KKT — Karush-Kuhn-Tucker).
+- Métodos de segunda ordem (Newton, L-BFGS — Limited-memory BFGS).
+- Otimização sem gradiente (CMA-ES — Covariance Matrix Adaptation Evolution Strategy) — aparece em RL e busca de hiperparâmetros.
 
 ### Da matemática ao código
 
 - Implementar SGD do zero para minimizar f(x) = x² + ruído.
 - Implementar Adam do zero a partir do paper original.
 - Plotar trajetórias de diferentes otimizadores em uma superfície de loss conhecida.
+
+> Aprofundar: teoria completa em [v2 — 1.4 Otimização](/trilha-llm/v2/01_matematica#14-otimização); código completo em [v3 — 1.4 Otimização](/trilha-llm/01_matematica#14-otimização).
 
 ### Referências
 
@@ -161,7 +169,7 @@ Cada projeto deve ser implementado **sem usar bibliotecas que escondam a matemá
 
 ### Projeto 1.1 — PCA from scratch
 **O que prova**: que você entende SVD, autovalores, e redução de dimensionalidade.
-- Carregue o dataset MNIST (28×28 = 784 dimensões).
+- Carregue o dataset MNIST (Modified National Institute of Standards and Technology; 28×28 = 784 dimensões).
 - Implemente PCA via SVD em NumPy.
 - Reduza para 50 dimensões; reconstrua; compare visualmente.
 - **Sem `sklearn.decomposition.PCA`**.
