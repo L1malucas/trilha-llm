@@ -1,14 +1,14 @@
 ---
 id: 15_engenharia_producao
 title: "Módulo 15 — Engenharia de Produção (LLMOps)"
-sidebar_position: 15
+sidebar_position: 8
 ---
 
 # Módulo 15 — Engenharia de Produção (LLMOps)
 
 > **Objetivo**: levar sistemas de LLM da prototipagem para produção real — observability, custo, latência, cache, deploy, monitoring, drift, A/B testing, CI/CD.
 >
-> **Pré-requisitos**: Módulos [10](10_eficiencia_e_inferencia_local.md)–[14](14_avaliacao_e_seguranca.md).
+> **Pré-requisitos**: Módulos [08](08_llms_arquiteturas.md)–[14](14_avaliacao_e_seguranca.md) — em particular, o Langfuse do Projeto 13.6, o cliente TS do Projeto 10.2, e o RAG/agente que você já tem construído dos módulos 12 e 13, que este módulo leva a produção.
 >
 > **Tempo de referência**: 3–5 semanas.
 
@@ -26,40 +26,23 @@ Ao final deste módulo você deve ser capaz de:
 
 ## Por que isso importa
 
-Um demo bonito ≠ produto. Em produção você lida com:
-- **Custo real** (cada token é dinheiro).
-- **Latência** que afasta usuários.
-- **Falhas em cascata**: API caiu, agente trava, usuário fica sem resposta.
-- **Drift**: modelo, prompts, dados mudam; qualidade despenca silenciosamente.
-- **Compliance**: logs, PII, auditoria.
-
-Isto é o módulo que separa "fiz um chatbot" de "operou um sistema de IA".
+Um demo bonito não é um produto. Em produção você lida com custo real (cada token é dinheiro), latência que afasta usuários, falhas em cascata (a API caiu, o agente trava, o usuário fica sem resposta), drift (modelo, prompts e dados mudam, e a qualidade despenca silenciosamente sem que nenhum erro apareça nos logs) e compliance (logs, PII, auditoria). Este é o módulo que separa "eu fiz um chatbot" de "eu opero um sistema de IA" — e é onde tudo que você construiu nos módulos anteriores (RAG, agentes, avaliação) precisa sobreviver a usuários reais, não só aos seus próprios testes.
 
 ---
 
 ## 15.1 Observability
 
 ### O tripé: traces, logs, metrics
-- **Traces**: visão fim-a-fim de uma requisição (cada chamada LLM, cada tool, latência).
+- **Traces**: visão fim-a-fim de uma requisição (cada chamada LLM, cada tool, latência) — o mesmo conceito já usado no Projeto 13.6.
 - **Logs**: eventos discretos, com contexto.
 - **Metrics**: agregações (P50/P95/P99 de latência, taxa de erro, tokens/min).
 
 ### Específico de LLM
-Adicione: tokens in/out por chamada, custo, prompt versionado, modelo, sampling params, score do juiz/eval, score do guardrail.
+Além do tripé tradicional, adicione: tokens in/out por chamada, custo, versão do prompt usado, modelo, parâmetros de sampling, score do juiz/eval (mod. 14), score do guardrail.
 
-> **Intuição**: observability tradicional (traces/logs/metrics) responde "o sistema está saudável?" — latência, erros, throughput. Sistemas de LLM precisam de uma camada extra porque a *qualidade* da resposta é uma dimensão totalmente separada da saúde técnica: um sistema pode estar 100% "saudável" (sem erros, latência baixa) e ainda assim estar gerando respostas ruins, alucinadas ou fora de política. É por isso que campos como "score do juiz" e "score do guardrail" (mod. [14](14_avaliacao_e_seguranca.md)) precisam estar no mesmo trace que latência e custo — sem isso, você só enxerga metade do que pode estar quebrado.
+> **Intuição**: observability tradicional (traces/logs/metrics) responde "o sistema está saudável?" — latência, erros, throughput. Sistemas de LLM precisam de uma camada extra porque a *qualidade* da resposta é uma dimensão totalmente separada da saúde técnica: um sistema pode estar 100% "saudável" (sem erros, latência baixa) e ainda assim estar gerando respostas ruins, alucinadas ou fora de política. É por isso que campos como "score do juiz" e "score do guardrail" (mod. [14](14_avaliacao_e_seguranca.md)) precisam estar no mesmo trace que latência e custo — sem isso, você só enxerga metade do que pode estar quebrado. Você monta esse pipeline completo no Projeto 15.1.
 
-### Ferramentas
-- `Ferramenta` **Langfuse** — open-source, self-hostable. https://langfuse.com/
-- `Ferramenta` **LangSmith** — SaaS LangChain. https://www.langchain.com/langsmith
-- `Ferramenta` **Helicone** — proxy + analytics. https://www.helicone.ai/
-- `Ferramenta` **Phoenix** (Arize). https://github.com/Arize-ai/phoenix
-- `Ferramenta` **Weights & Biases — Weave**. https://wandb.ai/site/weave
-- `Ferramenta` **OpenTelemetry GenAI semantic conventions** — padrão emergente. https://opentelemetry.io/docs/specs/semconv/gen-ai/
-
-### TS / JS
-- Langfuse, Helicone e LangSmith têm SDKs TS.
-- OpenTelemetry tem SDK Node.js completo.
+Langfuse (já usado no Projeto 13.6), LangSmith, Helicone e Arize Phoenix são as opções mais usadas para capturar isso automaticamente; o OpenTelemetry GenAI está emergindo como um padrão comum entre ferramentas diferentes, o que facilita trocar de ferramenta sem reinstrumentar tudo.
 
 ### Princípios
 - **Trace por sessão e por requisição** — sempre conseguir reconstruir a história.
@@ -75,47 +58,43 @@ Adicione: tokens in/out por chamada, custo, prompt versionado, modelo, sampling 
 custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a tools / embeddings / vector DB]
 ```
 
-### Comparativos públicos
-- **Artificial Analysis**. https://artificialanalysis.ai/
-- **OpenRouter** (preços e benchmarks). https://openrouter.ai/
+Comparativos públicos de preço entre provedores (Artificial Analysis, OpenRouter) ajudam a estimar antes de comprometer arquitetura a um provedor específico.
 
 ### Estratégias de redução
-- **Cache de prompts** (Anthropic prompt caching, OpenAI prompt caching) — reduz custo de prompts longos repetidos.
-- **Cache semântico** — cache em nível de query (com embedding match).
-- **Roteamento entre modelos** — modelo barato resolve o fácil; modelo caro só para o difícil. Routers: RouteLLM, Martian.
-- **Compactação de prompts** — LLMLingua. `Paper` https://arxiv.org/abs/2310.05736
-- **Modelos menores fine-tunados** para tarefas específicas.
+- **Cache de prompts** (prompt caching, oferecido nativamente por vários provedores) — reduz custo de prompts longos repetidos.
+- **Cache semântico** — cache em nível de query, via embedding match; implementado no Projeto 15.2.
+- **Roteamento entre modelos** — modelo barato resolve o fácil; modelo caro só para o difícil; implementado no Projeto 15.3.
+- **Compactação de prompts** — técnicas como o LLMLingua comprimem o prompt (removendo tokens de baixo valor informacional) antes de enviá-lo, reduzindo `tokens_in` sem reescrever manualmente.
+- **Modelos menores fine-tunados** para tarefas específicas — o mesmo princípio do Projeto 10.4 (destilação).
 - **Batching** quando latência permite.
-- **Streaming** para latência percebida menor (não custo, mas UX).
+- **Streaming** para latência percebida menor (não reduz custo, mas melhora a experiência — seção 15.3).
 
-### Calculadoras
-- Faça **a sua**: custo médio por user, por feature, p95 — e expresse em $/dia, $/mês.
+Vale construir sua própria calculadora de custo médio por usuário, por feature, e em p95 — expressos em $/dia e $/mês, não só em custo por chamada isolada, que raramente comunica o impacto real em escala.
 
 ---
 
 ## 15.3 Latência e performance
 
 ### Fatores
-- **TTFT (Time To First Token)**: critico em chat.
+- **TTFT (Time To First Token)**: crítico em chat.
 - **TPOT (Time Per Output Token)**: define velocidade de geração.
 - **Tokens totais**.
 - **Network round-trips** entre serviços.
 - **Cold starts** em serverless.
 
-> **Intuição**: TTFT e TPOT medem coisas diferentes e otimizam-se de formas diferentes. TTFT é o tempo até o *primeiro* token aparecer — dominado por overhead de rede, fila de processamento, e o custo de processar o prompt inteiro (prefill) antes de começar a gerar. TPOT é o tempo *entre* tokens subsequentes — dominado pela velocidade de geração autoregressiva em si (mod. [10](10_eficiencia_e_inferencia_local.md#102-kv-cache-e-otimizações-de-inferência)). Streaming não muda nem TTFT nem TPOT tecnicamente — a resposta completa ainda leva o mesmo tempo total — mas muda a *latência percebida*: o usuário vê o primeiro token rapidamente e a sensação de "o sistema está trabalhando" substitui a sensação de "o sistema travou", mesmo com o tempo total idêntico.
+> **Intuição**: TTFT e TPOT medem coisas diferentes e otimizam-se de formas diferentes. TTFT é o tempo até o *primeiro* token aparecer — dominado por overhead de rede, fila de processamento, e o custo de processar o prompt inteiro (prefill) antes de começar a gerar. TPOT é o tempo *entre* tokens subsequentes — dominado pela velocidade de geração autoregressiva em si (mod. [10](10_eficiencia_e_inferencia_local.md#102-kv-cache-e-otimizações-de-inferência)). Streaming (o mesmo mecanismo do Projeto 10.2) não muda nem TTFT nem TPOT tecnicamente — a resposta completa ainda leva o mesmo tempo total — mas muda a *latência percebida*: o usuário vê o primeiro token rapidamente e a sensação de "o sistema está trabalhando" substitui a sensação de "o sistema travou", mesmo com o tempo total idêntico. Você mede essa diferença diretamente entre implantações no Projeto 15.4.
 >
 > **Checkpoint**: sem olhar o texto, explique a diferença entre TTFT e TPOT — otimizar um necessariamente otimiza o outro?
 
 ### Otimizações
 - **Modelos menores** quando bastam.
 - **Streaming** para esconder TPOT.
-- **Speculative decoding** (mod. [10](10_eficiencia_e_inferencia_local.md)).
+- **Speculative decoding** (Projeto 10.6).
 - **Prompt caching**.
 - **Edge inference** quando possível.
 - **Reduzir prompt** sem perder qualidade.
 
-### Benchmarks
-- **Lateralidade real do usuário** (browser → backend → LLM → backend → browser) é maior que latência da API.
+A latência real percebida pelo usuário (browser → backend → LLM → backend → browser) costuma ser maior que a latência medida só na chamada à API do modelo — cada round-trip de rede adicional soma, e é fácil esquecer isso ao otimizar só o componente do LLM.
 
 ---
 
@@ -127,12 +106,7 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 - **Prompt prefix cache** (servidor): mesmo system prompt entre usuários compartilha computação.
 - **HTTP cache padrão** para recursos (docs, embeddings).
 
-> **Intuição**: exact-match cache só ajuda quando a mesma pergunta literal se repete — útil, mas limitado (usuários raramente digitam a mesma pergunta com as mesmas palavras exatas). Semantic cache generaliza isso usando embeddings (mod. [12](12_rag.mdx#122-embeddings)): perguntas *semanticamente* parecidas ("qual o horário de vocês?" e "vocês abrem que horas?") caem no mesmo cache mesmo com palavras diferentes. O trade-off é o threshold de similaridade — muito permissivo, perguntas diferentes recebem a resposta errada; muito restritivo, o cache raramente é usado. Prompt prefix cache ataca um problema diferente: quando muitos usuários compartilham o mesmo system prompt longo, reprocessar esse prefixo idêntico do zero a cada requisição é desperdício puro — o servidor reutiliza o cálculo já feito (via KV-cache, mod. 10) para a parte comum.
-
-### Ferramentas
-- `Ferramenta` **GPTCache**. https://github.com/zilliztech/GPTCache
-- `Ferramenta` **Redis** com vector search.
-- `Ferramenta` **Provedor cache** (Anthropic, OpenAI).
+> **Intuição**: exact-match cache só ajuda quando a mesma pergunta literal se repete — útil, mas limitado (usuários raramente digitam a mesma pergunta com as mesmas palavras exatas). Semantic cache generaliza isso usando embeddings (o mesmo `SentenceTransformer` do Projeto 8.5): perguntas *semanticamente* parecidas ("qual o horário de vocês?" e "vocês abrem que horas?") caem no mesmo cache mesmo com palavras diferentes. O trade-off é o threshold de similaridade — muito permissivo, perguntas diferentes recebem a resposta errada; muito restritivo, o cache raramente é usado. Prompt prefix cache ataca um problema diferente: quando muitos usuários compartilham o mesmo system prompt longo, reprocessar esse prefixo idêntico do zero a cada requisição é desperdício puro — o servidor reutiliza o cálculo já feito (via KV-cache, mod. 10) para a parte comum.
 
 ### Cuidados
 - Stale cache em domínios dinâmicos.
@@ -145,25 +119,18 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 ### Padrões de deploy de aplicação LLM
 - **Backend tradicional**: API (FastAPI, Express, Hono) chamando provedor LLM ou modelo self-hosted.
 - **Serverless**: Vercel, Cloudflare Workers, AWS Lambda — bom para tráfego intermitente.
-- **Edge**: Cloudflare AI, Vercel Edge — latência baixa, mas restrições de bibliotecas (TS-friendly).
+- **Edge**: Cloudflare AI, Vercel Edge — latência baixa, mas restrições de bibliotecas (ambiente TS-friendly, sem runtime Python completo).
 - **Self-hosted modelo** + frontend: Kubernetes/Nomad com vLLM/TGI atrás de gateway.
 
-### Containers
-- **Docker** com multi-stage builds.
-- **GPU containers**: imagens NVIDIA NGC ou builds próprios com CUDA + Python.
-- **Air-gapped** quando dado é sensível.
-
-### Frameworks/templates
-- **LangServe** (Python) — deploy rápido de chains LangChain. https://www.langchain.com/langserve
-- **BentoML**, **Ray Serve**.
-- **Modal**, **Replicate**, **Banana** — serverless GPU.
-- **HuggingFace Inference Endpoints** — managed.
+Você compara na prática 3 desses padrões (container, edge, self-hosted) no Projeto 15.4.
 
 ### CI/CD para LLM apps
-- Testes que incluem **eval contra dataset** em PR.
-- **Versionamento de prompts** + dataset + modelo + código.
+- Testes que incluem **eval contra dataset** em PR — o mesmo tipo de eval do mod. 14, agora rodando automaticamente, não manualmente.
+- **Versionamento de prompts** + dataset + modelo + código (seção 15.8).
 - **Canary deployment** — % do tráfego em nova versão.
 - **Rollback rápido** quando métrica cai.
+
+Você implementa esse pipeline completo, com GitHub Actions, no Projeto 15.5.
 
 ---
 
@@ -181,9 +148,7 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 >
 > **Checkpoint**: sem olhar o texto, explique por que testar prompts A/B exige mais tráfego que testar duas cores de botão A/B, para a mesma confiança estatística.
 
-### Ferramentas
-- **GrowthBook**, **PostHog**, **Statsig** — feature flags + experimentos.
-- **Promptfoo** integra eval com PRs.
+Ferramentas de feature flag e experimentação generalistas (GrowthBook, PostHog, Statsig) funcionam para LLM apps do mesmo jeito que para qualquer outro produto; a diferença é só nas métricas coletadas por variante, que precisam incluir as específicas de LLM da seção 15.1.
 
 ---
 
@@ -192,19 +157,16 @@ custo = ∑ (tokens_in × preço_in + tokens_out × preço_out) [+ chamadas a to
 ### O que monitorar
 - **Saúde do sistema**: latência, taxa de erro, custo por dia.
 - **Qualidade**: eval automático em sample de produção, thumbs up/down.
-- **Drift**:
-  - **Data drift**: distribuição de queries muda.
-  - **Concept drift**: mesma query, resposta correta diferente (ex: notícias).
-  - **Prompt drift**: alterações acumuladas degradam.
-  - **Provider drift**: provider atualiza modelo silenciosamente.
-- **Safety incidents**: jailbreaks, alucinação grave.
+- **Drift** (detalhado abaixo).
+- **Safety incidents**: jailbreaks, alucinação grave (mod. 14).
 
-> **Intuição**: os 4 tipos de drift têm causas e mitigações diferentes, apesar de todos se manifestarem como "qualidade caindo aos poucos". Data drift é sobre *o que os usuários perguntam* mudando (ex.: um produto novo lançado gera queries que o sistema nunca viu). Concept drift é sobre *a resposta certa* mudando para a mesma pergunta (o mundo mudou, não o sistema). Prompt drift é auto-inflingido — pequenos ajustes acumulados no prompt ao longo de meses, cada um razoável isoladamente, que juntos degradam o comportamento de formas difíceis de rastrear a uma mudança específica. Provider drift é o mais insidioso: você não mudou nada, mas o provedor atualizou o modelo por trás da mesma API — é por isso que pinning de versão de modelo (quando disponível) e monitoring contínuo (não só "testei uma vez e funcionou") são não-negociáveis em produção.
+### Os 4 tipos de drift
+- **Data drift**: distribuição de queries muda.
+- **Concept drift**: mesma query, resposta correta diferente (ex: notícias).
+- **Prompt drift**: alterações acumuladas degradam.
+- **Provider drift**: provider atualiza modelo silenciosamente.
 
-### Ferramentas
-- Langfuse / LangSmith / Helicone agregam métricas.
-- **Evidently AI** — drift em features tradicionais.
-- **Arize Phoenix** — drift e tracing combinados.
+> **Intuição**: os 4 tipos de drift têm causas e mitigações diferentes, apesar de todos se manifestarem como "qualidade caindo aos poucos". Data drift é sobre *o que os usuários perguntam* mudando (ex.: um produto novo lançado gera queries que o sistema nunca viu). Concept drift é sobre *a resposta certa* mudando para a mesma pergunta (o mundo mudou, não o sistema). Prompt drift é auto-infligido — pequenos ajustes acumulados no prompt ao longo de meses, cada um razoável isoladamente, que juntos degradam o comportamento de formas difíceis de rastrear a uma mudança específica. Provider drift é o mais insidioso: você não mudou nada, mas o provedor atualizou o modelo por trás da mesma API — é por isso que pinning de versão de modelo (quando disponível) e monitoring contínuo (não só "testei uma vez e funcionou") são não-negociáveis em produção. Você detecta data drift diretamente, com um teste estatístico, no Projeto 15.6.
 
 ### Ciclo
 ```mermaid
@@ -228,18 +190,9 @@ flowchart LR
 - **Configurações** de pipeline.
 
 ### Reprodutibilidade
-- Cada resposta em produção rastreável a:
-  - Versão de código.
-  - Versão de prompt.
-  - Versão de modelo.
-  - Versão de índice RAG.
-  - Random seed (quando aplicável).
+Cada resposta em produção deveria ser rastreável a: versão de código, versão de prompt, versão de modelo, versão de índice RAG, e random seed (quando aplicável) — o mesmo princípio do trace do Projeto 15.1, aplicado retroativamente ("dado este output ruim, o que exatamente gerou ele?").
 
-### Ferramentas
-- `Ferramenta` **MLflow**. https://mlflow.org/
-- `Ferramenta` **Weights & Biases**. https://wandb.ai/
-- `Ferramenta` **Aim**. https://github.com/aimhubio/aim
-- `Ferramenta` **DVC**. https://dvc.org/
+Ferramentas como MLflow, Weights & Biases, Aim e DVC cobrem partes diferentes desse problema — de tracking de experimentos a versionamento de datasets grandes demais para Git puro.
 
 ---
 
@@ -250,7 +203,7 @@ flowchart LR
 - **LGPD** (Brasil) — análoga ao GDPR.
 - **EU AI Act** (2024+) — categorias de risco, transparência.
 - **HIPAA** (saúde EUA), **PCI-DSS** (pagamentos).
-- **NIST AI Risk Management Framework**. https://www.nist.gov/itl/ai-risk-management-framework
+- **NIST AI Risk Management Framework**.
 
 ### Implicações práticas
 - **Logs com PII**: criptografia, retenção limitada, redação.
@@ -266,14 +219,14 @@ flowchart LR
 - **API do provider** caiu / latente. Mitigação: fallback para outro provider.
 - **Rate limits** estouraram. Mitigação: queue, backoff exponencial, multi-key.
 - **Timeout** em geração longa. Mitigação: streaming, max_tokens, deadline.
-- **Output em formato errado**. Mitigação: validação + retry com mensagem de correção.
-- **Loop em agente**. Mitigação: max_steps, detecção de repetição.
+- **Output em formato errado**. Mitigação: validação + retry com mensagem de correção (o mesmo princípio do Projeto 11.5).
+- **Loop em agente**. Mitigação: max_steps, detecção de repetição (mod. 13).
 - **Custo descontrolado**. Mitigação: rate limit por user, alertas em $/h.
-- **Prompt injection** explorada. Mitigação: guardrails + monitoring.
+- **Prompt injection** explorada. Mitigação: guardrails + monitoring (mod. 14).
 - **Jailbreak** viral. Mitigação: refusal mais forte + detecção.
 
 ### Padrão Circuit Breaker
-Como em microsserviços tradicionais: se taxa de erro > X em janela Y, "abre" o circuito, falha rapidamente, retorna fallback. Especialmente útil com LLMs externos.
+Como em microsserviços tradicionais: se taxa de erro > X em janela Y, "abre" o circuito, falha rapidamente, retorna fallback. Especialmente útil com LLMs externos. Você implementa isso, com teste de caos incluído, no Projeto 15.7.
 
 > Circuit breaker existe porque, sem ele, um provider degradado (lento, mas não totalmente fora do ar) pode derrubar seu sistema inteiro indiretamente — cada requisição espera o timeout completo antes de falhar, esgotando conexões/threads disponíveis. "Abrir o circuito" após detectar a degradação falha *rápido* (sem esperar timeout) e libera capacidade para outras requisições ou fallback, em vez de todo o sistema travar esperando um provider que não vai responder a tempo.
 
@@ -305,7 +258,7 @@ flowchart LR
 Atenção a:
 - Isolamento de contexto (PII de A não vaza para B).
 - Rate limit por tenant.
-- Custo allocado por tenant.
+- Custo alocado por tenant.
 - Modelos/prompts customizados por tenant.
 
 ---
@@ -323,47 +276,385 @@ Atenção a:
 ## Projetos práticos
 
 ### Projeto 15.1 — Observability completo
-- Pegue um pipeline RAG/agente do mod. [12](12_rag.mdx) ou 13.
-- Adicione Langfuse self-hosted (Docker compose).
-- Capture traces detalhados + custo por chamada.
-- Construa dashboard com p50/p95 de TTFT, custo/dia, taxa de erro.
+
+Você vai instrumentar o RAG do Projeto 12.1 (ou o agente do Projeto 13.3) com Langfuse self-hosted via Docker Compose, e construir um dashboard com as métricas específicas de LLM da seção 15.1.
+
+**Pré-requisitos**: Docker e Docker Compose instalados.
+
+**1. Suba o Langfuse localmente**:
+
+```yaml
+# docker-compose.yml
+services:
+  langfuse-db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: langfuse
+      POSTGRES_DB: langfuse
+    volumes:
+      - langfuse_db:/var/lib/postgresql/data
+  langfuse:
+    image: langfuse/langfuse:latest
+    depends_on: [langfuse-db]
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgresql://postgres:langfuse@langfuse-db:5432/langfuse
+      NEXTAUTH_SECRET: uma-chave-secreta-qualquer
+      NEXTAUTH_URL: http://localhost:3000
+      SALT: outra-chave-qualquer
+volumes:
+  langfuse_db:
+```
+
+`docker-compose up -d` sobe dois containers: o Postgres que guarda os traces, e o próprio Langfuse (uma aplicação web) na porta 3000. Acesse `http://localhost:3000`, crie uma conta local, e gere uma API key no projeto criado.
+
+**2. Instrumente o pipeline** — reaproveitando o padrão `@observe()` do Projeto 13.6, agora com campos específicos de LLM anexados manualmente:
+
+```python
+from langfuse.decorators import observe, langfuse_context
+import time
+
+@observe()
+def responder_com_trace(query):
+    t0 = time.time()
+    docs = buscar(query)  # do Projeto 12.1
+    ttft_estimado = time.time() - t0  # aproximação: tempo até começar a montar o prompt
+
+    resposta = responder(query)  # do Projeto 12.1
+
+    langfuse_context.update_current_observation(
+        metadata={
+            "modelo": "qwen2.5:7b",
+            "n_docs_recuperados": len(docs),
+            "ttft_estimado_s": round(ttft_estimado, 3),
+        }
+    )
+    return resposta
+```
+
+`langfuse_context.update_current_observation` anexa metadados customizados ao trace atual — é assim que campos que o Langfuse não captura automaticamente (número de documentos recuperados, por exemplo) entram no mesmo trace que latência e tokens.
+
+**3. Construa o dashboard**: rode `responder_com_trace` para um conjunto de ~50 queries de teste, depois exporte os traces via API do Langfuse e calcule p50/p95 de latência e custo total:
+
+```python
+from langfuse import Langfuse
+import numpy as np
+
+langfuse = Langfuse()
+traces = langfuse.get_traces(limit=50).data
+
+latencias = [t.latency for t in traces if t.latency]
+print(f"p50: {np.percentile(latencias, 50):.2f}s  p95: {np.percentile(latencias, 95):.2f}s")
+
+custo_total = sum(t.calculated_total_cost or 0 for t in traces)
+print(f"Custo total das 50 chamadas: ${custo_total:.4f}")
+```
+
+O painel web do próprio Langfuse (`http://localhost:3000`) já mostra grande parte disso visualmente — este passo serve para você entender de onde esses números vêm, não para substituir o painel.
+
+---
 
 ### Projeto 15.2 — Cache semântico
-- Implemente semantic cache em Redis (com módulo de vetores) ou GPTCache.
-- Meça hit rate em workload realista (logs de projeto anterior).
-- Documente quando cache leva a respostas defasadas/erradas.
 
-> **Variante guiada**: teste deliberadamente com um par de perguntas quase-idênticas mas com resposta correta diferente (ex.: "qual o preço do plano básico?" antes e depois de um reajuste) — isso expõe concretamente o risco de cache semântico "stale" descrito na seção 15.4.
+Você vai implementar um cache semântico sobre Redis e medir o hit rate num workload realista, incluindo um caso deliberado de cache "stale" (desatualizado).
+
+**Pré-requisitos**: `pip install redis sentence-transformers`, Redis rodando (`docker run -d -p 6379:6379 redis`).
+
+```python
+import redis
+import numpy as np
+import json
+from sentence_transformers import SentenceTransformer
+
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+embedder = SentenceTransformer("intfloat/multilingual-e5-large")
+
+def cache_get(query, threshold=0.92):
+    query_emb = embedder.encode(query, normalize_embeddings=True)
+    for chave in r.keys("cache:*"):
+        entrada = json.loads(r.get(chave))
+        emb_cache = np.array(entrada["embedding"])
+        sim = float(np.dot(query_emb, emb_cache))
+        if sim >= threshold:
+            return entrada["resposta"], sim
+    return None, None
+
+def cache_set(query, resposta):
+    query_emb = embedder.encode(query, normalize_embeddings=True)
+    chave = f"cache:{hash(query)}"
+    r.set(chave, json.dumps({"embedding": query_emb.tolist(), "resposta": resposta, "query_original": query}))
+
+def responder_com_cache(query):
+    resposta_cache, sim = cache_get(query)
+    if resposta_cache:
+        return resposta_cache, f"CACHE HIT (sim={sim:.3f})"
+    resposta = query_ollama(query)
+    cache_set(query, resposta)
+    return resposta, "CACHE MISS"
+```
+
+`cache_get` percorre as entradas do cache comparando por similaridade de cosseno (a varredura linear é aceitável na escala de um cache de algumas centenas de entradas; em produção, um índice como o do Projeto 12.1 evitaria a varredura completa). `threshold=0.92` é deliberadamente alto — ajuste e observe o efeito no hit rate.
+
+**Meça o hit rate** rodando ~100 queries de um workload realista (reaproveite as perguntas do Projeto 12.2 ou 14.3, com algumas repetidas e parafraseadas de propósito) e contando quantas foram `CACHE HIT`.
+
+**Teste o caso stale de propósito**: pergunte "qual o preço do plano básico?", cacheie a resposta, depois simule uma mudança de preço (na sua "fonte da verdade", se você tiver uma) e pergunte de novo com uma frase parecida ("quanto custa o plano básico?") — o cache semântico retorna a resposta antiga, desatualizada, porque a pergunta é semanticamente idêntica mesmo que o mundo tenha mudado. Documente esse comportamento — é exatamente o risco descrito na seção 15.4, e a mitigação prática é um TTL curto no cache para dados que mudam com frequência.
+
+---
 
 ### Projeto 15.3 — Roteamento de modelos
-- Implemente router: queries simples → modelo pequeno open; complexas → modelo grande.
-- Use classificador (zero-shot ou pequeno LLM) para decidir.
-- Compare custo total vs sempre usar modelo grande.
+
+Você vai implementar um router que classifica a complexidade de uma query e escolhe entre um modelo pequeno (barato) e um grande (caro), e vai comparar o custo total contra sempre usar o modelo grande.
+
+**Pré-requisitos**: Ollama com um modelo pequeno (`qwen2.5:0.5b`) e um grande (`qwen2.5:7b`).
+
+```python
+def classificar_complexidade(query):
+    prompt = (
+        f"Classifique a complexidade desta pergunta como SIMPLES ou COMPLEXA. "
+        f"SIMPLES = fato direto, definição curta, tarefa de um passo. "
+        f"COMPLEXA = raciocínio multi-passo, análise, código não-trivial.\n\nPergunta: {query}\n\nResposta (uma palavra):"
+    )
+    resposta = query_ollama(prompt, model="qwen2.5:0.5b").strip().upper()  # o próprio classificador usa o modelo pequeno
+    return "COMPLEXA" if "COMPLEXA" in resposta else "SIMPLES"
+
+PRECO_POR_1K_TOKENS = {"qwen2.5:0.5b": 0.0001, "qwen2.5:7b": 0.001}  # valores ilustrativos, calibre com preços reais se usar API paga
+
+def responder_com_router(query):
+    complexidade = classificar_complexidade(query)
+    modelo = "qwen2.5:0.5b" if complexidade == "SIMPLES" else "qwen2.5:7b"
+    resposta = query_ollama(query, model=modelo)
+    tokens_estimados = len(resposta.split()) * 1.3  # aproximação grosseira de tokens a partir de palavras
+    custo_estimado = (tokens_estimados / 1000) * PRECO_POR_1K_TOKENS[modelo]
+    return resposta, modelo, custo_estimado
+```
+
+O classificador em si usa o modelo pequeno (é uma decisão barata e rápida — classificar "simples vs complexa" não exige o mesmo poder que responder a pergunta em si). Rode `responder_com_router` num conjunto de ~50 queries variadas (misturando perguntas triviais e complexas de propósito) e some `custo_estimado` de todas; compare com o custo estimado de rodar as mesmas 50 sempre no modelo grande. A economia esperada depende de quão desbalanceado é o seu workload real entre perguntas simples e complexas — documente os casos em que o classificador erra (uma pergunta complexa classificada como simples é o pior caso, porque degrada qualidade sem economizar o suficiente para compensar).
+
+---
 
 ### Projeto 15.4 — Deploy multi-ambiente
-- Mesmo backend (FastAPI ou Hono) deployado em:
-  - Vercel / Cloudflare Workers (edge).
-  - Container em VPS / Fly.io.
-  - Self-hosted com vLLM atrás.
-- Compare TTFT, custo, complexidade.
+
+Você vai implantar o mesmo backend (um wrapper simples sobre Ollama) em três ambientes diferentes, e comparar TTFT, custo e complexidade de operação.
+
+**Pré-requisitos**: conta gratuita na Cloudflare (Workers) e em um provedor de VPS/container (Fly.io ou similar), Docker.
+
+**1. Self-hosted em container** (`main.py` com FastAPI, `pip install fastapi uvicorn`):
+
+```python
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+import requests
+
+app = FastAPI()
+
+@app.post("/chat")
+async def chat(pergunta: str):
+    def stream():
+        with requests.post(
+            "http://localhost:11434/api/generate",
+            json={"model": "qwen2.5:7b", "prompt": pergunta, "stream": True},
+            stream=True,
+        ) as resposta:
+            for linha in resposta.iter_lines():
+                if linha:
+                    yield linha + b"\n"
+    return StreamingResponse(stream(), media_type="application/x-ndjson")
+```
+
+Empacote com um `Dockerfile` simples (`FROM python:3.11-slim`, copia o código, `pip install`, `CMD uvicorn main:app`) e faça deploy num VPS ou serviço de container (Fly.io, Railway) — junto com o próprio Ollama rodando na mesma máquina ou numa máquina acessível pela rede interna.
+
+**2. Edge, em TypeScript com Hono** (roda tanto localmente quanto em Cloudflare Workers sem mudar código, `npm install hono`):
+
+```typescript
+import { Hono } from "hono";
+import { streamText } from "hono/streaming";
+
+const app = new Hono();
+
+app.post("/chat", (c) => {
+  return streamText(c, async (stream) => {
+    const resposta = await fetch("https://SEU_OLLAMA_PUBLICO/api/generate", {
+      method: "POST",
+      body: JSON.stringify({ model: "qwen2.5:7b", prompt: await c.req.text(), stream: true }),
+    });
+    for await (const chunk of resposta.body as any) {
+      await stream.write(chunk);
+    }
+  });
+});
+
+export default app;
+```
+
+Deploy com `npx wrangler deploy` (a CLI da Cloudflare). Note a restrição mencionada na seção 15.5: Workers não roda um runtime Python completo nem o Ollama localmente — o edge só funciona aqui como um proxy fino até um LLM acessível via HTTP (Ollama exposto publicamente, ou uma API paga), não como o lugar onde o modelo roda.
+
+**3. Compare os dois** (mais, opcionalmente, um terceiro ambiente self-hosted com vLLM do Projeto 10.3 atrás do mesmo FastAPI): meça TTFT de cada ambiente a partir da sua máquina local (`time curl ...` até o primeiro byte da resposta), e documente a complexidade de operação de cada um — quantos passos manuais para fazer deploy, o que acontece em caso de pico de tráfego, o que você precisa monitorar em cada.
+
+---
 
 ### Projeto 15.5 — Pipeline CI/CD com eval
-- GitHub Actions:
-  - PR triggera linting + testes unitários + suite de eval (Promptfoo) contra dataset fixo.
-  - Métricas regredem? Bloqueia merge.
-  - Merge dispara deploy canary.
+
+Você vai configurar um workflow do GitHub Actions que roda uma suite de avaliação com Promptfoo a cada pull request, bloqueando o merge se a qualidade regredir.
+
+**Pré-requisitos**: um repositório no GitHub, `npm install -g promptfoo`.
+
+**1. Configure o Promptfoo** (`promptfooconfig.yaml`) — diferente das evals em Python dos módulos anteriores, o Promptfoo é declarativo, configurado em YAML:
+
+```yaml
+prompts:
+  - "Responda com base no contexto: {{contexto}}\n\nPergunta: {{pergunta}}"
+providers:
+  - "ollama:chat:qwen2.5:7b"
+tests:
+  - vars:
+      contexto: "RMSNorm é uma alternativa mais simples ao LayerNorm."
+      pergunta: "O que é RMSNorm?"
+    assert:
+      - type: contains
+        value: "LayerNorm"
+  - vars:
+      contexto: "LoRA treina apenas duas matrizes de baixo rank."
+      pergunta: "O que é LoRA?"
+    assert:
+      - type: llm-rubric
+        value: "A resposta menciona 'baixo rank' ou 'low rank'"
+```
+
+Cada item em `tests` é um caso: `assert` declara o critério de sucesso — `contains` é uma checagem literal simples; `llm-rubric` usa um LLM como juiz (o mesmo princípio do Projeto 9.2/14.2) para avaliar critérios mais abertos.
+
+**2. Workflow do GitHub Actions** (`.github/workflows/eval.yml`):
+
+```yaml
+name: Eval de prompts
+on: [pull_request]
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar Promptfoo
+        run: npm install -g promptfoo
+      - name: Rodar eval
+        run: promptfoo eval --config promptfooconfig.yaml --output resultado.json
+      - name: Verificar regressão
+        run: |
+          FALHAS=$(python3 -c "import json; r=json.load(open('resultado.json')); print(r['results']['stats']['failures'])")
+          if [ "$FALHAS" -gt 0 ]; then
+            echo "$FALHAS casos de teste falharam — bloqueando merge."
+            exit 1
+          fi
+```
+
+Esse job roda a cada pull request; `exit 1` no último passo faz o workflow falhar, e um workflow que falha bloqueia o merge se você configurar essa checagem como obrigatória nas regras de proteção de branch do repositório (Settings → Branches).
+
+**3. Adicione deploy canary no merge** (um segundo workflow, disparado em `push` para `main` em vez de `pull_request`, que faz deploy só de uma fração do tráfego para a nova versão antes de promovê-la totalmente — a implementação exata depende da sua infraestrutura de deploy do Projeto 15.4, mas o princípio é: nunca trocar 100% do tráfego de uma vez para uma versão não validada em produção real).
+
+---
 
 ### Projeto 15.6 — Detecção de drift
-- Capture 1k queries reais.
-- Calcule embeddings; detecte se distribuição mudou (KS-test em projeções, ou clustering).
-- Alerte quando > X% de queries são "novas" comparadas à base de eval.
 
-### Projeto 15.7 — Resiliência
-- Implemente fallback: provider primário → secundário → modelo local.
-- Circuit breaker.
-- Teste com chaos: derrube providers e meça comportamento.
+Você vai capturar um conjunto de queries "novas" e testar estatisticamente se a distribuição delas mudou em relação a uma base de referência.
 
-> **Variante guiada**: confirme primeiro que o circuit breaker "abre" corretamente sob falha simulada (derrube o provider primário de propósito e observe o fallback acionar) antes de considerar o sistema resiliente — resiliência não testada é só uma esperança.
+**Pré-requisitos**: `pip install scipy scikit-learn`.
+
+```python
+from scipy.stats import ks_2samp
+from sklearn.decomposition import PCA
+import numpy as np
+
+def detectar_drift(queries_base, queries_novas, embedder):
+    emb_base = embedder.encode(queries_base, normalize_embeddings=True)
+    emb_novas = embedder.encode(queries_novas, normalize_embeddings=True)
+
+    # projeta os embeddings (alta dimensão) numa única dimensão via PCA, para poder aplicar KS-test
+    pca = PCA(n_components=1)
+    pca.fit(emb_base)
+    proj_base = pca.transform(emb_base).flatten()
+    proj_novas = pca.transform(emb_novas).flatten()
+
+    estatistica, p_valor = ks_2samp(proj_base, proj_novas)
+    return estatistica, p_valor
+
+queries_base = [...]  # 200 queries "normais", coletadas como referência
+queries_novas = [...]  # 200 queries mais recentes, a checar
+
+estatistica, p_valor = detectar_drift(queries_base, queries_novas, embedder)
+print(f"KS statistic: {estatistica:.4f}, p-valor: {p_valor:.4f}")
+if p_valor < 0.05:
+    print("ALERTA: distribuição de queries mudou significativamente (data drift detectado).")
+```
+
+`ks_2samp` (teste de Kolmogorov-Smirnov de duas amostras) compara duas distribuições e retorna a probabilidade (`p_valor`) de que ambas venham da mesma distribuição subjacente — um `p_valor` baixo (convencionalmente, abaixo de 0.05) é evidência de que as duas amostras vêm de distribuições diferentes, isto é, que a distribuição de queries realmente mudou, não é só ruído de amostragem. O PCA é necessário porque o KS-test clássico opera em uma dimensão só, e embeddings têm centenas de dimensões — projetar na direção de maior variância (o primeiro componente principal) é uma forma simples, embora não perfeita, de reduzir a comparação a uma dimensão só.
+
+Teste com um caso de drift real e um caso sem drift: compare `queries_base` contra uma cópia dela mesma reamostrada (não deveria disparar alerta) e contra um conjunto de queries de um domínio deliberadamente diferente (deveria disparar).
+
+---
+
+### Projeto 15.7 — Resiliência com fallback e circuit breaker
+
+Você vai implementar uma cadeia de fallback entre provedores (primário → secundário → modelo local), com um circuit breaker, e testar com falha simulada.
+
+**Pré-requisitos**: Ollama local (como "modelo local" de último recurso).
+
+```python
+import time
+
+class CircuitBreaker:
+    def __init__(self, limiar_falhas=3, tempo_reset=30):
+        self.falhas = 0
+        self.limiar_falhas = limiar_falhas
+        self.tempo_reset = tempo_reset
+        self.aberto_desde = None
+
+    def esta_aberto(self):
+        if self.aberto_desde is None:
+            return False
+        if time.time() - self.aberto_desde > self.tempo_reset:
+            self.aberto_desde = None  # tenta fechar de novo após o tempo de reset (half-open)
+            self.falhas = 0
+            return False
+        return True
+
+    def registrar_sucesso(self):
+        self.falhas = 0
+
+    def registrar_falha(self):
+        self.falhas += 1
+        if self.falhas >= self.limiar_falhas:
+            self.aberto_desde = time.time()
+
+breaker_primario = CircuitBreaker(limiar_falhas=3, tempo_reset=30)
+
+def chamar_provider_primario(prompt):
+    # simula uma API externa que pode falhar — substitua por uma chamada real (ex.: API paga)
+    raise ConnectionError("Provider primário indisponível (simulado)")
+
+def chamar_provider_secundario(prompt):
+    raise ConnectionError("Provider secundário indisponível (simulado)")
+
+def chamar_modelo_local(prompt):
+    return query_ollama(prompt)  # sempre disponível, é a sua própria máquina
+
+def responder_com_fallback(prompt):
+    if not breaker_primario.esta_aberto():
+        try:
+            resposta = chamar_provider_primario(prompt)
+            breaker_primario.registrar_sucesso()
+            return resposta, "primario"
+        except ConnectionError:
+            breaker_primario.registrar_falha()
+
+    try:
+        return chamar_provider_secundario(prompt), "secundario"
+    except ConnectionError:
+        pass
+
+    return chamar_modelo_local(prompt), "local (fallback final)"
+```
+
+`CircuitBreaker` mantém uma contagem de falhas consecutivas; depois de `limiar_falhas` falhas, o circuito "abre" (`esta_aberto()` retorna `True`) e `responder_com_fallback` para de sequer *tentar* o provider primário por `tempo_reset` segundos, indo direto para o secundário — evitando o custo de esperar um timeout a cada requisição enquanto o provider está fora do ar. Depois do tempo de reset, o circuito volta a permitir uma tentativa (o padrão "half-open" de circuit breakers).
+
+**Teste de caos**: rode `responder_com_fallback` várias vezes seguidas com os providers simulados sempre falhando (como no código acima) e confirme, observando os logs: (1) as primeiras 3 chamadas tentam o provider primário e falham, (2) a partir da 4ª chamada, o circuito abre e a tentativa ao primário é pulada diretamente, (3) todas as chamadas eventualmente retornam via `"local (fallback final)"`, nunca deixando o usuário sem resposta. Só depois de confirmar esse comportamento sob falha simulada é razoável considerar o sistema resiliente — resiliência não testada é só uma esperança.
 
 ---
 
@@ -373,7 +664,7 @@ Atenção a:
 - **Logar PII** sem redação — exposição legal.
 - **Eval só offline** — sem feedback de produção, drift mata silenciosamente.
 - **Não medir custo** — surpresa no fim do mês.
-- **Acoplamento com 1 provider** — quando ele cai/aumenta preço, sistema quebra.
+- **Acoplamento com 1 provider** — quando ele cai/aumenta preço, sistema quebra (é o que o Projeto 15.7 mitiga).
 - **Esquecer rate limit** quando tráfego sobe.
 - **Confundir thumbs up/down com eval real** — sinal ruidoso, mas útil agregado.
 - **Subestimar drift** silencioso quando provider atualiza modelo.
@@ -388,10 +679,10 @@ Este módulo é o "meta" sobre os anteriores. Os galhos (mod. [16](16_visao_comp
 
 ## Checklist de saída
 
-- [ ] Tenho observability completo (traces + custo + qualidade) em projeto real.
-- [ ] Pipeline com eval automático bloqueando regressões em CI.
-- [ ] Implementei cache semântico ou prompt caching com ganho mensurável.
-- [ ] Sei estimar e monitorar $ por usuário, $ por feature.
-- [ ] Tenho fallback / circuit breaker para falhas de provider.
-- [ ] Sei o básico de compliance (LGPD/GDPR) aplicado a LLM apps.
-- [ ] Posso fazer A/B test de prompts/modelos com métricas válidas.
+- [ ] Tenho observability completo (traces + custo + qualidade) em projeto real (se não, revise o Projeto 15.1).
+- [ ] Pipeline com eval automático bloqueando regressões em CI (se não, revise o Projeto 15.5).
+- [ ] Implementei cache semântico com ganho mensurável e documentei o risco de staleness (se não, revise o Projeto 15.2).
+- [ ] Sei estimar e monitorar $ por usuário, $ por feature (se não, revise a seção 15.2 e o Projeto 15.3).
+- [ ] Tenho fallback / circuit breaker testado sob falha simulada, não só implementado (se não, revise o Projeto 15.7).
+- [ ] Sei o básico de compliance (LGPD/GDPR) aplicado a LLM apps (se não, revise a seção 15.9).
+- [ ] Detectei drift com um teste estatístico, não por impressão (se não, revise o Projeto 15.6).
