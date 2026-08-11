@@ -18,7 +18,7 @@ Ao final deste módulo você deve ser capaz de:
 
 - Montar um ambiente Python reprodutível (lockfile, container) que roda igual em qualquer máquina.
 - Justificar, com critério, quando usar Python e quando usar TypeScript num projeto de IA — você já sentiu essa divisão na prática, aqui ela vira régua explícita.
-- Calcular quanta VRAM um modelo precisa, em qualquer precisão, de cabeça.
+- Calcular quanta VRAM (Video RAM, a memória da GPU) um modelo precisa, em qualquer precisão, de cabeça.
 - Explicar por que GPU acelera treinamento de rede neural especificamente (não é "GPU é mais rápido", é sobre o *tipo* de operação).
 - Diagnosticar os erros de ambiente mais comuns (conflito CUDA/driver, mistura pip/conda) antes que eles te custem um dia inteiro.
 
@@ -37,6 +37,8 @@ Ferramentas mal configuradas custam dias de debug. Você já sentiu, ao longo de
 - Generators, `itertools`, comprehensions.
 - Async (`asyncio`) — fundamental para servir LLMs, o mesmo princípio por trás do `asyncio.gather` que você usou no benchmark de concorrência do Projeto 10.3.
 - Context managers, decorators — o mesmo `@observe()` do Langfuse (Projeto 13.6) é um decorator.
+
+> A explicação de por que generators evitam estourar memória e por que context managers garantem liberação de recurso mesmo com exceção está na versão Clássico, seção [2.1 — Python para ML/IA](/trilha-llm/v2/02_programacao_ferramentas#21-python-para-mlia).
 
 ### Bibliotecas obrigatórias
 
@@ -76,7 +78,7 @@ Ferramentas mal configuradas custam dias de debug. Você já sentiu, ao longo de
 | **Vercel AI SDK** (`ai`) | Streaming, tool use, agnóstico de provedor | Desde o Projeto 10.2 |
 | **LangChain.js** | Chains, agents, integrações | — |
 | **LlamaIndex.TS** | RAG e ingestão de documentos | — |
-| **transformers.js** | Inferência de modelos no browser/Node via ONNX | Desde o Projeto 10.5 |
+| **transformers.js** | Inferência de modelos no browser/Node via ONNX (Open Neural Network Exchange) | Desde o Projeto 10.5 |
 | **ONNX Runtime Web** | Inferência otimizada client-side | (por baixo do transformers.js) |
 | **Mastra** | Framework de agentes em TS | — |
 | **MCP SDK (TypeScript)** | Model Context Protocol oficial | Projeto 13.2 |
@@ -107,7 +109,7 @@ Ferramentas mal configuradas custam dias de debug. Você já sentiu, ao longo de
 ### Controle de versão
 - Git avançado: rebase, cherry-pick, bisect, hooks.
 - **DVC** (Data Version Control) — versionar datasets e modelos, usado no Projeto 2.1.
-- Git LFS para modelos pequenos.
+- Git LFS (Large File Storage) para modelos pequenos.
 - **Hugging Face Hub** como repositório de modelos/datasets (usa Git+LFS) — você já baixou modelos de lá desde o Projeto 9.1.
 
 ### Containers e orquestração
@@ -131,12 +133,12 @@ Ferramentas mal configuradas custam dias de debug. Você já sentiu, ao longo de
 ### CPU vs GPU vs TPU
 - Por que GPU acelera ML: paralelismo massivo em operações matriciais.
 - Quando CPU basta: inferência de modelos pequenos, dados tabulares.
-- TPU (Google) — relevante se for usar JAX em larga escala.
+- TPU (Tensor Processing Unit, chip da Google feito sob medida para álgebra linear de ML) — relevante se for usar JAX em larga escala.
 
 ### Plataformas
-- **NVIDIA CUDA** (padrão de fato, melhor suporte).
-- **AMD ROCm** (alternativa em Linux, suporte crescente).
-- **Apple Silicon (MPS)** — `torch.backends.mps`, suporte parcial mas funcional, já mencionado desde o Projeto 8.3 (`.to("mps")`).
+- **NVIDIA CUDA** (Compute Unified Device Architecture — padrão de fato, melhor suporte).
+- **AMD ROCm** (Radeon Open Compute — alternativa em Linux, suporte crescente).
+- **Apple Silicon (MPS, Metal Performance Shaders)** — `torch.backends.mps`, suporte parcial mas funcional, já mencionado desde o Projeto 8.3 (`.to("mps")`).
 - **Intel oneAPI**, **Vulkan compute** (nichos).
 
 > **Intuição — por que GPU**: uma CPU tem poucos núcleos (dezenas), cada um muito rápido e flexível, ótimo para tarefas sequenciais complexas. Uma GPU tem milhares de núcleos simples, cada um lento individualmente, mas todos fazendo a *mesma* operação em paralelo sobre dados diferentes — exatamente o padrão de um produto matricial, onde cada elemento da saída é um produto interno independente dos outros (o mesmo `Q @ K.T` que você já escreveu no Projeto 7.1). É por isso que GPU não acelera qualquer código, só código que se encaixa nesse padrão de paralelismo massivo e uniforme — um loop com lógica condicional complexa por iteração não ganha o mesmo benefício, e é exatamente por isso que o LSTM do Projeto 5.4 (sequencial, estado carregado passo a passo) ganha menos com GPU do que o Transformer do Projeto 8.3 (paralelizável).
@@ -224,7 +226,7 @@ repos:
 
 `pip install pre-commit && pre-commit install` ativa isso — a partir daí, `ruff` (lint) e `mypy` (checagem de tipos) rodam automaticamente a cada `git commit`, recusando o commit se algo falhar.
 
-**5. CI básico** (`.github/workflows/ci.yml`, o mesmo padrão do Projeto 15.5, agora para testes gerais em vez de eval de prompt):
+**5. CI básico** (Continuous Integration — `.github/workflows/ci.yml`, o mesmo padrão do Projeto 15.5, agora para testes gerais em vez de eval de prompt):
 
 ```yaml
 name: CI
@@ -356,6 +358,17 @@ for dispositivo in dispositivos_disponiveis:
 - **Não fixar seeds.** Resultados não reproduzíveis = não-ciência.
 - **Subestimar Docker.** Sem container, "funciona na minha máquina" é a regra.
 - **Tentar treinar tudo localmente.** Saiba quando subir para cloud.
+
+---
+
+## Saiba mais
+
+Alguns tópicos deste módulo foram citados de propósito sem profundidade — áreas inteiras por si só, que você não precisa dominar para seguir a trilha, mas vale saber que existem:
+
+- **Kubernetes** (2.3) — orquestração de containers em escala; o que empresas usam para rodar dezenas de serviços (incluindo modelos) de forma resiliente, além do único `docker-compose.yml` que você já escreveu no Projeto 15.1. `Curso` **Kubernetes Basics** (oficial, gratuito). https://kubernetes.io/docs/tutorials/kubernetes-basics/
+- **Programação CUDA de baixo nível** (2.4) — escrever kernels customizados em C++/CUDA, além de só chamar operações do PyTorch que já usam CUDA por baixo; relevante se você for otimizar uma operação que nenhuma biblioteca ainda implementa eficientemente. `Livro` **Programming Massively Parallel Processors** — Kirk & Hwu.
+- **Intel oneAPI e Vulkan compute** (2.4) — alternativas de nicho a CUDA/ROCm/MPS, relevantes só em hardware específico. Pesquise a documentação oficial do fabricante quando o hardware exigir.
+- **JAX a fundo** (2.1) — a alternativa funcional ao PyTorch, com `jit`, `vmap` e `grad` como primitivas compostas em vez de um framework orientado a objetos; usado pesado em pesquisa (DeepMind) e quando TPU é o alvo. `Curso` **JAX Documentation — Quickstart** (oficial). https://jax.readthedocs.io/
 
 ---
 

@@ -46,6 +46,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - `pyproject.toml` em vez de `requirements.txt` quando possível.
 - `pip-tools` ou `uv` para lockfiles.
 
+> Aprofundar: teoria completa em [v2 — 2.1 Python para ML/IA](/trilha-llm/v2/02_programacao_ferramentas#21-python-para-mlia); código completo em [v3 — 2.1 Python para ML/IA](/trilha-llm/02_programacao_ferramentas#21-python-para-mlia).
+
 ### Referências
 - `Livro` **Fluent Python (2nd ed.)** — Luciano Ramalho.
 - `Curso` **NumPy Documentation — User Guide** (oficial). https://numpy.org/doc/stable/user/
@@ -68,7 +70,7 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 | **Vercel AI SDK** (`ai`) | Streaming, tool use, agnóstico de provedor |
 | **LangChain.js** | Chains, agents, integrações |
 | **LlamaIndex.TS** | RAG e ingestão de documentos |
-| **transformers.js** | Inferência de modelos no browser/Node via ONNX |
+| **transformers.js** | Inferência de modelos no browser/Node via ONNX (Open Neural Network Exchange) |
 | **ONNX Runtime Web** | Inferência otimizada client-side |
 | **Mastra** | Framework de agentes em TS |
 | **MCP SDK (TypeScript)** | Model Context Protocol oficial |
@@ -88,6 +90,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 
 **Equivalência prática**: para qualquer pipeline de RAG ou agente em produção, existe uma versão TS razoável. Para qualquer coisa que envolva treinar pesos, vá de Python.
 
+> Aprofundar: teoria completa em [v2 — 2.2 TypeScript para IA aplicada](/trilha-llm/v2/02_programacao_ferramentas#22-typescript-para-ia-aplicada); código completo em [v3 — 2.2 TypeScript para IA aplicada](/trilha-llm/02_programacao_ferramentas#22-typescript-para-ia-aplicada).
+
 ### Referências
 - `Livro` **Effective TypeScript** — Dan Vanderkam.
 - `Ferramenta` **Vercel AI SDK Documentation**. https://ai-sdk.dev/
@@ -101,7 +105,7 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 ### Controle de versão
 - Git avançado: rebase, cherry-pick, bisect, hooks.
 - **DVC** (Data Version Control) — versionar datasets e modelos. https://dvc.org/
-- Git LFS para modelos pequenos.
+- Git LFS (Large File Storage) para modelos pequenos.
 - **Hugging Face Hub** como repositório de modelos/datasets (usa Git+LFS).
 
 ### Containers e orquestração
@@ -113,6 +117,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - **Weights & Biases (W&B)**, **MLflow**, ou **Aim** — tracking de experimentos.
 - Seeds determinísticos.
 - Documentação de versões de CUDA, drivers, bibliotecas.
+
+> Aprofundar: teoria completa em [v2 — 2.3 Engenharia de software para ML](/trilha-llm/v2/02_programacao_ferramentas#23-engenharia-de-software-para-ml); código completo em [v3 — 2.3 Engenharia de software para ML](/trilha-llm/02_programacao_ferramentas#23-engenharia-de-software-para-ml).
 
 ### Referências
 - `Livro` **Designing Machine Learning Systems** — Chip Huyen.
@@ -126,12 +132,12 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 ### CPU vs GPU vs TPU
 - Por que GPU acelera ML: paralelismo massivo em operações matriciais.
 - Quando CPU basta: inferência de modelos pequenos, dados tabulares.
-- TPU (Google) — relevante se for usar JAX em larga escala.
+- TPU (Tensor Processing Unit, Google) — relevante se for usar JAX em larga escala.
 
 ### Plataformas
-- **NVIDIA CUDA** (padrão de fato, melhor suporte).
-- **AMD ROCm** (alternativa em Linux, suporte crescente).
-- **Apple Silicon (MPS)** — `torch.backends.mps`, suporte parcial mas funcional.
+- **NVIDIA CUDA** (Compute Unified Device Architecture — padrão de fato, melhor suporte).
+- **AMD ROCm** (Radeon Open Compute — alternativa em Linux, suporte crescente).
+- **Apple Silicon (MPS, Metal Performance Shaders)** — `torch.backends.mps`, suporte parcial mas funcional.
 - **Intel oneAPI**, **Vulkan compute** (nichos).
 
 ### VRAM como limite
@@ -145,6 +151,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - Kaggle Notebooks (free tier com P100/T4).
 - Lambda Labs, RunPod, Vast.ai (alugar por hora, $0.30–$2/h em T4–A100).
 - Hugging Face Spaces (deploy gratuito de demos).
+
+> Aprofundar: teoria completa em [v2 — 2.4 Hardware e aceleração](/trilha-llm/v2/02_programacao_ferramentas#24-hardware-e-aceleração); código completo em [v3 — 2.4 Hardware e aceleração](/trilha-llm/02_programacao_ferramentas#24-hardware-e-aceleração).
 
 ### Referências
 - `Curso` **NVIDIA Deep Learning Institute** (cursos gratuitos sobre CUDA, otimização). https://www.nvidia.com/en-us/training/online/
@@ -163,14 +171,14 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 
 ### Projeto 2.2 — Análise exploratória profissional
 - Escolha um dataset (Kaggle ou UCI ML Repo).
-- Faça EDA com Pandas + Plotly em Jupyter.
+- Faça EDA (Exploratory Data Analysis) com Pandas + Plotly em Jupyter.
 - Documente hipóteses, anomalias, decisões de limpeza.
 - Exporte como notebook + relatório em Markdown.
 
 ### Projeto 2.3 — Mesmo problema em PyTorch e em TS (transformers.js)
 - Carregue um modelo pequeno (ex.: `distilbert-base-uncased` para classificação).
 - Faça inferência em Python (PyTorch) e em TS (transformers.js).
-- Compare latência, output, DX.
+- Compare latência, output, DX (Developer Experience).
 - **Objetivo**: sentir as diferenças concretas dos dois ecossistemas.
 
 ### Projeto 2.4 — Benchmark de hardware

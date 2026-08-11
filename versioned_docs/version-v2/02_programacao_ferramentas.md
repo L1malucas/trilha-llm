@@ -18,7 +18,7 @@ Ao final deste módulo você deve ser capaz de:
 
 - Montar um ambiente Python reprodutível (lockfile, container) que roda igual em qualquer máquina.
 - Justificar, com critério, quando usar Python e quando usar TypeScript num projeto de IA — não só citar a lista.
-- Calcular quanta VRAM um modelo precisa, em qualquer precisão, de cabeça.
+- Calcular quanta VRAM (Video RAM, a memória da GPU) um modelo precisa, em qualquer precisão, de cabeça.
 - Explicar por que GPU acelera treinamento de rede neural especificamente (não é "GPU é mais rápido", é sobre o *tipo* de operação).
 - Diagnosticar os erros de ambiente mais comuns (conflito CUDA/driver, mistura pip/conda) antes que eles te custem um dia inteiro.
 
@@ -51,6 +51,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 | **PyTorch** | DL — padrão de fato em pesquisa |
 | **JAX** | DL funcional, alternativa séria a PyTorch |
 
+> **Intuição — generators e context managers**: um `generator` (função com `yield`) produz valores um de cada vez, sob demanda, sem materializar a sequência inteira em memória — essencial ao iterar sobre um dataset maior que a RAM disponível. Um `context manager` (`with ... as ...`) garante que um recurso (arquivo, conexão, sessão de GPU) seja liberado mesmo se o código dentro do bloco lançar uma exceção — o mesmo padrão por trás de `torch.no_grad()`, que desliga o cálculo de gradiente só durante o bloco, sem exigir lembrar de reativá-lo depois. Um `decorator` (`@algo`) envolve uma função com comportamento extra sem reescrever a função em si — o `@observe()` de rastreamento de experimentos (seção 2.3) e o `@app.route` de um servidor web são o mesmo mecanismo.
+>
 > **Por que importa especificamente aqui**: em código de ML, um bug de tipo costuma ser um bug de **shape** — uma matriz `(batch, 10)` sendo somada com uma `(10, batch)` por engano não quebra na hora, quebra 3 camadas depois com um erro de dimensão difícil de rastrear até a origem, ou pior, faz broadcasting silencioso e produz um resultado errado sem erro nenhum. `mypy`/`pyright` não pegam erro de shape diretamente (Python não tem tipos de shape nativos), mas forçam disciplina de assinatura de função que reduz esse tipo de deslize. `asyncio` importa porque servir um LLM em produção significa lidar com múltiplas requisições de streaming simultâneas sem bloquear — é o mesmo padrão usado em qualquer servidor de I/O intensivo, aplicado a tokens em vez de bytes de rede.
 >
 > **Checkpoint**: sem olhar o texto, explique por que um bug de shape em NumPy/PyTorch costuma ser mais perigoso que um erro de tipo comum (dica: pense em broadcasting).
@@ -59,6 +61,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 - `venv` (padrão), `conda` (científico), **`uv`** (moderno, rapidíssimo, recomendado).
 - `pyproject.toml` em vez de `requirements.txt` quando possível.
 - `pip-tools` ou `uv` para lockfiles.
+
+> Quer ver esse ambiente montado de ponta a ponta — `pyproject.toml`, lockfile, `Dockerfile` multi-stage, pre-commit e CI (Continuous Integration) rodando, com cada arquivo completo? A versão Acelerado tem tudo isso no [Projeto 2.1 — Setup completo reprodutível](/trilha-llm/02_programacao_ferramentas#projeto-21--setup-completo-reprodutível).
 
 ### Referências
 - `Livro` **Fluent Python (2nd ed.)** — Luciano Ramalho.
@@ -82,7 +86,7 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 | **Vercel AI SDK** (`ai`) | Streaming, tool use, agnóstico de provedor |
 | **LangChain.js** | Chains, agents, integrações |
 | **LlamaIndex.TS** | RAG e ingestão de documentos |
-| **transformers.js** | Inferência de modelos no browser/Node via ONNX |
+| **transformers.js** | Inferência de modelos no browser/Node via ONNX (Open Neural Network Exchange) |
 | **ONNX Runtime Web** | Inferência otimizada client-side |
 | **Mastra** | Framework de agentes em TS |
 | **MCP SDK (TypeScript)** | Model Context Protocol oficial |
@@ -106,6 +110,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 >
 > **Checkpoint**: sem olhar o texto, explique a régua de decisão Python vs TS em uma frase — e dê um exemplo de tarefa de cada lado.
 
+> Quer ver essa régua aplicada de verdade — o mesmo modelo rodando em PyTorch e em `transformers.js`, com DX (Developer Experience) comparada em setup, erros de tipo e velocidade de iteração? A versão Acelerado cobre isso no [Projeto 2.3 — DX comparada](/trilha-llm/02_programacao_ferramentas#projeto-23--dx-comparada-mesmo-modelo-em-python-e-typescript).
+
 ### Referências
 - `Livro` **Effective TypeScript** — Dan Vanderkam.
 - `Ferramenta` **Vercel AI SDK Documentation**. https://ai-sdk.dev/
@@ -119,7 +125,7 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 ### Controle de versão
 - Git avançado: rebase, cherry-pick, bisect, hooks.
 - **DVC** (Data Version Control) — versionar datasets e modelos. https://dvc.org/
-- Git LFS para modelos pequenos.
+- Git LFS (Large File Storage) para modelos pequenos.
 - **Hugging Face Hub** como repositório de modelos/datasets (usa Git+LFS).
 
 ### Containers e orquestração
@@ -148,12 +154,12 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 ### CPU vs GPU vs TPU
 - Por que GPU acelera ML: paralelismo massivo em operações matriciais.
 - Quando CPU basta: inferência de modelos pequenos, dados tabulares.
-- TPU (Google) — relevante se for usar JAX em larga escala.
+- TPU (Tensor Processing Unit, chip da Google feito sob medida para álgebra linear de ML) — relevante se for usar JAX em larga escala.
 
 ### Plataformas
-- **NVIDIA CUDA** (padrão de fato, melhor suporte).
-- **AMD ROCm** (alternativa em Linux, suporte crescente).
-- **Apple Silicon (MPS)** — `torch.backends.mps`, suporte parcial mas funcional.
+- **NVIDIA CUDA** (Compute Unified Device Architecture — padrão de fato, melhor suporte).
+- **AMD ROCm** (Radeon Open Compute — alternativa em Linux, suporte crescente).
+- **Apple Silicon (MPS, Metal Performance Shaders)** — `torch.backends.mps`, suporte parcial mas funcional.
 - **Intel oneAPI**, **Vulkan compute** (nichos).
 
 > **Intuição — por que GPU**: uma CPU tem poucos núcleos (dezenas), cada um muito rápido e flexível, ótimo para tarefas sequenciais complexas. Uma GPU tem milhares de núcleos simples, cada um lento individualmente, mas todos fazendo a *mesma* operação em paralelo sobre dados diferentes — exatamente o padrão de um produto matricial (mod. [01](01_matematica.md#11-álgebra-linear)), onde cada elemento da saída é um produto interno independente dos outros. É por isso que GPU não acelera qualquer código, só código que se encaixa nesse padrão de paralelismo massivo e uniforme — um loop com lógica condicional complexa por iteração não ganha o mesmo benefício.
@@ -167,6 +173,8 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 > **Exemplo resolvido**: quanto de VRAM um modelo de 13B parâmetros precisa só para **inferência** em BF16? `13.000.000.000 parâmetros × 2 bytes = 26.000.000.000 bytes ≈ 26 GB` — não cabe numa GPU de consumo comum de 24GB, mas cabe (com folga apertada) numa A100 de 40GB. Em INT4, o mesmo modelo cai para `13B × 0.5 byte ≈ 6.5 GB` — cabe até em GPUs de laptop. Isso é a conta que decide, antes de qualquer outra consideração, se um modelo roda na sua máquina — o mod. [10](10_eficiencia_e_inferencia_local.md) aprofunda quantização (por que INT4 funciona sem destruir a qualidade do modelo) e outras técnicas para espremer modelos maiores em menos memória.
 >
 > **Checkpoint**: sem olhar o texto, calcule quanta VRAM um modelo de 7B parâmetros precisa em FP32 — e explique por que treinamento precisa de vários múltiplos a mais de memória que inferência.
+
+> Quer ver essa conta de VRAM virar um benchmark real — o mesmo treino cronometrado em CPU, GPU e MPS, com a hipótese de speedup formulada antes de medir? A versão Acelerado tem o código completo no [Projeto 2.4 — Benchmark de hardware](/trilha-llm/02_programacao_ferramentas#projeto-24--benchmark-de-hardware).
 
 ### Cloud para quem não tem GPU
 - Google Colab (free tier com T4).
@@ -193,9 +201,11 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 
 ### Projeto 2.2 — Análise exploratória profissional
 - Escolha um dataset (Kaggle ou UCI ML Repo).
-- Faça EDA com Pandas + Plotly em Jupyter.
+- Faça EDA (Exploratory Data Analysis) com Pandas + Plotly em Jupyter.
 - Documente hipóteses, anomalias, decisões de limpeza.
 - Exporte como notebook + relatório em Markdown.
+
+> Quer ver essa EDA implementada passo a passo — visão geral, distribuições, matriz de correlação e relação de cada feature com o target, cada bloco com a pergunta de diagnóstico que ele responde? A versão Acelerado tem o código completo no [Projeto 2.2 — Análise exploratória profissional](/trilha-llm/02_programacao_ferramentas#projeto-22--análise-exploratória-profissional).
 
 ### Projeto 2.3 — Mesmo problema em PyTorch e em TS (transformers.js)
 - Carregue um modelo pequeno (ex.: `distilbert-base-uncased` para classificação).
@@ -224,10 +234,21 @@ Ferramentas mal configuradas custam **dias** de debug. Antes de treinar qualquer
 
 ---
 
+## Saiba mais
+
+Alguns tópicos deste módulo foram citados de propósito sem profundidade — são áreas inteiras por si só, e o objetivo aqui é saber que existem e onde procurar quando precisar:
+
+- **Kubernetes** (2.3) — orquestração de containers em escala; você não precisa disso para treinar ou servir um modelo sozinho, mas é o que empresas usam para rodar dezenas de serviços (incluindo modelos) de forma resiliente. `Curso` **Kubernetes Basics** (oficial, gratuito). https://kubernetes.io/docs/tutorials/kubernetes-basics/
+- **Programação CUDA de baixo nível** (2.4) — escrever kernels customizados em C++/CUDA, além de só chamar operações do PyTorch que já usam CUDA por baixo; relevante se você for otimizar uma operação que nenhuma biblioteca ainda implementou eficientemente. `Livro` **Programming Massively Parallel Processors** — Kirk & Hwu.
+- **Intel oneAPI e Vulkan compute** (2.4) — alternativas de nicho a CUDA/ROCm/MPS, relevantes só em hardware específico (Intel Arc, mobile/embarcado). Sem curadoria de referência única aqui — pesquise a documentação oficial do fabricante quando o hardware exigir.
+- **JAX a fundo** (2.1) — a alternativa funcional ao PyTorch, com `jit`, `vmap` e `grad` como primitivas compostas em vez de um framework orientado a objetos; usado pesado em pesquisa (DeepMind) e quando TPU é o alvo. `Curso` **JAX Documentation — Quickstart** (oficial). https://jax.readthedocs.io/
+
+---
+
 ## Checklist de saída
 
-- [ ] Tenho um setup Python e TS reprodutíveis em qualquer máquina.
-- [ ] Sei diferenciar quando usar Python vs TS para uma tarefa de IA.
-- [ ] Entendo o que é VRAM e sei calcular quanta um modelo precisa.
-- [ ] Consigo rodar um modelo Hugging Face em CPU, GPU local, e Colab.
-- [ ] Tenho um workflow de versionamento de código + dados + modelos.
+- [ ] Tenho um setup Python e TS reprodutíveis em qualquer máquina (se não, revise a seção 2.1 e o Projeto 2.1).
+- [ ] Sei diferenciar quando usar Python vs TS para uma tarefa de IA (se não, revise a seção 2.2).
+- [ ] Entendo o que é VRAM e sei calcular quanta um modelo precisa (se não, revise a seção 2.4).
+- [ ] Consigo rodar um modelo Hugging Face em CPU, GPU local, e Colab (se não, revise o Projeto 2.4).
+- [ ] Tenho um workflow de versionamento de código + dados + modelos (se não, revise a seção 2.3).
