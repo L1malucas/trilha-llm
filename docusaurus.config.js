@@ -60,6 +60,27 @@ const config = {
           routeBasePath: '/',
           sidebarPath: './sidebars.js',
           editUrl: `https://github.com/${GITHUB_USER}/${REPO_NAME}/tree/main/docs/`,
+          // Não há uma versão "em desenvolvimento" ativa agora (docs/ é uma
+          // cópia idêntica da v3, recém-cortada) — não publica essa cópia
+          // redundante como uma entrada "Next" separada no dropdown.
+          includeCurrentVersion: false,
+          versions: {
+            v3: {
+              label: 'v3 — Acelerado',
+              // Nenhuma das versões publicadas é "não mantida": são três
+              // formatos deliberadamente paralelos do mesmo conteúdo, não
+              // uma sucessão de versões obsoletas.
+              banner: 'none',
+            },
+            v2: {
+              label: 'v2 — Clássico',
+              banner: 'none',
+            },
+            v1: {
+              label: 'v1 — Checklist',
+              banner: 'none',
+            },
+          },
         },
         blog: false,
         theme: {
