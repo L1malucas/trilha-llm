@@ -40,6 +40,8 @@ sidebar_position: 3
 - **No Free Lunch Theorem**: nenhum algoritmo é ótimo para tudo.
 - **Pipeline de ML**: ingestão → limpeza → features → modelo → avaliação → deploy.
 
+> Aprofundar: teoria completa em [v2 — 3.1 Fundamentos conceituais](/trilha-llm/v2/03_ml_classico#31-fundamentos-conceituais); código completo em [v3 — 3.1 Fundamentos conceituais](/trilha-llm/03_ml_classico#31-fundamentos-conceituais).
+
 ### Referências
 - `Curso` **Stanford CS229** — vídeos + notas. https://cs229.stanford.edu/
 - `Livro` **The Elements of Statistical Learning** — Hastie, Tibshirani, Friedman. https://hastie.su.domains/ElemStatLearn/
@@ -53,12 +55,12 @@ sidebar_position: 3
 ### Lineares
 - **Regressão Linear** (OLS, Ridge, Lasso).
 - **Regressão Logística** (binária e multiclasse via softmax).
-- **Support Vector Machines (SVM)**: hard margin, soft margin, kernel trick (RBF, polinomial).
+- **Support Vector Machines (SVM)**: hard margin, soft margin, kernel trick (RBF — Radial Basis Function, polinomial).
 
 ### Baseados em árvore
 - **Decision Trees**: critérios de split (Gini, entropia, MSE), poda.
 - **Random Forests**: bagging.
-- **Gradient Boosting**: AdaBoost, GBM, **XGBoost**, **LightGBM**, **CatBoost**.
+- **Gradient Boosting**: AdaBoost, GBM (Gradient Boosting Machine), **XGBoost** (eXtreme Gradient Boosting), **LightGBM** (Light Gradient Boosting Machine), **CatBoost** (Categorical Boosting).
 
 ### Baseados em distância
 - **k-Nearest Neighbors (kNN)**.
@@ -66,6 +68,8 @@ sidebar_position: 3
 ### Probabilísticos
 - **Naive Bayes** (multinomial, Gaussian, Bernoulli).
 - **Linear/Quadratic Discriminant Analysis (LDA/QDA)**.
+
+> Aprofundar: teoria completa em [v2 — 3.2 Algoritmos supervisionados](/trilha-llm/v2/03_ml_classico#32-algoritmos-supervisionados); código completo em [v3 — 3.2 Algoritmos supervisionados](/trilha-llm/03_ml_classico#32-algoritmos-supervisionados).
 
 ### Referências (papers fundadores)
 - `Paper` **Random Forests** — Breiman (2001). https://link.springer.com/article/10.1023/A:1010933404324
@@ -81,18 +85,20 @@ sidebar_position: 3
 - **k-Means** (e suas limitações: assume clusters esféricos, sensível a inicialização).
 - **k-Means++** (inicialização melhorada).
 - **Hierarchical Clustering**: agglomerative, divisive.
-- **DBSCAN**: clustering baseado em densidade.
-- **Gaussian Mixture Models (GMM)**: clustering probabilístico via EM.
+- **DBSCAN** (Density-Based Spatial Clustering of Applications with Noise): clustering baseado em densidade.
+- **Gaussian Mixture Models (GMM)**: clustering probabilístico via EM (Expectation-Maximization).
 
 ### Redução de dimensionalidade
 - **PCA** (já visto no módulo [01](01_matematica.md)).
-- **t-SNE**: visualização, não para downstream tasks.
-- **UMAP**: alternativa moderna ao t-SNE, mais rápida e preserva mais estrutura.
+- **t-SNE** (t-Distributed Stochastic Neighbor Embedding): visualização, não para downstream tasks.
+- **UMAP** (Uniform Manifold Approximation and Projection): alternativa moderna ao t-SNE, mais rápida e preserva mais estrutura.
 
 ### Detecção de anomalias
 - **Isolation Forest**.
 - **One-Class SVM**.
 - **Autoencoders** (cross-link com DL — módulo [05](05_deep_learning.md)).
+
+> Aprofundar: teoria completa em [v2 — 3.3 Algoritmos não-supervisionados](/trilha-llm/v2/03_ml_classico#33-algoritmos-não-supervisionados); código completo em [v3 — 3.3 Algoritmos não-supervisionados](/trilha-llm/03_ml_classico#33-algoritmos-não-supervisionados).
 
 ### Referências
 - `Paper` **t-SNE** — van der Maaten & Hinton (2008). https://www.jmlr.org/papers/v9/vandermaaten08a.html
@@ -107,7 +113,9 @@ sidebar_position: 3
 - **Escalonamento**: standardization (z-score), min-max, robust scaling.
 - **Tratamento de missing values**: deleção, imputação simples, imputação multivariada.
 - **Feature engineering** clássica: interações, polinomiais, agregações temporais.
-- **Feature selection**: filter (correlação, mútua informação), wrapper (RFE), embedded (Lasso).
+- **Feature selection**: filter (correlação, mútua informação), wrapper (RFE — Recursive Feature Elimination), embedded (Lasso).
+
+> Aprofundar: teoria completa em [v2 — 3.4 Engenharia de features](/trilha-llm/v2/03_ml_classico#34-engenharia-de-features); código completo em [v3 — 3.4 Engenharia de features](/trilha-llm/03_ml_classico#34-engenharia-de-features).
 
 ### Referências
 - `Livro` **Feature Engineering for Machine Learning** — Zheng & Casari.
@@ -123,6 +131,8 @@ sidebar_position: 3
 - **Curvas de validação** (validation curves) para escolher hiperparâmetros.
 - **Calibração de probabilidades**: Platt scaling, isotonic regression.
 - **Análise de erro**: matriz de confusão, residual plots.
+
+> Aprofundar: teoria completa em [v2 — 3.5 Avaliação rigorosa](/trilha-llm/v2/03_ml_classico#35-avaliação-rigorosa); código completo em [v3 — 3.5 Avaliação rigorosa](/trilha-llm/03_ml_classico#35-avaliação-rigorosa).
 
 ### Referências
 - `Paper` **A Survey of Cross-Validation Procedures for Model Selection** — Arlot & Celisse (2010). https://arxiv.org/abs/0907.4728
@@ -143,7 +153,7 @@ sidebar_position: 3
 - Pipeline com `sklearn.Pipeline` e `ColumnTransformer`.
 - Compare ≥4 modelos: regressão logística, Random Forest, XGBoost, LightGBM.
 - Use cross-validation aninhada para tuning.
-- Análise de erro com SHAP (explica módulo [14](14_avaliacao_e_seguranca.md) também).
+- Análise de erro com SHAP (SHapley Additive exPlanations; explica módulo [14](14_avaliacao_e_seguranca.md) também).
 
 ### Projeto 3.3 — Detecção de anomalias
 **O que prova**: que você sabe abordar problemas não-supervisionados.

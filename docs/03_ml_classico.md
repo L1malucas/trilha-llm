@@ -48,6 +48,12 @@ Em problemas tabulares, gradient boosting frequentemente bate redes neurais — 
 - **No Free Lunch Theorem**: nenhum algoritmo é ótimo para tudo.
 - **Pipeline de ML**: ingestão → limpeza → features → modelo → avaliação → deploy.
 
+> **Intuição — regularização e validação**: **L1 (Lasso)** soma o valor absoluto dos pesos à loss — empurra coeficientes pouco úteis exatamente a zero, funcionando como seleção automática de features. **L2 (Ridge)** soma o quadrado dos pesos — encolhe todos os coeficientes suavemente em direção a zero, sem zerar nenhum. **Elastic Net** combina os dois, útil quando há grupos de features correlacionadas. Para validação: **holdout** é rápido mas com poucos dados tem alta variância; **k-fold cross-validation** roda o treino/validação `k` vezes, girando a fatia de validação, e reporta a média — o mesmo `cv=5` que você já passou ao `GridSearchCV` no Projeto 4.1; **stratified k-fold** preserva a proporção de classes em cada fatia, crítico em desbalanceamento; **time series split** respeita a ordem temporal — usar k-fold comum em série temporal deixa o modelo "ver o futuro" durante o treino.
+>
+> **Intuição — métricas**: tudo começa da **matriz de confusão**: cada previsão de um classificador binário cai em TP, FP, TN ou FN. **Accuracy** é `(TP+TN)/total` — engana em dados desbalanceados (99% de negativos: prever sempre "negativo" já dá 99% de accuracy sem aprender nada). **Precision** é `TP/(TP+FP)`; **Recall** é `TP/(TP+FN)`; **F1** é a média harmônica dos dois, só alta quando ambos são altos. **AUC-ROC** (Area Under the Curve — Receiver Operating Characteristic) mede o ranking de scores em todos os thresholds de uma vez, mas fica otimista em desbalanceamento extremo; **PR-AUC** (Precision-Recall AUC) é a alternativa nesse caso. Para regressão: **MSE** penaliza erros grandes desproporcionalmente (sensível a outliers); **MAE** penaliza proporcionalmente (mais robusto); **R²** mede a fração da variância explicada. **Log-loss** é a cross-entropy do mod. [01](01_matematica.md#13-probabilidade-e-estatística) aplicada a probabilidades previstas — o mesmo `F.cross_entropy` que você já chama desde o Projeto 8.3, só que sobre a saída de um classificador clássico em vez de um LLM.
+>
+> **Intuição — dimensionalidade, No Free Lunch e pipeline**: a **maldição da dimensionalidade** é o fenômeno de, conforme features crescem, o volume do espaço crescer exponencialmente enquanto os dados ficam fixos — pontos ficam esparsos, e "distância"/"vizinhança" (kNN, k-Means) perdem poder discriminativo. O **No Free Lunch Theorem** formaliza que, em média sobre todos os problemas possíveis, nenhum algoritmo domina os outros — um algoritmo só vence porque explora estrutura específica do problema, o que já justificou a comparação empírica de 4 modelos que você fez no Projeto 4.1. O **pipeline de ML** (ingestão → limpeza → features → modelo → avaliação → deploy) formaliza a ordem dessas decisões — pular uma etapa não elimina o problema, só adia para depois do deploy.
+>
 > **Intuição — bias-variância**: imagine ajustar uma curva a pontos de dados espalhados. Um modelo com **alto bias** (ex.: reta numa relação claramente curva) é "teimoso demais" — ignora padrões reais nos dados, erra sistematicamente da mesma forma (underfitting). Um modelo com **alta variância** (ex.: uma curva que serpenteia por cada ponto exatamente) é "influenciável demais" — memoriza ruído específico daquele conjunto de treino, e uma leve mudança nos dados produziria uma curva bem diferente (overfitting). O ponto ideal não é zero bias e zero variância (impossível na prática) — é o equilíbrio que minimiza o erro total em dados *novos*, não vistos no treino. Regularização (L1/L2) empurra deliberadamente o modelo pra ter mais bias em troca de menos variância, quando o modelo está memorizando demais.
 >
 > **Aplicação real**: overfitting em LLMs se manifesta diferente (o modelo "decorando" trechos do corpus de treino em vez de generalizar), mas a lógica é idêntica — é por isso que técnicas de regularização deste módulo (weight decay, early stopping) reaparecem sem mudança conceitual no mod. [05](05_deep_learning.md#53-otimização-e-regularização-para-dl), que você já viu.
@@ -61,12 +67,12 @@ Em problemas tabulares, gradient boosting frequentemente bate redes neurais — 
 ### Lineares
 - **Regressão Linear** (OLS, Ridge, Lasso).
 - **Regressão Logística** (binária e multiclasse via softmax — o mesmo `softmax` do Projeto 5.1).
-- **Support Vector Machines (SVM)**: hard margin, soft margin, kernel trick (RBF, polinomial).
+- **Support Vector Machines (SVM)**: hard margin, soft margin, kernel trick (RBF — Radial Basis Function, polinomial).
 
 ### Baseados em árvore
 - **Decision Trees**: critérios de split (Gini, entropia, MSE), poda.
 - **Random Forests**: bagging.
-- **Gradient Boosting**: AdaBoost, GBM, **XGBoost**, **LightGBM**, **CatBoost** — já usados no Projeto 4.1, implementados do zero no Projeto 3.4.
+- **Gradient Boosting**: AdaBoost, GBM (Gradient Boosting Machine), **XGBoost** (eXtreme Gradient Boosting), **LightGBM** (Light Gradient Boosting Machine), **CatBoost** (Categorical Boosting) — já usados no Projeto 4.1, implementados do zero no Projeto 3.4.
 
 ### Baseados em distância
 - **k-Nearest Neighbors (kNN)** — já usado como um dos modelos base do stacking no Projeto 4.1.
@@ -76,6 +82,8 @@ Em problemas tabulares, gradient boosting frequentemente bate redes neurais — 
 - **Linear/Quadratic Discriminant Analysis (LDA/QDA)**.
 
 > **Intuição por família**: modelos **lineares** traçam uma reta/plano/hiperplano separando os dados — rápidos, interpretáveis, mas limitados a relações (aproximadamente) lineares, a menos que você projete features não-lineares manualmente. **Árvores de decisão** são uma sequência de perguntas sim/não ("idade > 30? renda > X?") que particiona o espaço em regiões — capturam não-linearidade e interações naturalmente, mas uma única árvore profunda overfita fácil. **kNN** não "aprende" nada explicitamente — classifica um ponto novo olhando para seus vizinhos mais próximos no conjunto de treino (o mesmo princípio da busca por similaridade de cosseno que você já usa desde o Projeto 8.5, com distância euclidiana no lugar de cosseno); simples, mas caro em tempo de inferência e sofre com a maldição da dimensionalidade (em espaços de alta dimensão, "próximo" perde significado).
+>
+> **Intuição — SVM, split de árvore e modelos probabilísticos**: **SVM** busca o hiperplano que separa as classes com a *maior margem* possível — os **vetores de suporte**, os pontos mais próximos da fronteira, são os únicos que realmente a determinam. **Soft margin** troca margem por tolerância a ruído; o **kernel trick** permite fronteiras não-lineares calculando o produto interno *como se* os dados já estivessem projetados num espaço maior, sem nunca computar a projeção de fato. Para árvores, **Gini** e **entropia** medem impureza de classificação de formas ligeiramente diferentes, mas quase sempre concordam na prática; **MSE** é o critério equivalente para árvores de regressão. **Naive Bayes** aplica o Teorema de Bayes do mod. [01](01_matematica.md#13-probabilidade-e-estatística) assumindo — ingenuamente, daí o nome — que as features são independentes entre si dado a classe; ainda produz um classificador surpreendentemente bom e extremamente rápido de treinar. **LDA/QDA** assumem que cada classe segue uma Gaussiana: LDA (Linear Discriminant Analysis) compartilha a covariância entre classes (fronteira linear), QDA (Quadratic Discriminant Analysis) permite covariâncias diferentes por classe (fronteira quadrática, mais flexível, exige mais dados).
 >
 > **Intuição — bagging vs boosting** (a distinção mais confundida deste módulo): **Random Forest** (bagging) treina muitas árvores *independentes*, cada uma numa amostra aleatória dos dados, e faz a média das previsões — reduz variância porque erros aleatórios de árvores individuais se cancelam. **Gradient Boosting** (XGBoost, LightGBM, que você já usou no Projeto 4.1) treina árvores *sequencialmente*, cada nova árvore focando em corrigir os erros que as anteriores ainda cometem (aprendendo a prever o *resíduo* do ensemble atual) — reduz bias porque o ensemble fica progressivamente melhor no que ainda erra. São estratégias opostas: bagging paraleliza e reduz variância; boosting é sequencial e reduz bias. É por isso que gradient boosting costuma vencer em benchmarks tabulares (Kaggle inclusive) — ele ataca diretamente o erro residual, enquanto Random Forest só reduz ruído de árvores já razoavelmente boas. Você implementa esse mecanismo de correção sequencial do zero no Projeto 3.4.
 >
@@ -89,19 +97,21 @@ Em problemas tabulares, gradient boosting frequentemente bate redes neurais — 
 - **k-Means** (e suas limitações: assume clusters esféricos, sensível a inicialização) — implementado do zero no Projeto 3.1.
 - **k-Means++** (inicialização melhorada).
 - **Hierarchical Clustering**: agglomerative, divisive.
-- **DBSCAN**: clustering baseado em densidade.
-- **Gaussian Mixture Models (GMM)**: clustering probabilístico via EM.
+- **DBSCAN** (Density-Based Spatial Clustering of Applications with Noise): clustering baseado em densidade.
+- **Gaussian Mixture Models (GMM)**: clustering probabilístico via EM (Expectation-Maximization).
 
 ### Redução de dimensionalidade
 - **PCA** (mod. 01, já visto).
-- **t-SNE**: visualização, não para downstream tasks.
-- **UMAP**: alternativa moderna ao t-SNE, mais rápida e preserva mais estrutura.
+- **t-SNE** (t-Distributed Stochastic Neighbor Embedding): visualização, não para downstream tasks.
+- **UMAP** (Uniform Manifold Approximation and Projection): alternativa moderna ao t-SNE, mais rápida e preserva mais estrutura.
 
 ### Detecção de anomalias
 - **Isolation Forest** — implementado no Projeto 3.3.
 - **One-Class SVM**.
 - **Autoencoders** — você já implementou um (VAE, uma variante mais sofisticada) no Projeto 5.5; a versão vanilla é usada para anomaly detection no Projeto 3.3.
 
+> **Intuição — GMM/EM e detecção de anomalias**: **Gaussian Mixture Models** generalizam k-Means para clustering "suave": em vez de atribuir cada ponto a exatamente um cluster, atribui uma *probabilidade* de pertencer a cada um. O algoritmo **EM** alterna entre estimar essas probabilidades dado os parâmetros atuais das Gaussianas (passo E) e reestimar os parâmetros dado essas probabilidades (passo M) — a mesma estrutura de alternância de k-Means, generalizada. **DBSCAN** define um cluster como uma região *densa* de pontos conectados, sem exigir saber `k` de antemão, e naturalmente marca pontos isolados como ruído — encontra clusters de formato arbitrário onde k-Means falharia (a mesma falha que você vai ver no dataset "moons" do Projeto 3.1). **Hierarchical clustering** constrói uma árvore inteira de agrupamentos (agglomerative: funde os pontos mais próximos progressivamente; divisive: parte de um cluster e divide) e você escolhe `k` visualmente cortando a árvore depois, em vez de declará-lo de antemão. Para detecção de anomalias — o assunto do Projeto 3.3 — as três famílias citadas atacam o problema de ângulos diferentes: **Isolation Forest** isola pontos via partições aleatórias (anomalias se isolam em poucos cortes); **One-Class SVM** aprende uma fronteira geométrica ao redor da região normal; **Autoencoders** aprendem a reconstruir dados normais e usam o erro de reconstrução como sinal.
+>
 > **Intuição — k-Means**: alterna entre dois passos até estabilizar — (1) atribuir cada ponto ao centróide mais próximo, (2) recalcular cada centróide como a média dos pontos atribuídos a ele. É um processo iterativo simples, mas assume que clusters são "bolhas" aproximadamente esféricas de tamanho parecido — falha visivelmente em clusters alongados, aninhados ou de densidade muito diferente (é aí que DBSCAN, baseado em densidade em vez de distância ao centróide, se sai melhor).
 >
 > **Intuição — PCA vs t-SNE/UMAP**: PCA preserva a variância global dos dados — boa para compressão/reconstrução, mas pode esconder estrutura local (clusters próximos podem ficar sobrepostos na projeção). t-SNE e UMAP otimizam para preservar *vizinhança local* (pontos próximos no espaço original ficam próximos na visualização 2D/3D), o que produz visualizações mais "limpas" com clusters separados — mas a distância *entre* clusters na visualização não tem significado confiável (t-SNE/UMAP não preservam estrutura global), e por isso não devem alimentar um modelo downstream, só servir para inspeção visual.
@@ -116,8 +126,10 @@ Em problemas tabulares, gradient boosting frequentemente bate redes neurais — 
 - **Escalonamento**: standardization (z-score), min-max, robust scaling.
 - **Tratamento de missing values**: deleção, imputação simples, imputação multivariada.
 - **Feature engineering** clássica: interações, polinomiais, agregações temporais.
-- **Feature selection**: filter (correlação, mútua informação), wrapper (RFE), embedded (Lasso).
+- **Feature selection**: filter (correlação, mútua informação), wrapper (RFE — Recursive Feature Elimination), embedded (Lasso).
 
+> **Intuição — engenharia de features**: **one-hot** cria uma coluna binária por categoria (seguro, explode em dimensionalidade); **label encoding** atribui um inteiro arbitrário (compacto, introduz ordem falsa); **target encoding** usa a média do target por categoria (poderoso, vaza informação se calculado ingenuamente — ver alerta abaixo); **embeddings** (mod. 06) aprendem uma representação densa por categoria, a mesma ideia dos embeddings de token que você usa desde o Projeto 8.3. Para **escalonamento**: **standardization** é o padrão para modelos baseados em distância/gradiente (o mesmo `StandardScaler` do `ColumnTransformer` no Projeto 3.2); **min-max** comprime para `[0,1]`, sensível a outliers; **robust scaling** usa mediana/IQR, resiste a outliers. Para **missing values**: deleção descarta dados; imputação simples (média/mediana/moda, como o `SimpleImputer` do Projeto 3.2) é rápida mas ignora relações entre features; imputação multivariada é mais precisa e mais cara. Para **feature selection**: *filter* avalia cada feature isoladamente (rápido, ignora interações); *wrapper* (RFE) treina e re-treina removendo features iterativamente (preciso, caro); *embedded* (Lasso) seleciona features como parte do próprio treino.
+>
 > **Cuidado com target encoding**: usar a média do target por categoria como feature é poderoso, mas vaza informação do rótulo para a feature — se calculado ingenuamente sobre o dataset inteiro (incluindo o próprio ponto sendo codificado), o modelo "aprende" o vazamento em vez do padrão real, e a performance desaba fora da amostra. A forma correta calcula o encoding só com dados de treino (via cross-validation interna), nunca vendo o ponto que está sendo transformado — o mesmo cuidado do `gerar_previsoes_out_of_fold` do Projeto 4.1.
 
 ---
@@ -129,8 +141,10 @@ Em problemas tabulares, gradient boosting frequentemente bate redes neurais — 
 - **Curvas de aprendizado** (learning curves) para diagnosticar bias vs variance.
 - **Curvas de validação** (validation curves) para escolher hiperparâmetros.
 - **Calibração de probabilidades**: Platt scaling, isotonic regression — o mesmo problema de calibração já discutido no mod. 14.
-- **Análise de erro**: matriz de confusão, residual plots, SHAP (usado no Projeto 3.2).
+- **Análise de erro**: matriz de confusão, residual plots, SHAP (SHapley Additive exPlanations, usado no Projeto 3.2).
 
+> **Intuição — calibração e análise de erro**: um modelo "calibrado" tem probabilidades previstas que correspondem à frequência real — entre previsões com "70% de confiança", cerca de 70% devem estar corretas. **Platt scaling** ajusta uma regressão logística sobre os scores já treinados; **isotonic regression** faz o mesmo mapeamento sem assumir forma funcional específica, mais flexível mas precisa de mais dados de validação. A **matriz de confusão** é o ponto de partida de qualquer análise de erro de classificação, revelando que *tipo* de erro predomina, não só quanto o modelo erra — o que o `classification_report` do Projeto 3.3 já mostra em formato tabular. Para regressão, **residual plots** revelam padrões que uma métrica agregada esconde: um funil (erro crescendo com o valor previsto) indica heterocedasticidade; uma curva sistemática indica não-linearidade não capturada.
+>
 > **Intuição — três splits**: treino ajusta os parâmetros; validação escolhe hiperparâmetros e decide "quando parar"; teste mede a performance final, **uma única vez**. Se você usa o mesmo conjunto pra tudo, o modelo (ou você, escolhendo hiperparâmetros) acaba indiretamente "vendo" o teste múltiplas vezes — o número final fica otimista, porque parte da escolha já foi guiada por aquele conjunto. Curvas de aprendizado (erro de treino e validação em função do tamanho do dataset) são o diagnóstico direto de bias vs variância: gap grande entre as duas curvas indica alta variância (mais dados ajudariam); as duas curvas convergindo num erro alto indica alto bias (mais dados não ajudariam, o modelo é fraco demais).
 >
 > **Checkpoint**: sem olhar o texto, explique por que "tunar no test set" invalida a métrica final reportada. Depois, descreva o que uma curva de aprendizado mostraria para um modelo com alto bias.
@@ -373,6 +387,17 @@ O mecanismo central, exatamente como descrito na Intuição da seção 3.2: cada
 | Embeddings (target encoding) | Word embeddings (mod. 06, já visto) |
 | Métricas | Avaliação de LLMs (mod. 14, já visto) |
 | Pipelines | MLOps (mod. 15, já visto) |
+
+---
+
+## Saiba mais
+
+Alguns tópicos deste módulo foram citados sem profundidade — grandes demais para caber aqui sem desviar do fluxo principal:
+
+- **AdaBoost, o algoritmo original de boosting** (3.2) — historicamente anterior ao Gradient Boosting moderno, pondera exemplos mal-classificados em vez de ajustar sobre o resíduo (o mecanismo que você implementou no Projeto 3.4). `Paper` **A Decision-Theoretic Generalization of On-Line Learning** — Freund & Schapire (1997).
+- **Teoria do kernel trick** (3.2) — por que o produto interno num espaço de dimensão maior pode ser calculado sem nunca projetar os dados lá (Teorema de Mercer). `Livro` *Pattern Recognition and Machine Learning* — Bishop, cap. 6.
+- **Modelos clássicos de série temporal** (ARIMA, exponential smoothing) — fora do escopo deste módulo, relevantes quando a ordem temporal é a estrutura central dos dados, não só uma restrição de validação. `Livro` *Forecasting: Principles and Practice* — Hyndman & Athanasopoulos (gratuito). https://otexts.com/fpp3/
+- **ML Bayesiano e model averaging** — combinar previsões de vários modelos ponderadas pela probabilidade posterior de cada um, em vez de escolher um único vencedor; conecta com a inferência Bayesiana do mod. [01](01_matematica.md#13-probabilidade-e-estatística). `Livro` *Probabilistic Machine Learning* (vol. 1) — Kevin Murphy, cap. 18. https://probml.github.io/pml-book/
 
 ---
 
