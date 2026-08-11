@@ -78,11 +78,13 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 ### Conceitos
 - **Few-shot learning**: aprender com poucos exemplos por classe.
 - **Zero-shot learning**: prever classes nunca vistas no treinamento — o que você já fez com CLIP no Projeto 16.6.
-- **Meta-learning** ("aprender a aprender"): MAML, Prototypical Networks.
+- **Meta-learning** ("aprender a aprender"): MAML (Model-Agnostic Meta-Learning), Prototypical Networks.
 
 ### Por que importa para LLMs
 Few-shot prompting (mod. 11, já praticado extensivamente) é um caso emergente de few-shot learning sem gradient updates — comportamento "in-context" que aparece com escala.
 
+> **Intuição — MAML e Prototypical Networks**: **MAML** não aprende a resolver uma tarefa específica, aprende um *ponto de partida* de pesos a partir do qual poucas iterações de gradient descent, em qualquer nova tarefa da mesma família, já convergem bem. **Prototypical Networks** são mais diretas: para cada classe nova (com poucos exemplos), calcula um "protótipo" (a média dos embeddings dos exemplos daquela classe) e classifica um ponto novo pela distância ao protótipo mais próximo — mais parecido com kNN (mod. 03) num espaço de embeddings aprendido do que com ajuste de gradiente por tarefa.
+>
 > **Intuição**: few-shot/meta-learning clássico (MAML, Prototypical Networks) ainda envolve *algum* ajuste de parâmetros — o modelo é explicitamente treinado para se adaptar rápido a partir de poucos exemplos. O que LLMs grandes fazem é mais surpreendente: dado alguns exemplos *no prompt* (sem nenhum gradient update, sem tocar nos pesos — o que você já explorou no Projeto 11.1), o modelo "aprende" o padrão só olhando o contexto — é literalmente inferência, não treinamento. Esse comportamento (in-context learning) não foi projetado explicitamente; ele emerge como consequência do pré-treinamento em escala e é um dos fenômenos mais estudados (e ainda parcialmente misteriosos) em LLMs modernos.
 >
 > **Checkpoint**: sem olhar o texto, explique a diferença entre few-shot learning clássico (MAML) e few-shot prompting num LLM — qual dos dois ajusta pesos?
@@ -99,20 +101,22 @@ Few-shot prompting (mod. 11, já praticado extensivamente) é um caso emergente 
 
 **Sobre gradient boosting (XGBoost, LightGBM, CatBoost), rapidamente**: são famílias de modelos que constroem uma sequência de árvores de decisão pequenas, cada nova árvore tentando corrigir especificamente os erros da soma das árvores anteriores (diferente de Random Forest, onde as árvores são treinadas independentemente e depois combinadas por média/voto). São, na prática, os modelos que mais vencem competições em dados tabulares — o mod. [03](03_ml_classico.md), logo a seguir nesta trilha, aprofunda o mecanismo exato. Aqui, no Projeto 4.1, você os usa como caixas relativamente prontas (`modelo.fit(X, y)`, `modelo.predict(X_novo)`) para montar um ensemble.
 
-> Stacking generaliza a ideia de "combinar modelos" (mod. 03, bagging/boosting) um passo além: em vez de uma regra fixa de combinação (média, voto), um **meta-modelo aprende** a melhor forma de combinar as previsões dos modelos base — útil quando os modelos base têm pontos fortes complementares (um lida melhor com um subgrupo de casos, outro com outro).
+> Stacking generaliza a ideia de "combinar modelos" (mod. 03, bagging/boosting) um passo além: em vez de uma regra fixa de combinação (média, voto), um **meta-modelo aprende** a melhor forma de combinar as previsões dos modelos base — útil quando os modelos base têm pontos fortes complementares (um lida melhor com um subgrupo de casos, outro com outro). **Blending** é a mesma ideia com um procedimento mais simples que o `gerar_previsoes_out_of_fold` do Projeto 4.1: em vez de cross-validation, separa-se de antemão um único holdout para treinar o meta-modelo — mais rápido, mas usa os dados de forma menos eficiente. **Bayesian Model Averaging** troca o meta-modelo aprendido por uma combinação ponderada pela probabilidade posterior de cada modelo estar correto, mantendo a incerteza sobre qual modelo é o certo em vez de escolher um vencedor. **Snapshot Ensembles** obtêm o efeito de um ensemble a partir de um único treino de rede neural: um learning rate schedule cíclico faz o treino passar por vários mínimos locais diferentes, salvando um "snapshot" dos pesos em cada um — o mesmo `AdamW` que você já configura, só com um schedule cíclico em vez de decay monotônico.
 
 ---
 
 ## 4.5 AutoML e Neural Architecture Search (NAS)
 
 ### AutoML
-- **Hyperparameter optimization**: random search, Bayesian optimization (Optuna, Hyperopt — usado no Projeto 4.3), Hyperband, BOHB.
+- **Hyperparameter optimization**: random search, Bayesian optimization (Optuna, Hyperopt — usado no Projeto 4.3), Hyperband, BOHB (Bayesian Optimization and Hyperband).
 - **AutoML frameworks**: AutoSklearn, Auto-Keras, FLAML, H2O AutoML.
 
 ### NAS
-- **Differentiable NAS** (DARTS).
+- **Differentiable NAS** (DARTS — Differentiable ARchiTecture Search).
 - **Reinforcement-learning-based NAS**.
 - **Evolutionary NAS**.
+
+> **Intuição — busca de hiperparâmetros e NAS**: random search amostra combinações ao acaso — competitivo com grid search porque poucos hiperparâmetros costumam ser "críticos", e random search explora esses poucos com mais variedade do que uma grade fixa gastaria em combinações irrelevantes. A **otimização bayesiana** que o Optuna usa por padrão (Projeto 4.3) mantém um modelo probabilístico de "quão boa deve ser cada região ainda não testada" e escolhe o próximo ponto equilibrando exploração e aproveitamento — cada trial novo é informado por todos os anteriores. **Hyperband** aloca pouco orçamento a muitas configurações no início e mata cedo as que já parecem ruins, concentrando orçamento nas sobreviventes; **BOHB** combina essa alocação adaptativa com a inteligência da busca bayesiana. **NAS** aplica a mesma lógica de busca ao espaço de *arquiteturas*: evolutivo e baseado em RL tratam a arquitetura como algo a "descobrir" por busca; **DARTS** torna a busca diferenciável, relaxando a escolha discreta de operações numa camada para uma combinação contínua ponderada, otimizável por gradient descent como qualquer peso da rede — a mesma mecânica de otimização do mod. 01, aplicada aqui à própria estrutura da rede, não só aos pesos.
 
 ### Crítica honesta
 NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, transferir uma arquitetura existente (seção 4.2) é melhor. Mas conhecer o conceito é importante.
@@ -128,6 +132,8 @@ NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, tran
 - **Pseudo-labeling**, **co-training**.
 - **Data augmentation** como forma de "criar" supervisão — o mesmo princípio das augmentations do Projeto 4.2 e do Projeto 5.2.
 
+> **Intuição — as outras técnicas de poucos rótulos**: **weak supervision** (Snorkel) substitui rótulos exatos por várias regras heurísticas imprecisas combinadas estatisticamente — cada regra sozinha é ruidosa, mas o sinal agregado costuma bastar para treinar um modelo sem rotulagem manual. **Semi-supervised learning** usa uma pequena porção rotulada junto com uma grande porção não-rotulada, assumindo que a estrutura dos dados não-rotulados carrega informação útil sobre a fronteira de decisão. **Pseudo-labeling** treina um modelo inicial nos poucos dados rotulados, usa esse modelo para "rotular" (com filtro de confiança) os dados não-rotulados, e re-treina incluindo esses pseudo-rótulos. **Co-training** usa duas visões diferentes dos mesmos dados que se ensinam mutuamente. **Data augmentation** "cria" supervisão sem dado novo de verdade — a mesma transformação (rotação, crop, color jitter) do `augmentation_simclr` do Projeto 4.2, assumindo que ela não muda o rótulo e forçando o modelo a aprender essa invariância.
+>
 > **Intuição**: active learning inverte a pergunta usual — em vez de "que modelo treinar com os dados que tenho", pergunta "quais exemplos, se rotulados, mais reduziriam a incerteza do modelo". Tipicamente, o modelo é usado pra identificar os casos em que está mais inseguro (probabilidade próxima de 50% numa classificação binária, por exemplo), e esses viram prioridade de rotulagem humana — extrai mais valor de um orçamento fixo de anotação do que rotular aleatoriamente.
 
 ---
@@ -139,7 +145,7 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 
 ### Conceitos
 - **Confounding** e variáveis de confundimento.
-- **DAGs causais** (Judea Pearl).
+- **DAGs causais** (Directed Acyclic Graphs, Judea Pearl).
 - **Counterfactuals**.
 - **Propensity score matching** — implementado no Projeto 4.5.
 - **Instrumental variables**.
@@ -152,6 +158,8 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - Compreensão de viés algorítmico (mod. 14).
 - Em RL (mod. 17): causalidade é fundamental.
 
+> **Intuição — as outras ferramentas de causal inference**: um **DAG causal** desenha explicitamente as relações de causa assumidas (setas de causa → efeito) — no exemplo do sorvete, `temperatura → vendas` e `temperatura → afogamentos`, sem seta direta entre sorvete e afogamento. Um **counterfactual** é a pergunta central de toda causal inference: "o que teria acontecido com esta mesma pessoa se ela tivesse recebido o tratamento oposto?" — nunca observável diretamente, por isso todo método de causal inference estima esse contrafactual não-observado a partir de outros dados. **Propensity score matching**, implementado no Projeto 4.5, estima a probabilidade de cada indivíduo ter recebido o tratamento dado suas características, e compara resultados entre tratados e não-tratados com propensity score parecido. **Instrumental variables** resolvem o problema quando existe confounding não-observado (que propensity score não corrige): usam uma terceira variável que afeta o tratamento mas não o resultado, exceto através do tratamento. **Difference-in-differences** compara a *mudança* ao longo do tempo entre grupo tratado e controle, cancelando tendências que afetariam os dois igualmente mesmo sem o tratamento.
+>
 > **Checkpoint**: sem olhar o texto, explique o exemplo do sorvete/afogamento com suas próprias palavras — qual é o confounder, e por que ele engana um modelo puramente correlacional?
 
 ---
@@ -168,6 +176,8 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - LLMs são fundamentalmente modelos probabilísticos sobre tokens — o `softmax` no final de todo forward pass do Projeto 8.3.
 - Uncertainty quantification é o que diferencia "modelo bom" de "modelo confiável".
 
+> **Intuição — as ferramentas de modelagem probabilística**: **Probabilistic Programming** (PyMC, Stan, NumPyro, Pyro) deixa você declarar um modelo probabilístico numa linguagem parecida com código normal, e a ferramenta cuida da inferência automaticamente por baixo. **Variational Inference** aproxima uma posterior impossível de calcular exatamente por uma distribuição mais simples, otimizando os parâmetros dessa aproximação por gradiente para minimizar a KL-divergência entre ela e a posterior real — exatamente o princípio do VAE que você já implementou no Projeto 5.5. **Normalizing Flows** constroem distribuições complexas e exatamente calculáveis (não só aproximadas) aplicando uma sequência de transformações invertíveis a uma distribuição simples — cada transformação "distorce" a distribuição, e por serem invertíveis, dá pra calcular a densidade exata via mudança de variável, uma ideia próxima da difusão do Projeto 19.3. **Bayesian Deep Learning** traz incerteza bayesiana pra redes neurais sem o custo de um treino totalmente bayesiano: dropout mantido ativo *durante a inferência* (não só no treino) aproxima amostrar de uma posterior sobre os pesos; **deep ensembles** treinam várias redes independentes e usam a discordância entre elas como proxy de incerteza.
+>
 > **Intuição**: um modelo que erra sabendo que está incerto é mais útil que um que erra com a mesma confiança de quando acerta — em produção, "não sei" é uma resposta valiosa que um modelo mal calibrado nunca dá. Uncertainty quantification (deep ensembles, dropout bayesiano) tenta extrair essa informação de "quão confiante devo estar nesta previsão" de modelos que, por padrão, sempre dão uma resposta com a mesma confiança aparente. Em LLMs, isso se relaciona diretamente com alucinação e calibração (mod. 14, já visto): um modelo "sabe" quando está extrapolando além do que aprendeu com confiança, na maioria dos casos, mas expressar essa incerteza de forma calibrada continua sendo um problema em aberto.
 
 ---
@@ -471,6 +481,17 @@ O `propensity_score` (seção 4.7) resume "quão provável era esse indivíduo t
 | Few-shot | In-context learning (já praticado no mod. 11) |
 | Probabilistic models | Sampling em LLMs (mod. 10) |
 | Uncertainty | Hallucination, calibração (mod. 14, já visto) |
+
+---
+
+## Saiba mais
+
+Alguns tópicos deste módulo foram citados sem profundidade — grandes demais para caber aqui sem desviar do fluxo principal:
+
+- **BYOL e métodos contrastivos sem negativos** (4.1) — SimCLR/MoCo (que você implementou no Projeto 4.2) precisam de pares negativos explícitos; BYOL (Bootstrap Your Own Latent) aprende representações contrastivas sem eles, usando uma rede "professora" atualizada por média móvel. `Paper` **Bootstrap Your Own Latent** — Grill et al. (2020).
+- **Gradual unfreezing e domain adaptation a fundo** (4.2) — estratégias mais refinadas de transfer learning para quando a tarefa-alvo é bem diferente da tarefa-fonte. `Paper` **ULMFiT** — Howard & Ruder (2018).
+- **AutoML frameworks completos** (4.5) — AutoSklearn, FLAML, H2O AutoML automatizam não só hiperparâmetros mas a escolha do próprio algoritmo; vale a pena só depois de já saber fazer manualmente o que essas ferramentas fazem por baixo, como no Projeto 4.3. `Ferramenta` **FLAML Documentation**. https://microsoft.github.io/FLAML/
+- **Modelos probabilísticos além do escopo aqui** (4.8) — processos de Dirichlet, campos aleatórios de Markov, inferência exata em modelos gráficos pequenos. `Livro` *Probabilistic Machine Learning* (vol. 2) — Kevin Murphy.
 
 ---
 

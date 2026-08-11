@@ -52,6 +52,8 @@ LLMs modernos são **modelos auto-supervisionados em escala massiva**. Entender 
 ### Cursos
 - `Curso` **NYU Deep Learning (Yann LeCun & Alfredo Canziani)** — aulas dedicadas a SSL. https://atcold.github.io/NYU-DLSP21/
 
+> Aprofundar: teoria completa em [v2 — 4.1 Self-Supervised Learning (SSL)](/trilha-llm/v2/04_ml_moderno#41-self-supervised-learning-ssl); código completo em [v3 — 4.1 Self-Supervised Learning (SSL)](/trilha-llm/04_ml_moderno#41-self-supervised-learning-ssl).
+
 ---
 
 ## 4.2 Transfer Learning
@@ -69,6 +71,8 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 - `Paper` **A Survey on Transfer Learning** — Pan & Yang (2010). https://www.cse.ust.hk/~qyang/Docs/2009/tkde_transfer_learning.pdf
 - `Paper` **Universal Language Model Fine-tuning (ULMFiT)** — Howard & Ruder (2018). https://arxiv.org/abs/1801.06146 (clássico em NLP)
 
+> Aprofundar: teoria completa em [v2 — 4.2 Transfer Learning](/trilha-llm/v2/04_ml_moderno#42-transfer-learning); código completo em [v3 — 4.2 Transfer Learning](/trilha-llm/04_ml_moderno#42-transfer-learning).
+
 ---
 
 ## 4.3 Few-Shot e Meta-Learning
@@ -76,7 +80,7 @@ Treinar em uma tarefa-fonte com muito dado, transferir para tarefa-alvo com pouc
 ### Conceitos
 - **Few-shot learning**: aprender com poucos exemplos por classe.
 - **Zero-shot learning**: prever classes nunca vistas no treinamento.
-- **Meta-learning** ("aprender a aprender"): MAML, Prototypical Networks.
+- **Meta-learning** ("aprender a aprender"): MAML (Model-Agnostic Meta-Learning), Prototypical Networks.
 
 ### Por que importa para LLMs
 Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de few-shot learning sem gradient updates — comportamento "in-context" que aparece com escala.
@@ -85,6 +89,8 @@ Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de
 - `Paper` **Model-Agnostic Meta-Learning (MAML)** — Finn et al. (2017). https://arxiv.org/abs/1703.03400
 - `Paper` **Matching Networks for One Shot Learning** — Vinyals et al. (2016). https://arxiv.org/abs/1606.04080
 - `Paper` **Prototypical Networks for Few-shot Learning** — Snell et al. (2017). https://arxiv.org/abs/1703.05175
+
+> Aprofundar: teoria completa em [v2 — 4.3 Few-Shot e Meta-Learning](/trilha-llm/v2/04_ml_moderno#43-few-shot-e-meta-learning); código completo em [v3 — 4.3 Few-Shot e Meta-Learning](/trilha-llm/04_ml_moderno#43-few-shot-e-meta-learning).
 
 ---
 
@@ -100,16 +106,18 @@ Few-shot prompting (mod. [11](11_prompt_engineering.md)) é um caso emergente de
 - `Livro` **Ensemble Methods: Foundations and Algorithms** — Zhou.
 - `Paper` **Stacked Generalization** — Wolpert (1992). https://www.researchgate.net/publication/222467943_Stacked_Generalization
 
+> Aprofundar: teoria completa em [v2 — 4.4 Ensembles modernos e Stacking](/trilha-llm/v2/04_ml_moderno#44-ensembles-modernos-e-stacking); código completo em [v3 — 4.4 Ensembles modernos e Stacking](/trilha-llm/04_ml_moderno#44-ensembles-modernos-e-stacking).
+
 ---
 
 ## 4.5 AutoML e Neural Architecture Search (NAS)
 
 ### AutoML
-- **Hyperparameter optimization**: random search, Bayesian optimization (Optuna, Hyperopt), Hyperband, BOHB.
+- **Hyperparameter optimization**: random search, Bayesian optimization (Optuna, Hyperopt), Hyperband, BOHB (Bayesian Optimization and Hyperband).
 - **AutoML frameworks**: AutoSklearn, Auto-Keras, FLAML, H2O AutoML.
 
 ### NAS
-- **Differentiable NAS** (DARTS).
+- **Differentiable NAS** (DARTS — Differentiable ARchiTecture Search).
 - **Reinforcement-learning-based NAS**.
 - **Evolutionary NAS**.
 
@@ -120,6 +128,8 @@ NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, tran
 - `Paper` **Neural Architecture Search: A Survey** — Elsken et al. (2018). https://arxiv.org/abs/1808.05377
 - `Paper` **DARTS: Differentiable Architecture Search** — Liu et al. (2018). https://arxiv.org/abs/1806.09055
 - `Ferramenta` **Optuna**. https://optuna.org/
+
+> Aprofundar: teoria completa em [v2 — 4.5 AutoML e Neural Architecture Search (NAS)](/trilha-llm/v2/04_ml_moderno#45-automl-e-neural-architecture-search-nas); código completo em [v3 — 4.5 AutoML e Neural Architecture Search (NAS)](/trilha-llm/04_ml_moderno#45-automl-e-neural-architecture-search-nas).
 
 ---
 
@@ -136,6 +146,8 @@ NAS prometeu mais do que entregou para uso geral. Para a maioria dos casos, tran
 - `Paper` **Snorkel: Rapid Training Data Creation with Weak Supervision** — Ratner et al. (2017). https://arxiv.org/abs/1711.10160
 - `Livro` **Active Learning** — Burr Settles. http://burrsettles.com/pub/settles.activelearning.pdf
 
+> Aprofundar: teoria completa em [v2 — 4.6 Aprendizado com poucos rótulos](/trilha-llm/v2/04_ml_moderno#46-aprendizado-com-poucos-rótulos); código completo em [v3 — 4.6 Aprendizado com poucos rótulos](/trilha-llm/04_ml_moderno#46-aprendizado-com-poucos-rótulos).
+
 ---
 
 ## 4.7 Causal Inference (opcional, mas recomendado)
@@ -145,7 +157,7 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 
 ### Conceitos
 - **Confounding** e variáveis de confundimento.
-- **DAGs causais** (Judea Pearl).
+- **DAGs causais** (Directed Acyclic Graphs, Judea Pearl).
 - **Counterfactuals**.
 - **Propensity score matching**.
 - **Instrumental variables**.
@@ -160,6 +172,8 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 - `Livro` **Causal Inference: The Mixtape** — Cunningham (gratuito). https://mixtape.scunning.com/
 - `Livro` **The Book of Why** — Judea Pearl (acessível).
 - `Livro` **Causal Inference: What If** — Hernán & Robins (gratuito). https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/
+
+> Aprofundar: teoria completa em [v2 — 4.7 Causal Inference (opcional, mas recomendado)](/trilha-llm/v2/04_ml_moderno#47-causal-inference-opcional-mas-recomendado); código completo em [v3 — 4.7 Causal Inference (opcional, mas recomendado)](/trilha-llm/04_ml_moderno#47-causal-inference-opcional-mas-recomendado).
 
 ---
 
@@ -177,7 +191,9 @@ Modelos preditivos respondem "qual é a probabilidade de Y dado X?" mas frequent
 
 ### Referências
 - `Livro` **Probabilistic Machine Learning (vol. 2: Advanced Topics)** — Murphy. https://probml.github.io/pml-book/
-- `Paper` **Auto-Encoding Variational Bayes (VAE)** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
+- `Paper` **Auto-Encoding Variational Bayes (VAE, Variational Autoencoder)** — Kingma & Welling (2013). https://arxiv.org/abs/1312.6114
+
+> Aprofundar: teoria completa em [v2 — 4.8 Modelos probabilísticos modernos](/trilha-llm/v2/04_ml_moderno#48-modelos-probabilísticos-modernos); código completo em [v3 — 4.8 Modelos probabilísticos modernos](/trilha-llm/04_ml_moderno#48-modelos-probabilísticos-modernos).
 
 ---
 
